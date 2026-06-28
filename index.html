@@ -5,122 +5,111 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>RE/MAX × WeDo — דשבורד פודקאסטים</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{
-  /* motion tokens (transitions.dev) */
-  --d-quick:150ms; --d-fast:250ms; --d-slow:400ms;
-  --ease:cubic-bezier(.22,1,.36,1); --ease-io:ease-in-out;
-  /* palette */
-  --bg:#0a0d14; --bg2:#0c1019; --panel:#141a26; --panel2:#1a2132;
-  --bd:rgba(255,255,255,.08); --bd2:rgba(255,255,255,.13);
-  --tx:#eef1f7; --mut:#8b93a4; --mut2:#5f6779;
-  --reach:#3dd7c7; --reach2:#5b9bff; --deep:#f0a44e;
-  --ig:#e96d9e; --fb:#5b9bff; --yt:#ff6a5c; --sp:#3ddc84; --ap:#b889f5;
-  --good:#3ddc84; --warn:#f0a44e;
+  --d-fast:250ms; --d-quick:150ms; --ease:cubic-bezier(.22,1,.36,1);
+  --bg:#0b0e15; --card:#151a25; --card2:#1b2230; --bd:rgba(255,255,255,.09); --bd2:rgba(255,255,255,.16);
+  --tx:#f1f3f8; --mut:#9aa2b2; --mut2:#6b7488;
+  --reach:#36d6c6; --deep:#f3a23e;
+  --ig:#ec5e9c; --fb:#4d8df5; --yt:#ff6a5a; --sp:#39d077; --ap:#a87bf0;
 }
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Heebo',system-ui,sans-serif;background:var(--bg);color:var(--tx);line-height:1.5;-webkit-font-smoothing:antialiased;font-feature-settings:"tnum"}
+body{font-family:'Heebo',system-ui,sans-serif;background:var(--bg);color:var(--tx);line-height:1.45;-webkit-font-smoothing:antialiased;font-feature-settings:"tnum";font-size:15px}
 .num{font-variant-numeric:tabular-nums}
-.wrap{max-width:1240px;margin:0 auto;padding:22px 20px 70px}
-svg.ic{width:16px;height:16px;stroke:currentColor;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round;vertical-align:-3px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 18px 60px}
+svg.ic{width:15px;height:15px;stroke:currentColor;stroke-width:1.9;fill:none;stroke-linecap:round;stroke-linejoin:round;vertical-align:-2px}
 /* header */
-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;padding-bottom:18px;border-bottom:1px solid var(--bd)}
-.brand{font-weight:800;font-size:19px;letter-spacing:.3px}
-.brand .s{color:var(--mut2);font-weight:300;margin:0 7px}
-.brand .r{background:linear-gradient(90deg,var(--reach),var(--reach2));-webkit-background-clip:text;background-clip:text;color:transparent}
-.hmeta{font-size:12.5px;color:var(--mut);text-align:left}
-.hmeta .org{color:var(--mut2);font-size:11.5px}
-/* section title */
-.sec{margin-top:30px;opacity:0;transform:translateY(10px);animation:rise var(--d-slow) var(--ease-io) forwards}
-@keyframes rise{to{opacity:1;transform:none}}
-.sec:nth-child(2){animation-delay:40ms}.sec:nth-child(3){animation-delay:90ms}
-h2{font-size:13px;font-weight:600;color:var(--mut);text-transform:uppercase;letter-spacing:1px;margin-bottom:14px;display:flex;align-items:center;gap:8px}
-h2 .ic{width:15px;height:15px;color:var(--reach)}
-/* kpi strip */
-.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-.kpi{background:var(--panel);border:1px solid var(--bd);border-radius:14px;padding:15px 16px}
-.kpi .lab{font-size:12px;color:var(--mut);display:flex;align-items:center;gap:6px}
-.kpi .v{font-size:27px;font-weight:800;margin-top:5px;letter-spacing:-.5px;opacity:0;animation:pop var(--d-slow) var(--ease) forwards}
-.kpi:nth-child(1) .v{animation-delay:.05s}.kpi:nth-child(2) .v{animation-delay:.12s}.kpi:nth-child(3) .v{animation-delay:.19s}.kpi:nth-child(4) .v{animation-delay:.26s}
-@keyframes pop{from{opacity:0;transform:translateY(8px);filter:blur(2px)}to{opacity:1;transform:none;filter:none}}
-.kpi .sub{font-size:11.5px;color:var(--mut2);margin-top:3px}
-.kpi .v.reach{color:var(--reach)} .kpi .v.deep{color:var(--deep)}
-/* two-axis grid */
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.card{background:var(--panel);border:1px solid var(--bd);border-radius:16px;padding:18px}
-.card h3{font-size:14px;font-weight:600;margin-bottom:3px}
-.card .ch3sub{font-size:12px;color:var(--mut);margin-bottom:14px}
-.axis-tag{display:inline-block;font-size:11px;font-weight:600;padding:2px 9px;border-radius:20px;margin-bottom:10px}
-.axis-reach{background:rgba(61,215,199,.13);color:var(--reach)}
-.axis-deep{background:rgba(240,164,78,.13);color:var(--deep)}
-/* horizontal bars */
-.bars{display:flex;flex-direction:column;gap:11px}
-.brow{display:grid;grid-template-columns:96px 1fr auto;align-items:center;gap:10px;font-size:13px}
-.brow .nm{color:var(--tx);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.btrack{height:22px;background:var(--bg2);border-radius:7px;overflow:hidden;display:flex}
-.bseg{height:100%;width:0;transition:width var(--d-slow) var(--ease);border-radius:0}
-.brow .tot{font-weight:700;color:var(--mut);min-width:48px;text-align:left}
-.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--mut);margin-top:13px}
-.legend i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-left:5px;vertical-align:0}
+header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;padding:18px 0 14px}
+.brand{font-weight:900;font-size:18px}.brand .s{color:var(--mut2);font-weight:300;margin:0 6px}
+.brand .r{color:var(--reach)}
+.hmeta{font-size:12px;color:var(--mut)}
+/* sticky tabs */
+.tabwrap{position:sticky;top:0;z-index:20;background:linear-gradient(var(--bg),var(--bg) 70%,transparent);padding:6px 0 12px}
+.tabs{display:flex;gap:6px;background:var(--card);border:1px solid var(--bd);border-radius:13px;padding:5px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;padding:9px 15px;border:none;background:none;color:var(--mut);font-family:inherit;font-size:14px;font-weight:600;border-radius:9px;cursor:pointer;white-space:nowrap;transition:background var(--d-quick),color var(--d-quick)}
+.tab[aria-selected="true"]{background:var(--card2);color:var(--tx);box-shadow:inset 0 0 0 1px var(--bd2)}
+.tab:hover:not([aria-selected="true"]){color:var(--tx)}
+/* panels */
+.panel{display:none}.panel.on{display:block;animation:fade var(--d-fast) var(--ease)}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+/* kpi row */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.kpi{background:var(--card);border:1px solid var(--bd);border-radius:13px;padding:14px}
+.kpi .l{font-size:12px;color:var(--mut);display:flex;align-items:center;gap:6px}
+.kpi .v{font-size:26px;font-weight:900;letter-spacing:-.5px;margin-top:4px}
+.kpi .v.reach{color:var(--reach)}.kpi .v.deep{color:var(--deep)}
+.kpi .s{font-size:11.5px;color:var(--mut2);margin-top:2px}
+/* section card */
+.block{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:16px 18px;margin-bottom:16px}
+.block>h3{font-size:15px;font-weight:700;margin-bottom:2px;display:flex;align-items:center;gap:8px}
+.block>.sub{font-size:12.5px;color:var(--mut);margin-bottom:14px}
+.dot{width:9px;height:9px;border-radius:3px;display:inline-block}
+/* segmented */
+.seg{display:inline-flex;background:var(--bg);border:1px solid var(--bd);border-radius:9px;padding:3px;margin-bottom:14px}
+.seg button{border:none;background:none;color:var(--mut);font-family:inherit;font-size:12.5px;font-weight:600;padding:5px 13px;border-radius:7px;cursor:pointer;transition:all var(--d-quick)}
+.seg button.on{background:var(--card2);color:var(--tx)}
+/* leaderboard table */
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{font-size:11.5px;color:var(--mut);font-weight:600;text-align:right;padding:0 10px 9px;white-space:nowrap}
+th.c-reach{color:var(--reach)}th.c-deep{color:var(--deep)}
+td{padding:9px 10px;border-top:1px solid rgba(255,255,255,.06);vertical-align:middle}
+td.nm{font-weight:700;white-space:nowrap}
+.cell{position:relative}
+.cellbar{position:absolute;inset:0;border-radius:6px;opacity:.16;z-index:0}
+.cellv{position:relative;z-index:1;font-weight:600}
+.rank{display:inline-flex;width:20px;height:20px;align-items:center;justify-content:center;background:var(--bg);border:1px solid var(--bd);border-radius:6px;font-size:11px;color:var(--mut);margin-left:8px}
+tr.r1 .rank{background:rgba(54,214,198,.15);color:var(--reach);border-color:transparent}
+/* split bar (one row = full reach split) */
+.splitrow{display:grid;grid-template-columns:120px 1fr 64px;align-items:center;gap:12px;padding:8px 0;font-size:14px}
+.splitrow .nm{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sbar{height:26px;background:var(--bg);border-radius:7px;display:flex;overflow:hidden}
+.sbar .sg{height:100%;display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:700;color:#08111a;min-width:0;transition:width var(--d-fast) var(--ease)}
+.splitrow .tt{text-align:left;font-weight:800}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--mut);margin-top:10px}
 /* trend */
-.trendbox{background:var(--panel);border:1px solid var(--bd);border-radius:16px;padding:18px}
-.spark{width:100%;height:90px;display:block}
-.spark path.line{fill:none;stroke-width:2;vector-effect:non-scaling-stroke}
-.spark path.area{stroke:none;opacity:.13}
-/* compare */
-.cmp{display:flex;flex-direction:column;gap:9px}
-.cmprow{display:grid;grid-template-columns:96px 1fr 46px;align-items:center;gap:10px;font-size:13px}
-.cmpbar{height:8px;background:var(--bg2);border-radius:6px;overflow:hidden}
-.cmpbar>span{display:block;height:100%;background:linear-gradient(90deg,var(--reach2),var(--reach));border-radius:6px;width:0;transition:width var(--d-slow) var(--ease)}
-.cmprow .pc{text-align:left;font-weight:700;color:var(--reach)}
+.trendgrid{display:flex;gap:14px;align-items:stretch}
+.yax{display:flex;flex-direction:column;justify-content:space-between;font-size:10.5px;color:var(--mut2);text-align:left;padding:2px 0}
+.trendsvg{flex:1;height:120px}
+.trendsvg .ln{fill:none;stroke-width:2.2;vector-effect:non-scaling-stroke}
+.trendsvg .ar{stroke:none;opacity:.12}
+.trendsvg .dotp{fill:var(--reach)}
+.xax{display:flex;justify-content:space-between;font-size:10.5px;color:var(--mut2);margin-top:6px;padding:0 4px}
 /* insights */
-.ins{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.icard{background:var(--panel);border:1px solid var(--bd);border-radius:14px;padding:15px;border-inline-start:3px solid var(--deep)}
-.icard .t{font-size:11.5px;color:var(--mut);text-transform:uppercase;letter-spacing:.6px}
-.icard .b{font-size:20px;font-weight:800;margin:5px 0 3px}
-.icard .x{font-size:12.5px;color:var(--mut)}
-.flag{border-inline-start-color:var(--warn)}
-/* table */
-.tcard{background:var(--panel);border:1px solid var(--bd);border-radius:16px;overflow:hidden}
-.tbar{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid var(--bd);flex-wrap:wrap;gap:8px}
-.tbar .seg{font-size:12px;color:var(--mut)}
-.btn{background:rgba(91,155,255,.1);border:1px solid rgba(91,155,255,.3);color:var(--reach2);font-family:inherit;font-size:12.5px;font-weight:500;padding:6px 13px;border-radius:9px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:background var(--d-quick)}
-.btn:hover{background:rgba(91,155,255,.2)}
-table{width:100%;border-collapse:collapse;font-size:13.5px}
-th,td{padding:11px 14px;text-align:right;border-bottom:1px solid rgba(255,255,255,.05);white-space:nowrap}
-th{font-size:11.5px;color:var(--mut);font-weight:500}
-tbody tr{transition:background var(--d-quick)} tbody tr:hover{background:rgba(255,255,255,.025)} tbody tr:last-child td{border:none}
-td.nm{font-weight:600} .g-reach{color:var(--reach)} .g-deep{color:var(--deep)}
-/* tabs */
-.tabsbar{position:relative;display:flex;gap:4px;background:var(--panel);border:1px solid var(--bd);border-radius:13px;padding:5px;margin-bottom:18px;overflow-x:auto}
-.tab{position:relative;z-index:1;flex:1;min-width:max-content;text-align:center;padding:9px 16px;font-size:13.5px;font-weight:600;color:var(--mut);background:none;border:none;cursor:pointer;font-family:inherit;border-radius:9px;transition:color var(--d-fast);white-space:nowrap}
-.tab[aria-selected="true"]{color:var(--tx)}
-.pill{position:absolute;top:5px;bottom:5px;z-index:0;background:var(--panel2);border:1px solid var(--bd2);border-radius:9px;transition:transform var(--d-fast) var(--ease),width var(--d-fast) var(--ease)}
-.panel{display:none}.panel.on{display:block;animation:rise var(--d-slow) var(--ease-io)}
-/* per-show */
-.showhead{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:10px;margin-bottom:16px}
-.showhead .nm{font-size:22px;font-weight:800}
-.showhead .meta{font-size:12.5px;color:var(--mut)}
-.mini{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:11px;margin-bottom:16px}
-.mcard{background:var(--panel);border:1px solid var(--bd);border-radius:13px;padding:13px 15px}
-.mcard .l{font-size:11.5px;color:var(--mut)}.mcard .n{font-size:21px;font-weight:800;margin-top:3px}
-.eptable td,.eptable th{padding:9px 12px}
-.demo{display:flex;flex-direction:column;gap:7px}
-.dline{display:grid;grid-template-columns:64px 1fr 36px;gap:9px;align-items:center;font-size:12.5px;color:var(--mut)}
-.dbar{height:7px;background:var(--bg2);border-radius:5px;overflow:hidden}
-.dbar>span{display:block;height:100%;background:linear-gradient(90deg,var(--reach2),var(--reach));border-radius:5px}
-.post{display:block;background:var(--panel2);border:1px solid var(--bd);border-radius:11px;padding:12px;text-decoration:none;color:inherit;transition:transform var(--d-fast) var(--ease),border-color var(--d-fast)}
-.post:hover{transform:translateY(-2px);border-color:var(--bd2)}
-.post .pv{font-size:18px;font-weight:800}.post .pl{font-size:12px;color:var(--tx);margin:2px 0}.post .pm{font-size:11.5px;color:var(--mut);display:flex;gap:11px;margin-top:6px}
-.foot{margin-top:36px;padding-top:16px;border-top:1px solid var(--bd);font-size:11.5px;color:var(--mut2);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
-.note{font-size:11.5px;color:var(--mut2);margin-top:9px}
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:#1c2333;border:1px solid var(--bd2);padding:10px 18px;border-radius:11px;font-size:13.5px;opacity:0;transition:all var(--d-fast) var(--ease);z-index:99}
+.insgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.ins{background:var(--card2);border:1px solid var(--bd);border-radius:12px;padding:13px;border-inline-start:3px solid var(--reach)}
+.ins.flag{border-inline-start-color:var(--deep)}
+.ins .t{font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.5px}
+.ins .b{font-size:17px;font-weight:800;margin:4px 0 3px}
+.ins .x{font-size:12.5px;color:var(--mut);line-height:1.4}
+/* per-show mini grid */
+.mgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin-bottom:16px}
+.mc{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:12px 13px}
+.mc .l{font-size:11.5px;color:var(--mut);display:flex;align-items:center;gap:5px}
+.mc .n{font-size:20px;font-weight:800;margin-top:3px}
+/* show 2-col */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.demo .dl{display:grid;grid-template-columns:70px 1fr 40px;gap:8px;align-items:center;font-size:13px;color:var(--mut);padding:3px 0}
+.demo .db{height:9px;background:var(--bg);border-radius:5px;overflow:hidden}
+.demo .db>span{display:block;height:100%;background:linear-gradient(90deg,var(--fb),var(--reach));border-radius:5px}
+.demo .dl .num{color:var(--tx);font-weight:600;text-align:left}
+.eptbl td{font-size:13px;padding:8px 10px}
+.post{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--card2);border:1px solid var(--bd);border-radius:10px;padding:10px 12px;text-decoration:none;color:inherit;margin-bottom:7px;transition:border-color var(--d-quick)}
+.post:hover{border-color:var(--bd2)}
+.post .pl{font-size:13px;font-weight:500}.post .pmeta{font-size:11.5px;color:var(--mut);margin-top:2px}
+.post .pv{font-size:17px;font-weight:800;white-space:nowrap}
+.toolbar{display:flex;justify-content:flex-end;gap:8px;margin-bottom:10px}
+.btn{background:var(--card2);border:1px solid var(--bd);color:var(--tx);font-family:inherit;font-size:12.5px;font-weight:600;padding:7px 13px;border-radius:9px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:border-color var(--d-quick)}
+.btn:hover{border-color:var(--bd2)}
+.foot{margin-top:30px;padding-top:14px;border-top:1px solid var(--bd);font-size:11.5px;color:var(--mut2);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(16px);background:#1d2433;border:1px solid var(--bd2);padding:10px 18px;border-radius:11px;font-size:13.5px;opacity:0;transition:all var(--d-fast) var(--ease);z-index:99}
 .toast.show{opacity:1;transform:translateX(-50%)}
-@media(max-width:820px){
-  .kpis{grid-template-columns:1fr 1fr}.grid2{grid-template-columns:1fr}.ins{grid-template-columns:1fr}
-  .brow{grid-template-columns:78px 1fr auto}.cmprow{grid-template-columns:78px 1fr 40px}
-  .hmeta{text-align:right}
+@media(max-width:760px){
+  .kpis{grid-template-columns:1fr 1fr}.mgrid{grid-template-columns:repeat(2,1fr)}
+  .two{grid-template-columns:1fr}.insgrid{grid-template-columns:1fr}
+  .splitrow{grid-template-columns:92px 1fr 56px;gap:8px}
+  table{font-size:13px}td,th{padding-left:6px;padding-right:6px}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -129,195 +118,179 @@ td.nm{font-weight:600} .g-reach{color:var(--reach)} .g-deep{color:var(--deep)}
 <div class="wrap">
   <header>
     <div class="brand">wedo<span class="s">|</span><span class="r">RE/MAX</span></div>
-    <div class="hmeta"><div id="range"></div><div class="org" id="org"></div></div>
+    <div class="hmeta"><span id="org"></span> · <span id="range"></span></div>
   </header>
-
-  <!-- ===== סקירה כללית (קבועה) ===== -->
-  <div class="sec">
-    <h2><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>סקירה כללית · 4 התוכניות</h2>
-    <div class="kpis" id="kpis"></div>
-  </div>
-
-  <div class="sec">
-    <div class="grid2">
-      <div class="card">
-        <span class="axis-tag axis-reach">חשיפה · רילס בסושיאל</span>
-        <div class="ch3sub">סך צפיות הרילים הפודקאסטיים (Instagram + Facebook)</div>
-        <div class="bars" id="bars-reach"></div>
-        <div class="legend"><span><i style="background:var(--ig)"></i>Instagram</span><span><i style="background:var(--fb)"></i>Facebook</span></div>
-      </div>
-      <div class="card">
-        <span class="axis-tag axis-deep">האזנה עמוקה · פרקים</span>
-        <div class="ch3sub">האזנות/צפיות לפרק מלא (YouTube + Spotify + Apple)</div>
-        <div class="bars" id="bars-deep"></div>
-        <div class="legend"><span><i style="background:var(--yt)"></i>YouTube</span><span><i style="background:var(--sp)"></i>Spotify</span><span><i style="background:var(--ap)"></i>Apple</span></div>
-      </div>
-    </div>
-    <div class="note" id="ratio"></div>
-  </div>
-
-  <div class="sec">
-    <div class="grid2">
-      <div class="trendbox">
-        <h3>מגמת חשיפה — 30 יום</h3><div class="ch3sub">סך הזרמות יומיות (כל 4 התוכניות, Spotify)</div>
-        <svg class="spark" id="trend-all" viewBox="0 0 600 90" preserveAspectRatio="none"></svg>
-      </div>
-      <div class="card">
-        <h3>חלק יחסי בחשיפה</h3><div class="ch3sub">איזה אחוז מסך החשיפה כל תוכנית תופסת</div>
-        <div class="cmp" id="compare"></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="sec">
-    <div class="ins" id="insights"></div>
-  </div>
-
-  <div class="sec">
-    <div class="tcard">
-      <div class="tbar"><span class="seg">נתונים מלאים — חשיפה (רילס) והאזנה (פרקים) נפרדים</span>
-        <span><button class="btn" onclick="copyTbl()"><svg class="ic" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>העתק</button>
-        <button class="btn" onclick="csvTbl()"><svg class="ic" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>CSV</button></span>
-      </div>
-      <div style="overflow-x:auto"><table id="board"></table></div>
-    </div>
-  </div>
-
-  <!-- ===== טאבי תוכנית ===== -->
-  <div class="sec">
-    <h2><svg class="ic" viewBox="0 0 24 24"><path d="M3 9h18M9 21V9"/><rect x="3" y="3" width="18" height="18" rx="2"/></svg>צלילה לתוכנית</h2>
-    <div class="tabsbar" id="tabs"><span class="pill" id="pill"></span></div>
-    <div id="panels"></div>
-  </div>
-
-  <div class="foot"><span id="sources"></span><span>wedo | RE/MAX · 2026</span></div>
+  <div class="tabwrap"><div class="tabs" id="tabs"></div></div>
+  <div id="panels"></div>
+  <div class="foot"><span id="sources"></span><span>wedo | RE/MAX</span></div>
 </div>
 <div class="toast" id="toast"></div>
 
 <script src="data.js"></script>
 <script>
-const D=window.DASHBOARD_DATA, nf=n=>(n||0).toLocaleString('en-US');
-const SHOW_COL={ig:'var(--ig)',fb:'var(--fb)',yt:'var(--yt)',sp:'var(--sp)',ap:'var(--ap)'};
-const $=id=>document.getElementById(id);
-
-$('range').textContent=D.meta.range;
-$('org').textContent='כל הנתונים אורגניים · אפס פרסום ממומן';
-$('sources').textContent='מקורות: '+D.meta.sources.join(' · ');
-
+const D=window.DASHBOARD_DATA, nf=n=>(n==null?'–':n.toLocaleString('en-US'));
+const $=id=>document.getElementById(id), el=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e;};
+const COL={ig:'#ec5e9c',fb:'#4d8df5',yt:'#ff6a5a',sp:'#39d077',ap:'#a87bf0',reach:'#36d6c6',deep:'#f3a23e'};
 const o=D.overview, shows=D.shows;
-// KPIs
-$('kpis').innerHTML=[
-  {v:nf(o.reach_reels),c:'reach',l:'חשיפה — צפיות רילס',s:'Instagram + Facebook'},
-  {v:nf(o.deep_listens),c:'deep',l:'האזנה — פרקים מלאים',s:'YouTube + Spotify + Apple'},
-  {v:o.shows_count,c:'',l:'תוכניות פעילות',s:'כולן שורדות 3+ פרקים'},
-  {v:'×66',c:'reach',l:'הריל החזק',s:'מהעוקבים (סף ויראלי 3–10×)'},
-].map(k=>`<div class="kpi"><div class="lab">${k.l}</div><div class="v ${k.c} num">${k.v}</div><div class="sub">${k.s}</div></div>`).join('');
+$('org').textContent='אורגני · אפס ממומן';
+$('range').textContent=D.meta.range;
+$('sources').textContent=D.meta.sources.join(' · ');
 
-// bars helper
-function bars(el,rows,maxKeys){
-  const max=Math.max(...rows.map(r=>r.total))||1;
-  el.innerHTML=rows.map(r=>{
-    const segs=r.segs.map(s=>`<span class="bseg" style="background:${s.c}" data-w="${100*s.v/max}"></span>`).join('');
-    return `<div class="brow"><span class="nm">${r.name}</span><div class="btrack">${segs}</div><span class="tot num">${nf(r.total)}</span></div>`;
-  }).join('');
-  requestAnimationFrame(()=>el.querySelectorAll('.bseg').forEach(b=>b.style.width=b.dataset.w+'%'));
-}
-bars($('bars-reach'),shows.map(s=>({name:s.name,total:s.instagram_views+s.facebook_views,
-  segs:[{v:s.instagram_views,c:SHOW_COL.ig},{v:s.facebook_views,c:SHOW_COL.fb}]})).sort((a,b)=>b.total-a.total));
-bars($('bars-deep'),shows.map(s=>({name:s.name,total:s.youtube_views+s.spotify_streams+s.apple_plays,
-  segs:[{v:s.youtube_views,c:SHOW_COL.yt},{v:s.spotify_streams,c:SHOW_COL.sp},{v:s.apple_plays,c:SHOW_COL.ap}]})).sort((a,b)=>b.total-a.total));
-$('ratio').textContent=`יחס משפך: מתוך ${nf(o.reach_reels)} צפיות רילס, ${nf(o.deep_listens)} (${o.reels_to_deep_ratio_pct}%) הגיעו להאזנת פרק מלא. ריל קצר ≠ האזנה לפרק — שני מדדים נפרדים.`;
+// reach/deep helpers per show
+const R=s=>s.instagram_views+s.facebook_views;
+const L=s=>s.youtube_views+s.spotify_streams+s.apple_plays;
 
-// trend (aggregate spotify daily across shows)
-function sparkline(svg,series,color){
-  const W=600,H=90,n=series.length; if(!n){svg.innerHTML='';return;}
-  const max=Math.max(...series,1), pts=series.map((v,i)=>[i*(W/(n-1||1)),H-6-(v/max)*(H-14)]);
-  const line=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');
-  const area=`M0 ${H} `+line.replace('M','L')+` L${W} ${H} Z`;
-  svg.innerHTML=`<path class="area" d="${area}" fill="${color}"/><path class="line" d="${line}" stroke="${color}"/>`;
-}
-const agg={}; shows.forEach(s=>(s.trend||[]).forEach(p=>{agg[p.d]=(agg[p.d]||0)+(p.v||0)}));
-const aggSeries=Object.keys(agg).sort().map(k=>agg[k]);
-sparkline($('trend-all'),aggSeries,'#3dd7c7');
-
-// compare (% of total reach)
-const totReach=shows.reduce((a,s)=>a+s.instagram_views+s.facebook_views,0)||1;
-$('compare').innerHTML=shows.map(s=>({n:s.name,r:s.instagram_views+s.facebook_views}))
-  .sort((a,b)=>b.r-a.r).map(s=>{const pc=Math.round(100*s.r/totReach);
-  return `<div class="cmprow"><span class="nm">${s.n}</span><div class="cmpbar"><span style="width:${pc}%"></span></div><span class="pc num">${pc}%</span></div>`;}).join('');
-requestAnimationFrame(()=>{});
-
-// insights
-const b=D.benchmarks;
-$('insights').innerHTML=[
-  {t:'הזירה',b:Math.round(100*o.reach_split.Instagram/o.reach_reels)+'% IG · '+Math.round(100*o.reach_split.Facebook/o.reach_reels)+'% FB',x:'הרילס הם כמעט כל החשיפה; פרקים מלאים = '+o.reels_to_deep_ratio_pct+'% מזה.',f:false},
-  {t:'ויראליות',b:'×66',x:'ריל "המבוגר האחראי" — פי 66 מהעוקבים. סף ויראלי בתעשייה: 3–10×.',f:false},
-  {t:'חריגה · לשים לב',b:'הפיצוח 58% US',x:'רוב ההאזנות מארה"ב, לא ישראל — חריג לשאר (84–95% IL).',f:true},
-].map(i=>`<div class="icard ${i.f?'flag':''}"><div class="t">${i.t}</div><div class="b">${i.b}</div><div class="x">${i.x}</div></div>`).join('');
-
-// table
-let th=`<thead><tr><th>תוכנית</th><th class="g-reach">Instagram</th><th class="g-reach">Facebook</th><th class="g-deep">YouTube</th><th class="g-deep">Spotify</th><th class="g-deep">Apple</th><th>retention</th></tr></thead><tbody>`;
-shows.forEach(s=>{th+=`<tr><td class="nm">${s.name}</td><td class="num">${nf(s.instagram_views)}</td><td class="num">${nf(s.facebook_views)}</td><td class="num">${nf(s.youtube_views)}</td><td class="num">${nf(s.spotify_streams)}</td><td class="num">${nf(s.apple_plays)}</td><td class="num">${s.youtube_retention_pct??'–'}%</td></tr>`;});
-$('board').innerHTML=th+'</tbody>';
-
-// ===== tabs =====
-const tabsEl=$('tabs'), panelsEl=$('panels'), pill=$('pill');
-shows.forEach((s,i)=>{
-  const btn=document.createElement('button');btn.className='tab';btn.textContent=s.name;
-  btn.setAttribute('aria-selected',i===0?'true':'false');btn.onclick=()=>selectTab(i);
-  tabsEl.appendChild(btn);
-  const p=document.createElement('div');p.className='panel'+(i===0?' on':'');p.id='panel'+i;p.innerHTML=showPanel(s);
+/* ---------- TABS ---------- */
+const tabsEl=$('tabs'), panelsEl=$('panels');
+const tabDefs=[{id:'all',name:'סקירת הכל'}].concat(shows.map((s,i)=>({id:'s'+i,name:s.name})));
+tabDefs.forEach((t,i)=>{
+  const b=el('button','tab',t.name);b.setAttribute('aria-selected',i===0?'true':'false');b.onclick=()=>sel(i);
+  tabsEl.appendChild(b);
+  const p=el('div','panel'+(i===0?' on':''));p.id='p'+i;
+  p.innerHTML=i===0?overviewHTML():showHTML(shows[i-1]);
   panelsEl.appendChild(p);
 });
-function showPanel(s){
-  const reach=s.instagram_views+s.facebook_views, deep=s.youtube_views+s.spotify_streams+s.apple_plays;
-  const eps=(s.episodes||[]).map(e=>`<tr><td>${e.title.slice(0,52)}</td><td class="num">${nf(e.plays)}</td></tr>`).join('')||'<tr><td colspan="2" style="color:var(--mut2)">אין נתוני פרקים</td></tr>';
-  const social=(s.social_posts||[]).slice(0,4).map(p=>{
-    const inner=`<div class="pv num" style="color:${p.platform==='Instagram'?'var(--ig)':'var(--fb)'}">${nf(p.views)}</div><div class="pl">${p.label}</div><div class="pm"><span>${p.platform}</span><span>❤ ${nf(p.likes)}</span><span>↗ ${nf(p.shares)}</span></div>`;
-    return p.url?`<a class="post" href="${p.url}" target="_blank">${inner}</a>`:`<div class="post">${inner}</div>`;}).join('')||'<div style="color:var(--mut2);font-size:12.5px">אין רילס שזוהו</div>';
-  const geo=(s.spotify_geo||[]).slice(0,3).map(g=>`<div class="dline"><span>${g.displayName}</span><div class="dbar"><span style="width:${Math.round(g.value*100)}%"></span></div><span class="num">${Math.round(g.value*100)}%</span></div>`).join('');
-  const ages=(s.spotify_age||[]).map(a=>({br:a.ageBracket,n:(a.genderBreakdown?.counts||[]).reduce((x,c)=>x+(c.count||0),0)})).filter(a=>a.n>0);
-  const maxA=Math.max(1,...ages.map(a=>a.n));
-  const ageH=ages.map(a=>`<div class="dline"><span>${a.br}</span><div class="dbar"><span style="width:${Math.round(100*a.n/maxA)}%"></span></div><span class="num">${a.n}</span></div>`).join('');
-  const sid='sp-'+Math.random().toString(36).slice(2,7);
-  setTimeout(()=>{const el=document.getElementById(sid);if(el)sparkline(el,(s.trend||[]).map(p=>p.v||0),'#3dd7c7');},30);
+function sel(i){[...tabsEl.children].forEach((t,j)=>t.setAttribute('aria-selected',i===j?'true':'false'));
+  [...panelsEl.children].forEach((p,j)=>p.classList.toggle('on',i===j));
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(i===0)drawTrend('trend-all',aggTrend);else drawTrend('trend-'+(i-1),(shows[i-1].trend||[]).map(p=>p.v||0));}
+
+/* ---------- OVERVIEW ---------- */
+function overviewHTML(){
+  const totR=shows.reduce((a,s)=>a+R(s),0), totL=shows.reduce((a,s)=>a+L(s),0);
   return `
-  <div class="showhead"><div><div class="nm">${s.name}</div><div class="meta">חשיפה ${nf(reach)} · האזנה ${nf(deep)} · retention ${s.youtube_retention_pct??'–'}%</div></div></div>
-  <div class="mini">
-    <div class="mcard"><div class="l">Instagram</div><div class="n num" style="color:var(--ig)">${nf(s.instagram_views)}</div></div>
-    <div class="mcard"><div class="l">Facebook</div><div class="n num" style="color:var(--fb)">${nf(s.facebook_views)}</div></div>
-    <div class="mcard"><div class="l">YouTube</div><div class="n num" style="color:var(--yt)">${nf(s.youtube_views)}</div></div>
-    <div class="mcard"><div class="l">Spotify</div><div class="n num" style="color:var(--sp)">${nf(s.spotify_streams)}</div></div>
-    <div class="mcard"><div class="l">Apple</div><div class="n num" style="color:var(--ap)">${nf(s.apple_plays)}</div></div>
+  <div class="kpis" style="grid-template-columns:repeat(3,1fr)">
+    <div class="kpi"><div class="l"><span class="dot" style="background:${COL.reach}"></span>חשיפה · צפיות רילס</div><div class="v reach num">${nf(totR)}</div><div class="s">Instagram + Facebook</div></div>
+    <div class="kpi"><div class="l"><span class="dot" style="background:${COL.deep}"></span>האזנה · פרקים מלאים</div><div class="v deep num">${nf(totL)}</div><div class="s">YouTube + Spotify + Apple</div></div>
+    <div class="kpi"><div class="l">מספר תוכניות</div><div class="v num">${shows.length}</div><div class="s">המבוגר · אוויר פסגות · הפיצוח · סוגרים</div></div>
   </div>
-  <div class="grid2">
-    <div class="trendbox"><h3>מגמה — 30 יום</h3><div class="ch3sub">הזרמות יומיות (Spotify)</div><svg class="spark" id="${sid}" viewBox="0 0 600 90" preserveAspectRatio="none"></svg></div>
-    <div class="card"><h3>הסושיאל של התוכנית</h3><div class="ch3sub">הרילים הפודקאסטיים שלה</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:9px">${social}</div></div>
+
+  <div class="block">
+    <h3>מבט-על · כל התוכניות</h3>
+    <div class="sub">חשיפה (רילס) והאזנה (פרקים) — שני מדדים נפרדים. ריל קצר ≠ האזנה לפרק מלא.</div>
+    <div class="seg" id="seg-sort">
+      <button class="on" data-k="reach">מיין לפי חשיפה</button>
+      <button data-k="deep">מיין לפי האזנה</button>
+    </div>
+    <div style="overflow-x:auto"><table id="lead"></table></div>
   </div>
-  <div class="grid2" style="margin-top:16px">
-    <div class="card"><h3>ביצועים לפי פרק</h3><div class="ch3sub">Spotify · מי האורח, כמה הזרמות</div><table class="eptable"><tbody>${eps}</tbody></table></div>
-    <div class="card"><h3>קהל (Spotify)</h3><div class="ch3sub">גאוגרפיה + גיל · מדגם קטן, מגמה בלבד</div><div class="demo">${geo}<div style="height:7px"></div>${ageH}</div></div>
+
+  <div class="block">
+    <h3>חלוקת החשיפה בין התוכניות</h3>
+    <div class="sub">כמה צפיות לכל תוכנית, מפוצל IG/FB — והאחוז מהסך</div>
+    <div id="split"></div>
+    <div class="legend"><span><span class="dot" style="background:${COL.ig}"></span> Instagram</span><span><span class="dot" style="background:${COL.fb}"></span> Facebook</span></div>
+  </div>
+
+  <div class="block">
+    <h3>מגמת חשיפה · 30 יום אחרונים</h3>
+    <div class="sub">סך הזרמות יומיות, כל 4 התוכניות (Spotify)</div>
+    <div class="trendgrid"><div class="yax" id="yax-all"></div><svg class="trendsvg" id="trend-all" viewBox="0 0 600 120" preserveAspectRatio="none"></svg></div>
+    <div class="xax" id="xax-all"></div>
+  </div>
+
+  <div class="two">
+    <div class="block"><h3>מאיפה מאזינים · כל התוכניות</h3><div class="sub">Spotify · סך מאזינים לפי מדינה</div><div class="demo" id="geo-all"></div></div>
+    <div class="block"><h3>גיל הקהל · כל התוכניות</h3><div class="sub">Spotify · סך מאזינים לפי טווח גיל</div><div class="demo" id="age-all"></div></div>
+  </div>
+
+  <div class="toolbar">
+    <button class="btn" onclick="copyT()"><svg class="ic" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>העתק טבלה</button>
+    <button class="btn" onclick="csvT()"><svg class="ic" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>CSV</button>
   </div>`;
 }
-function setPill(){const a=tabsEl.querySelector('.tab[aria-selected="true"]');if(!a)return;
-  pill.style.width=a.offsetWidth+'px';
-  pill.style.transform=`translateX(${a.offsetLeft-5}px)`;}
-function selectTab(i){
-  [...tabsEl.querySelectorAll('.tab')].forEach((t,j)=>t.setAttribute('aria-selected',i===j?'true':'false'));
-  [...panelsEl.children].forEach((p,j)=>p.classList.toggle('on',i===j));
-  setPill();
+function renderLead(sortKey){
+  const max={ig:Math.max(...shows.map(s=>s.instagram_views)),fb:Math.max(...shows.map(s=>s.facebook_views)),
+    yt:Math.max(...shows.map(s=>s.youtube_views)),sp:Math.max(...shows.map(s=>s.spotify_streams)),ap:Math.max(...shows.map(s=>s.apple_plays))};
+  const sorted=[...shows].sort((a,b)=>(sortKey==='deep'?L(b)-L(a):R(b)-R(a)));
+  const cell=(v,m,c)=>`<td class="cell"><span class="cellbar" style="background:${c};width:${m?Math.round(100*v/m):0}%"></span><span class="cellv num">${nf(v)}</span></td>`;
+  let h=`<thead><tr><th>תוכנית</th><th class="c-reach">Instagram</th><th class="c-reach">Facebook</th><th class="c-deep">YouTube</th><th class="c-deep">Spotify</th><th class="c-deep">Apple</th><th>שימור</th></tr></thead><tbody>`;
+  sorted.forEach((s,i)=>{h+=`<tr class="${i===0?'r1':''}"><td class="nm">${s.name}<span class="rank">${i+1}</span></td>`+
+    cell(s.instagram_views,max.ig,COL.ig)+cell(s.facebook_views,max.fb,COL.fb)+
+    cell(s.youtube_views,max.yt,COL.yt)+cell(s.spotify_streams,max.sp,COL.sp)+cell(s.apple_plays,max.ap,COL.ap)+
+    `<td class="num">${s.youtube_retention_pct??'–'}%</td></tr>`;});
+  $('lead').innerHTML=h+'</tbody>';
 }
-window.addEventListener('load',setPill);
-window.addEventListener('resize',setPill);
-setTimeout(setPill,80);
+function renderSplit(){
+  const tot=shows.reduce((a,s)=>a+R(s),0)||1, max=Math.max(...shows.map(R))||1;
+  $('split').innerHTML=[...shows].sort((a,b)=>R(b)-R(a)).map(s=>{
+    const r=R(s),pc=Math.round(100*r/tot),wIg=r?100*s.instagram_views/r:0,wFb=r?100*s.facebook_views/r:0,barW=Math.round(100*r/max);
+    return `<div class="splitrow"><span class="nm">${s.name}</span>
+      <div class="sbar" style="width:${Math.max(barW,8)}%"><span class="sg" style="width:${wIg}%;background:${COL.ig}">${s.instagram_views?nf(s.instagram_views):''}</span><span class="sg" style="width:${wFb}%;background:${COL.fb}">${s.facebook_views?nf(s.facebook_views):''}</span></div>
+      <span class="tt num">${pc}%</span></div>`;}).join('');
+}
+/* trend draw with axes + numbers */
+const aggMap={};shows.forEach(s=>(s.trend||[]).forEach(p=>{aggMap[p.d]=(aggMap[p.d]||0)+(p.v||0)}));
+const aggKeys=Object.keys(aggMap).sort(), aggTrend=aggKeys.map(k=>aggMap[k]);
+function drawTrend(svgId,series){
+  const svg=$(svgId);if(!svg)return;const W=600,H=120,n=series.length;
+  if(!n){svg.innerHTML='<text x="300" y="60" fill="#6b7488" font-size="13" text-anchor="middle">אין נתוני מגמה</text>';return;}
+  const max=Math.max(...series,1),pts=series.map((v,i)=>[n>1?i*(W/(n-1)):0,H-8-(v/max)*(H-20)]);
+  const ln=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');
+  const ar=`M0 ${H} `+ln.replace('M','L')+` L${W} ${H} Z`;
+  // last point dot
+  const lp=pts[pts.length-1];
+  svg.innerHTML=`<path class="ar" d="${ar}" fill="${COL.reach}"/><path class="ln" d="${ln}" stroke="${COL.reach}"/><circle class="dotp" cx="${lp[0]}" cy="${lp[1]}" r="3.5"/>`;
+  const yax=$( svgId.replace('trend','yax')); if(yax)yax.innerHTML=`<span>${nf(max)}</span><span>${nf(Math.round(max/2))}</span><span>0</span>`;
+  const xax=$(svgId.replace('trend','xax')); if(xax&&svgId==='trend-all'){const f=aggKeys[0],l=aggKeys[aggKeys.length-1];xax.innerHTML=`<span>${f?f.slice(5):''}</span><span>${l?l.slice(5):''}</span>`;}
+}
+function renderDemoAll(){
+  const geo={},age={};
+  shows.forEach(s=>{(s.spotify_geo||[]).forEach(g=>{geo[g.displayName]=(geo[g.displayName]||0)+(g.value||0)});
+    (s.spotify_age||[]).forEach(a=>{const n=(a.genderBreakdown?.counts||[]).reduce((x,c)=>x+(c.count||0),0);age[a.ageBracket]=(age[a.ageBracket]||0)+n});});
+  const gE=Object.entries(geo).sort((a,b)=>b[1]-a[1]).slice(0,5),gSum=gE.reduce((a,e)=>a+e[1],0)||1,gMax=gE.length?gE[0][1]:1;
+  $('geo-all').innerHTML=gE.map(([k,v])=>`<div class="dl"><span>${k}</span><div class="db"><span style="width:${Math.round(100*v/gMax)}%"></span></div><span class="num">${Math.round(100*v/gSum)}%</span></div>`).join('')||'<div class="sub">אין נתונים</div>';
+  const order=['18-22','23-27','28-34','35-44','45-59','60-150'];
+  const aE=Object.entries(age).filter(e=>e[1]>0).sort((a,b)=>order.indexOf(a[0])-order.indexOf(b[0])),aMax=Math.max(1,...aE.map(e=>e[1]));
+  $('age-all').innerHTML=aE.map(([k,v])=>`<div class="dl"><span>${k}</span><div class="db"><span style="width:${Math.round(100*v/aMax)}%"></span></div><span class="num">${v}</span></div>`).join('')||'<div class="sub">אין נתונים</div>';
+}
 
-// copy / export
-function rows(){let r=[['תוכנית','Instagram','Facebook','YouTube','Spotify','Apple','retention%']];
+/* ---------- PER-SHOW ---------- */
+function showHTML(s){
+  const idx=shows.indexOf(s);
+  const geo=(s.spotify_geo||[]).slice(0,4).map(g=>`<div class="dl"><span>${g.displayName}</span><div class="db"><span style="width:${Math.round(g.value*100)}%"></span></div><span class="num">${Math.round(g.value*100)}%</span></div>`).join('')||'<div class="sub">אין נתוני גאו</div>';
+  const ages=(s.spotify_age||[]).map(a=>({br:a.ageBracket,n:(a.genderBreakdown?.counts||[]).reduce((x,c)=>x+(c.count||0),0)})).filter(a=>a.n>0);
+  const mA=Math.max(1,...ages.map(a=>a.n));
+  const ageH=ages.map(a=>`<div class="dl"><span>${a.br}</span><div class="db"><span style="width:${Math.round(100*a.n/mA)}%"></span></div><span class="num">${a.n}</span></div>`).join('')||'<div class="sub">מדגם קטן מדי</div>';
+  const eps=(s.episodes||[]).map((e,i)=>`<tr><td><span class="rank">${i+1}</span> ${e.title.replace(/^פרק \\d+ - /,'').slice(0,46)}</td><td class="num" style="text-align:left;font-weight:700">${nf(e.plays)}</td></tr>`).join('')||'<tr><td colspan="2" class="sub">אין נתוני פרקים</td></tr>';
+  const social=(s.social_posts||[]).slice(0,5).map(p=>{
+    const inner=`<div><div class="pl">${p.label}</div><div class="pmeta">${p.platform} · ❤ ${nf(p.likes)} · 💬 ${nf(p.comments)} · ↗ ${nf(p.shares)}</div></div><div class="pv num" style="color:${p.platform==='Instagram'?COL.ig:COL.fb}">${nf(p.views)}</div>`;
+    return p.url?`<a class="post" href="${p.url}" target="_blank">${inner}</a>`:`<div class="post">${inner}</div>`;}).join('')||'<div class="sub">אין רילס שזוהו</div>';
+  return `
+  <div class="mgrid">
+    <div class="mc"><div class="l"><span class="dot" style="background:${COL.ig}"></span>Instagram</div><div class="n num">${nf(s.instagram_views)}</div></div>
+    <div class="mc"><div class="l"><span class="dot" style="background:${COL.fb}"></span>Facebook</div><div class="n num">${nf(s.facebook_views)}</div></div>
+    <div class="mc"><div class="l"><span class="dot" style="background:${COL.yt}"></span>YouTube</div><div class="n num">${nf(s.youtube_views)}</div></div>
+    <div class="mc"><div class="l"><span class="dot" style="background:${COL.sp}"></span>Spotify</div><div class="n num">${nf(s.spotify_streams)}</div></div>
+    <div class="mc"><div class="l"><span class="dot" style="background:${COL.ap}"></span>Apple</div><div class="n num">${nf(s.apple_plays)}</div></div>
+  </div>
+  <div class="block">
+    <h3>${s.name} · מבט מהיר</h3>
+    <div class="sub">חשיפה ${nf(R(s))} צפיות (רילס) · האזנה ${nf(L(s))} (פרקים) · שימור ביוטיוב ${s.youtube_retention_pct??'–'}%</div>
+    <div class="trendgrid"><div class="yax" id="yax-${idx}"></div><svg class="trendsvg" id="trend-${idx}" viewBox="0 0 600 120" preserveAspectRatio="none"></svg></div>
+    <div class="sub" style="margin:6px 0 0">מגמת הזרמות יומית · 30 יום (Spotify)</div>
+  </div>
+  <div class="two">
+    <div class="block"><h3>ביצועים לפי פרק</h3><div class="sub">Spotify · מספר הזרמות לפרק</div><table class="eptbl"><tbody>${eps}</tbody></table></div>
+    <div class="block"><h3>הסושיאל של התוכנית</h3><div class="sub">הרילים הפודקאסטיים שלה · לפי צפיות</div>${social}</div>
+  </div>
+  <div class="two">
+    <div class="block"><h3>מאיפה מאזינים</h3><div class="sub">Spotify · מדגם קטן, מגמה</div><div class="demo">${geo}</div></div>
+    <div class="block"><h3>גיל הקהל</h3><div class="sub">Spotify · מספר מאזינים לפי טווח גיל</div><div class="demo">${ageH}</div></div>
+  </div>`;
+}
+
+/* ---------- copy/export ---------- */
+function tRows(){let r=[['תוכנית','Instagram','Facebook','YouTube','Spotify','Apple','שימור%']];
   shows.forEach(s=>r.push([s.name,s.instagram_views,s.facebook_views,s.youtube_views,s.spotify_streams,s.apple_plays,s.youtube_retention_pct]));return r;}
-function copyTbl(){navigator.clipboard.writeText(rows().map(r=>r.join('\t')).join('\n')).then(()=>toast('הטבלה הועתקה'));}
-function csvTbl(){const c='﻿'+rows().map(r=>r.join(',')).join('\n');const a=document.createElement('a');
-  a.href=URL.createObjectURL(new Blob([c],{type:'text/csv'}));a.download='remax_podcasts.csv';a.click();}
-function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1900);}
+function copyT(){navigator.clipboard.writeText(tRows().map(r=>r.join('\t')).join('\n')).then(()=>toast('הטבלה הועתקה'));}
+function csvT(){const c='﻿'+tRows().map(r=>r.join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([c],{type:'text/csv'}));a.download='remax_podcasts.csv';a.click();}
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800);}
+
+/* ---------- init ---------- */
+renderLead('reach');renderSplit();renderDemoAll();drawTrend('trend-all',aggTrend);
+$('seg-sort').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+  [...e.currentTarget.children].forEach(x=>x.classList.toggle('on',x===b));renderLead(b.dataset.k);});
 </script>
 </body>
 </html>
