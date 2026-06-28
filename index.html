@@ -440,7 +440,7 @@ function buildCompare(){return '<div class="block">'+RB('CMP')+'<div class="bh">
 /* ============ INSIGHTS (data-driven) ============ */
 function buildInsights(){
   function card(ref,tag,tagstyle,title,sub,viz,sw,note){
-    return '<div class="block ins">'+RB(ref)+'<div class="bh"><span class="btag" style="'+tagstyle+'">'+tag+'</span><h3>'+title+'</h3></div>'+(sub?'<div class="inssub">'+sub+'</div>':'')+viz+'<div class="inssw">'+sw+'</div>'+(note?'<div class="insnote">'+note+'</div>':'')+'</div>';
+    return '<div class="block ins">'+RB(ref)+'<div class="bh"><span class="btag" style="'+tagstyle+'">'+tag+'</span><h3>'+title+'</h3></div>'+(sub?'<div class="inssub">'+sub+'</div>':'')+viz+(sw?'<div class="inssw">'+sw+'</div>':'')+(note?'<div class="insnote">'+note+'</div>':'')+'</div>';
   }
   var TG={conv:'background:rgba(243,162,62,.14);color:var(--deep)',reach:'background:rgba(54,214,198,.14);color:var(--reach)',aud:'background:rgba(168,123,240,.14);color:var(--nb)',mkt:'background:rgba(57,208,119,.14);color:var(--sp)'};
   var html='<div class="sub" style="margin-bottom:15px">תובנות שעלו מהצלבת הנתונים בין הפלטפורמות. כל תובנה מבוססת על המספרים שמוצגים לידה.</div>';
@@ -483,27 +483,35 @@ function buildInsights(){
   var v5='<div class="bars">'+shows.map(function(s){var il=0;(s.spotify_geo||[]).forEach(function(g){if((g.displayName||'').indexOf('Israel')>=0)il=g.value;});return {name:s.name,il:Math.round(il*100)};}).sort(function(a,b){return b.il-a.il;}).map(function(r){return '<div class="bl"><span>'+esc(r.name)+'</span><div class="bb"><span style="width:'+r.il+'%;background:'+(r.il<50?'var(--yt)':'var(--sp)')+'"></span></div><span class="num">'+r.il+'%</span></div>';}).join('')+'</div>';
   html+=card('I5','קהל',TG.aud,'הפיצוח מגיעה לקהל אחר','אחוז המאזינים מישראל, לפי תוכנית',v5,'שלוש התוכניות מגיעות לקהל ישראלי (84-95%). הפיצוח מגיעה לקהל שרובו אמריקאי, ובלי גרעין גילאי היעד. לכן אי אפשר להשוות את המספרים שלה לשאר, וכדאי לבדוק אותה בנפרד ולוודא שהתנועה אמיתית.');
 
-  /* 6 — מול הפורטפוליו שלנו (איפה אנחנו) */
-  var ps=(B.v2&&B.v2.portfolio_stats)||{},rp=(B.v2&&B.v2.remax_position)||[];
-  var v6=rp.length?'<div class="bars">'+rp.slice().sort(function(a,b){return b.percentile-a.percentile;}).map(function(r){return '<div class="bl"><span>'+esc(r.name)+'</span><div class="bb"><span style="width:'+Math.round(r.percentile)+'%;background:var(--reach)"></span></div><span class="num">אחוזון '+Math.round(r.percentile)+'</span></div>';}).join('')+'</div>':'<div class="sub">אין נתונים</div>';
-  html+=card('I6','מול השוק',TG.mkt,'מול הפודקאסטים של עצמנו — בתחילת הדרך','מיקום כל תוכנית מול '+nf(ps.sample_size||73)+' הפודקאסטים של WeDo (חודש ראשון)',v6,'חציון התיק הוא '+nf(ps.median_month1)+' האזנות בחודש הראשון, וארבע התוכניות נמצאות באחוזון 1-21 — טבעי אחרי 12-19 ימים בלבד. מול כלל הפודקאסטים בעולם (סף נמוך בהרבה) הן כבר מעל החציון, אבל הרף הרלוונטי לנו הוא הפורטפוליו שלנו.');
+  /* ===== מול השוק — ויזואלי, מבוסס-מספרים (בלי פרוזה) ===== */
+  var ps=(B.v2&&B.v2.portfolio_stats)||{},rp=(B.v2&&B.v2.remax_position)||[],u120=(B.v2&&B.v2.under_120_bucket)||{};
+  function histBench(){
+    var dist=(B.v2&&B.v2.distribution)||[];if(!dist.length)return '';
+    var BK=[[0,49],[50,99],[100,199],[200,399],[400,799],[800,1599],[1600,3199],[3200,1e9]];
+    function bk(v){for(var i=0;i<BK.length;i++)if(v>=BK[i][0]&&v<=BK[i][1])return i;return -1;}
+    var rmx={};rp.forEach(function(r){var b=bk(r.month1_plays);if(b>=0)(rmx[b]=rmx[b]||[]).push(r.name.split(' ')[0]);});
+    var maxC=Math.max.apply(null,dist.map(function(d){return d.count;}).concat([1]));
+    var W=680,H=176,pb=46,pt=16,pl=6,n=dist.length,bw=(W-pl*2)/n,s='';
+    dist.forEach(function(d,i){var h=(d.count/maxC)*(H-pt-pb),x=pl+i*bw,y=pt+(H-pt-pb-h),has=rmx[i];
+      s+='<rect x="'+(x+bw*0.14).toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+(bw*0.72).toFixed(1)+'" height="'+Math.max(2,h).toFixed(1)+'" rx="3" fill="'+(has?COL.deep:'rgba(54,214,198,.4)')+'"/>'+
+        '<text x="'+(x+bw/2).toFixed(1)+'" y="'+(y-4).toFixed(1)+'" fill="#9aa2b2" font-size="11" font-weight="700" text-anchor="middle">'+d.count+'</text>'+
+        '<text x="'+(x+bw/2).toFixed(1)+'" y="'+(H-pb+14)+'" fill="#6b7488" font-size="9.5" text-anchor="middle">'+esc(d.bucket)+'</text>'+
+        (has?'<text x="'+(x+bw/2).toFixed(1)+'" y="'+(H-pb+27)+'" fill="'+COL.deep+'" font-size="8.5" font-weight="800" text-anchor="middle">'+esc(has.join('·').slice(0,18))+'</text>':'');});
+    return '<div style="max-width:680px;margin:8px auto 0"><svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" style="width:100%;height:auto;overflow:visible">'+s+'</svg></div>';
+  }
+  var bchips='<div class="chrow"><div class="chip"><div class="cn num">'+nf(ps.median_month1)+'</div><div class="cl">חציון התיק</div></div>'+
+    '<div class="chip"><div class="cn num">'+nf(ps.mean_month1)+'</div><div class="cl">ממוצע</div></div>'+
+    '<div class="chip"><div class="cn num">'+nf(ps.sample_size||73)+'</div><div class="cl">פודקאסטים</div></div>'+
+    '<div class="chip"><div class="cn num" style="color:var(--deep)">'+(u120.pct_portfolio_under_120!=null?Math.round(u120.pct_portfolio_under_120):22)+'%</div><div class="cl">מתחת ל-120</div></div></div>';
+  html+=card('I6','מול השוק',TG.mkt,'איפה אנחנו בהתפלגות','חודש ראשון של '+nf(ps.sample_size||73)+' הפודקאסטים שלנו · בכתום = תוכניות RE/MAX',bchips+histBench(),'');
 
-  /* 7 — נקודת פתיחה נורמלית */
-  var u120=(B.v2&&B.v2.under_120_bucket)||{};
-  var v7='<div class="chrow"><div class="chip"><div class="cn num" style="color:var(--deep)">'+(u120.pct_portfolio_under_120!=null?Math.round(u120.pct_portfolio_under_120)+'%':'~22%')+'</div><div class="cl">מהפודקאסטים שלנו התחילו מתחת ל-120</div></div>'+
-    '<div class="chip"><div class="cn num">'+nf(ps.median_month1)+'</div><div class="cl">חציון התיק (חודש 1)</div></div>'+
-    '<div class="chip"><div class="cn num">'+nf(ps.sample_size||73)+'</div><div class="cl">פודקאסטים בהשוואה</div></div></div>';
-  html+=card('I7','מול השוק',TG.mkt,'נקודת הפתיחה שלנו נורמלית לחלוטין','כמה מהפודקאסטים שלנו התחילו במקום דומה',v7,'אחד מכל חמישה פודקאסטים שהפקנו אי-פעם סיים את החודש הראשון מתחת ל-120 האזנות, בדיוק כמונו. התחלה קטנה היא הנורמה בתיק, לא חריגה.');
+  var v7=rp.length?'<div class="bars">'+rp.slice().sort(function(a,b){return b.percentile-a.percentile;}).map(function(r){return '<div class="bl"><span>'+esc(r.name)+'</span><div class="bb"><span style="width:'+Math.round(r.percentile)+'%;background:var(--reach)"></span></div><span class="num">אחוזון '+Math.round(r.percentile)+' · '+nf(r.month1_plays)+'</span></div>';}).join('')+'</div>':'';
+  html+=card('I7','מול השוק',TG.mkt,'אחוזון כל תוכנית','מול התיק · אחוזון + האזנות בחודש הראשון',v7,'');
 
-  /* 8 — התחילו כאן, היום ענקיים */
   var mat=(B.growth&&B.growth.mature||[]).filter(function(x){return x.all_time>=120000&&x.month1!=null;}).sort(function(a,b){return a.month1-b.month1;}).slice(0,3);
   var maxAt=Math.max.apply(null,mat.map(function(x){return x.all_time;}).concat([1]));
-  var v8=mat.length?'<div class="bars">'+mat.map(function(x){return '<div class="bl"><span>התחיל ב-'+nf(x.month1)+'</span><div class="bb"><span style="width:'+pct(x.all_time,maxAt)+'%;background:var(--reach)"></span></div><span class="num">'+kf(x.all_time)+'</span></div>';}).join('')+'</div>':'<div class="sub">אין נתונים</div>';
-  html+=card('I8','מול השוק',TG.mkt,'התחילו בדיוק כאן, היום ענקיים','פודקאסטים בתיק שלנו — האזנות בחודש הראשון מול סך-הכל היום',v8,'פודקאסט ותיק שלנו התחיל עם 116 האזנות בחודש הראשון — בדיוק כמו המבוגר האחראי היום — ומונה כיום מעל 225 אלף. ההתחלה לא מנבאת את התקרה.');
-
-  /* 9 — לאן זה יכול להגיע (הקרנה) */
-  var proj=(B.synthesis&&B.synthesis.projection)||{};
-  if(proj.statement_he)html+=card('I9','מול השוק',TG.mkt,'לאן זה יכול להגיע','הקרנה מבוססת-נתונים — לא הבטחה','',esc(proj.statement_he),'');
+  var v8=mat.length?'<div class="bars">'+mat.map(function(x){return '<div class="bl"><span>'+nf(x.month1)+' בחודש 1</span><div class="bb"><span style="width:'+pct(x.all_time,maxAt)+'%;background:var(--reach)"></span></div><span class="num">'+kf(x.all_time)+'</span></div>';}).join('')+'</div>':'';
+  html+=card('I8','מול השוק',TG.mkt,'צמיחה בתיק — חודש ראשון מול היום','פודקאסטים ותיקים שלנו: האזנות בחודש הראשון ← סך-הכל היום',v8,'');
 
   return html;
 }
