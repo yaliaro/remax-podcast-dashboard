@@ -174,7 +174,7 @@ if($('sources'))$('sources').textContent='מקורות: '+((m.sources||[]).join(
 
 var TIPS={
   deep:'מי שהאזין לפרק שלם — לא רק לחץ. נספר ביוטיוב, ספוטיפיי ואפל יחד.',
-  reach:'כמה פעמים רילס נצפה. מדד רחב ונפרד — לא מסכמים אותו עם האזנה לפרק.',
+  reach:'כמה פעמים רילס נצפה. מדד רחב ונפרד מהאזנה לפרק מלא.',
   conv:'מתוך מי שנכנס לבדוק את התוכנית בספוטיפיי — איזה אחוז התחיל להאזין בפועל.',
   ytret:'בממוצע, עד איזה אחוז מאורך הסרטון מגיעים. 18% = רוב הצופים עוזבים אחרי כחמישית; ערך גבוה = מחזיקים יותר.',
   unique:'מספר האנשים השונים שצפו ביוטיוב — בלי לספור צפיות חוזרות של אותו אדם.',
@@ -303,7 +303,7 @@ function buildOverview(){
   return statusStrip('Ast')+
   '<div class="statgrid">'+
     '<div class="statcard lead">'+RB('A1')+'<div class="ico">'+svgIco(IC.headphones)+'</div><div class="t">האזנה לפרקים'+tip('deep')+'</div><div class="v deep num">'+nf(totDeep)+'</div><div class="x">הליבה: מי שהאזין לפרק מלא · YouTube + Spotify + Apple</div></div>'+
-    '<div class="statcard r">'+RB('A2')+'<div class="ico">'+svgIco(IC.eye)+'</div><div class="t">חשיפה בסושיאל'+tip('reach')+'</div><div class="v reach num">'+kf(totReach)+'</div><div class="x">צפיות רילס · מדד נפרד, רחב — לא מסכמים עם האזנה</div></div>'+
+    '<div class="statcard r">'+RB('A2')+'<div class="ico">'+svgIco(IC.eye)+'</div><div class="t">חשיפה בסושיאל'+tip('reach')+'</div><div class="v reach num">'+kf(totReach)+'</div><div class="x">צפיות רילס · מדד נפרד, רחב</div></div>'+
     '<div class="statcard">'+RB('A3')+'<div class="ico">'+svgIco(IC.filter)+'</div><div class="t">פרקים שפורסמו'+tip('episodes')+'</div><div class="v num"><span class="epstat"><span>'+nf(totPub)+'</span><span class="ep">/ '+nf(totPlan)+'</span></span></div><div class="x">כל תוכנית מתוכננת ל-'+EP_PLANNED+' פרקים · תחילת הסדרה</div></div>'+
   '</div>'+
   '<div class="block deep">'+RB('A4')+'<div class="bh"><span class="btag d">האזנה</span><h3>טבלת מובילים · האזנה לפרקים</h3></div><div class="sub">פרק מלא שנצרך בפועל — הקרדיט שייך לתוכנית. מסודר לפי סך ההאזנה.</div>'+leaderboardTable()+'</div>'+
