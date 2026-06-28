@@ -140,6 +140,11 @@ td.eps b{font-weight:800;color:var(--tx)}td.eps .epd{color:var(--mut2);font-size
 .inssub{font-size:11.5px;color:var(--mut2);margin-bottom:9px}
 .inssw{font-size:12.5px;color:#cfd4de;line-height:1.65;margin-top:13px;border-top:1px solid var(--bd);padding-top:10px}
 .insnote{font-size:11px;color:var(--mut2);font-style:italic;margin-top:7px}
+.eprow{padding:5px 0;border-top:1px solid rgba(255,255,255,.04)}.eprow:first-child{border-top:none}
+.eptop{display:flex;justify-content:space-between;gap:8px;font-size:12px;align-items:baseline}
+.eptop .ept{color:var(--mut);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.eptop .epv{color:var(--tx);font-weight:700;white-space:nowrap}
+.epbar{height:5px;background:var(--bg);border-radius:4px;margin-top:3px;overflow:hidden}.epbar>span{display:block;height:100%;background:var(--deep);border-radius:4px}
 .toolbar{display:flex;justify-content:flex-end;gap:8px;margin-bottom:12px;flex-wrap:wrap}
 .btn{background:var(--card2);border:1px solid var(--bd);color:var(--tx);font-family:inherit;font-size:12.5px;font-weight:600;padding:7px 13px;border-radius:9px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}.btn:hover{border-color:var(--bd2)}
 .foot{margin-top:28px;padding-top:14px;border-top:1px solid var(--bd);font-size:11px;color:var(--mut2);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
@@ -442,7 +447,7 @@ function buildInsights(){
   function card(ref,tag,tagstyle,title,sub,viz,sw,note){
     return '<div class="block ins">'+RB(ref)+'<div class="bh"><span class="btag" style="'+tagstyle+'">'+tag+'</span><h3>'+title+'</h3></div>'+(sub?'<div class="inssub">'+sub+'</div>':'')+viz+(sw?'<div class="inssw">'+sw+'</div>':'')+(note?'<div class="insnote">'+note+'</div>':'')+'</div>';
   }
-  var TG={conv:'background:rgba(243,162,62,.14);color:var(--deep)',reach:'background:rgba(54,214,198,.14);color:var(--reach)',aud:'background:rgba(168,123,240,.14);color:var(--nb)',mkt:'background:rgba(57,208,119,.14);color:var(--sp)'};
+  var TG={conv:'background:rgba(243,162,62,.14);color:var(--deep)',reach:'background:rgba(54,214,198,.14);color:var(--reach)',aud:'background:rgba(168,123,240,.14);color:var(--nb)',mkt:'background:rgba(57,208,119,.14);color:var(--sp)',cnt:'background:rgba(77,141,245,.14);color:#7fb0ff'};
   var html='<div class="sub" style="margin-bottom:15px">תובנות שעלו מהצלבת הנתונים בין הפלטפורמות. כל תובנה מבוססת על המספרים שמוצגים לידה.</div>';
 
   /* 1 — חשיפה מול המרה */
@@ -477,11 +482,21 @@ function buildInsights(){
   var v4='<div class="chrow"><div class="chip"><div class="cn num" style="color:var(--deep)">'+pct(c4,t4)+'%</div><div class="cl">בגילאי 35-59</div></div>'+
     '<div class="chip"><div class="cn num">פי '+(f4?Math.round(m4/f4*10)/10:'–')+'</div><div class="cl">יותר גברים מנשים</div></div>'+
     '<div class="chip"><div class="cn num">'+(ilN?Math.round(ilSum/ilN*100):'–')+'%</div><div class="cl">מישראל</div></div></div>';
-  html+=card('I4','קהל',TG.aud,'הקהל מדויק לתחום הנדל"ן','פילוח מאזיני ספוטיפיי (ללא הפיצוח, שמדגמה קטן מדי)',v4,'רוב המאזינים הם ישראלים בגילאי 35-59 — בדיוק הקהל שקונה ומוכר דירות ושוקל קריירה בתיווך. החשיפה אולי לא ענקית, אבל היא מגיעה לאנשים הנכונים. אין צורך לרדוף קהל רחב.');
+  html+=card('I4','קהל',TG.aud,'הקהל מדויק לתחום הנדל"ן','פילוח מאזיני ספוטיפיי (בתוכניות עם מדגם מספיק)',v4,'רוב המאזינים הם ישראלים בגילאי 35-59 — בדיוק הקהל שקונה ומוכר דירות ושוקל קריירה בתיווך. החשיפה אולי לא ענקית, אבל היא מגיעה לאנשים הנכונים. אין צורך לרדוף קהל רחב.');
 
-  /* 5 — הפיצוח קהל אחר */
-  var v5='<div class="bars">'+shows.map(function(s){var il=0;(s.spotify_geo||[]).forEach(function(g){if((g.displayName||'').indexOf('Israel')>=0)il=g.value;});return {name:s.name,il:Math.round(il*100)};}).sort(function(a,b){return b.il-a.il;}).map(function(r){return '<div class="bl"><span>'+esc(r.name)+'</span><div class="bb"><span style="width:'+r.il+'%;background:'+(r.il<50?'var(--yt)':'var(--sp)')+'"></span></div><span class="num">'+r.il+'%</span></div>';}).join('')+'</div>';
-  html+=card('I5','קהל',TG.aud,'הפיצוח מגיעה לקהל אחר','אחוז המאזינים מישראל, לפי תוכנית',v5,'שלוש התוכניות מגיעות לקהל ישראלי (84-95%). הפיצוח מגיעה לקהל שרובו אמריקאי, ובלי גרעין גילאי היעד. לכן אי אפשר להשוות את המספרים שלה לשאר, וכדאי לבדוק אותה בנפרד ולוודא שהתנועה אמיתית.');
+  /* 5 — פרקים מובילים פר תוכנית (deck: אילו נושאים עובדים) */
+  var v5='';
+  shows.forEach(function(s){
+    var eps=(s.curves||[]).slice().sort(function(a,b){return (b.count||0)-(a.count||0);});
+    if(!eps.length)return;
+    var mx=Math.max.apply(null,eps.map(function(e){return e.count||0;}).concat([1]));
+    v5+='<div class="insrow"><div class="insname">'+esc(s.name)+'</div>'+eps.map(function(e){
+      var t=esc((e.title||'').replace(/^פרק \d+ [-–] /,''))||'פרק';
+      var mins=e.median_completion_sec?Math.round(e.median_completion_sec/60)+' דק׳':'';
+      return '<div class="eprow"><div class="eptop"><span class="ept">'+t+'</span><span class="epv num">'+nf(e.count)+(mins?' · '+mins:'')+'</span></div><div class="epbar"><span style="width:'+pct(e.count,mx)+'%"></span></div></div>';
+    }).join('')+'</div>';
+  });
+  html+=card('I5','תוכן',TG.cnt,'אילו פרקים מושכים יותר','האזנות וזמן-האזנה חציוני לכל פרק, פר תוכנית',v5,'המצגת מבקשת לבדוק אילו נושאים מייצרים יותר עניין. כאן רואים לכל תוכנית מה משך הכי הרבה ולכמה זמן החזיק — בסיס לבחירת נושאים וטיזרים.');
 
   /* ===== מול השוק — ויזואלי, מבוסס-מספרים (בלי פרוזה) ===== */
   var ps=(B.v2&&B.v2.portfolio_stats)||{},rp=(B.v2&&B.v2.remax_position)||[],u120=(B.v2&&B.v2.under_120_bucket)||{};
