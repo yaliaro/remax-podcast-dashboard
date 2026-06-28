@@ -47,12 +47,11 @@ header{display:flex;justify-content:space-between;align-items:center;flex-wrap:w
 .btag.r{background:rgba(54,214,198,.14);color:var(--reach)}.btag.d{background:rgba(243,162,62,.14);color:var(--deep)}
 .sub{font-size:12.5px;color:var(--mut);margin-bottom:12px}
 .explain{font-size:12px;color:var(--mut2);line-height:1.5;margin-top:8px}.explain b{color:var(--mut);font-weight:600}
-/* tooltip — anchored to the end edge, opens inward, never escapes */
-.tip{position:relative;display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:50%;background:var(--card2);border:1px solid var(--bd2);color:var(--mut);font-size:10px;font-weight:800;cursor:help;margin-inline-start:5px;vertical-align:middle;flex:0 0 auto}
-.tip:hover,.tip.show{background:var(--deep);color:#1a1206;border-color:var(--deep)}
-.tiptext{display:none;position:absolute;top:calc(100% + 9px);inset-inline-end:-4px;background:#232e40;border:1px solid var(--bd2);border-radius:10px;padding:9px 12px;font-size:12px;font-weight:500;color:var(--tx);width:max-content;max-width:min(260px,76vw);line-height:1.55;z-index:90;box-shadow:0 12px 32px rgba(0,0,0,.55);text-align:right;white-space:normal}
-.tiptext::before{content:'';position:absolute;bottom:100%;inset-inline-end:6px;border:6px solid transparent;border-bottom-color:#232e40}
-.tip:hover .tiptext,.tip.show .tiptext{display:block;animation:fade var(--d-quick) var(--ease)}
+/* tooltip — floating, position:fixed via JS, never clipped or hidden */
+.tip{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:50%;background:var(--card2);border:1px solid var(--bd2);color:var(--mut);font-size:10px;font-weight:800;cursor:help;margin-inline-start:5px;vertical-align:middle;flex:0 0 auto}
+.tip:hover,.tip.active{background:var(--deep);color:#1a1206;border-color:var(--deep)}
+.tipfloat{position:fixed;background:#232e40;border:1px solid var(--bd2);border-radius:10px;padding:9px 12px;font-size:12px;font-weight:500;color:var(--tx);max-width:min(280px,82vw);line-height:1.55;z-index:9999;box-shadow:0 14px 36px rgba(0,0,0,.65);pointer-events:none;opacity:0;transition:opacity .12s;text-align:right;white-space:normal}
+.tipfloat.show{opacity:1}
 .refbadge{display:none;position:absolute;top:-8px;inset-inline-start:12px;background:var(--deep);color:#1a1206;font-size:11px;font-weight:800;padding:1px 8px;border-radius:7px;letter-spacing:.3px;z-index:5}
 body.editmode .refbadge{display:inline-block}
 body.editmode .block,body.editmode .statcard,body.editmode .status{outline:1px dashed rgba(243,162,62,.35)}
@@ -184,7 +183,7 @@ var TIPS={
   consumed:'התחילו להאזין לפרק בפועל.',
   impressions:'כמה פעמים בסך הכול ספוטיפיי הציג את התוכנית למישהו — חשיפה, עוד לפני האזנה.',
   audience:'מספר האנשים השונים שנחשפו בפועל (לא כמה פעמים הוצג).',
-  foreground:'האזינו בתשומת לב מלאה — לא ברקע תוך כדי משהו אחר.',
+  foreground:'איזה אחוז מההאזנה היה כשהאפליקציה פתוחה ובפוקוס — לא ברקע תוך כדי נהיגה או עבודה. מדד לאיכות ההקשבה.',
   median:'הזמן שבו המאזין החציוני עדיין החזיק בפרק (חצי עזבו לפניו, חצי אחריו).',
   curve:'מתוך מי שהתחיל את הפרק — איזה אחוז החזיק עד כל נקודה. 100% = הגיעו לסוף.',
   episodes:'כל תוכנית מתוכננת ל-12 פרקים. אנחנו בתחילת הסדרה.',
@@ -193,7 +192,7 @@ var TIPS={
   source_social:'החשיפה שייכת לעמוד שבו עלה הפוסט, לא לתוכנית — לכן זה מדד נפרד.',
   ctr:'מתוך מי שראה את התמונה הממוזערת ביוטיוב — איזה אחוז לחץ.'
 };
-function tip(k){var t=TIPS[k];return t?'<span class="tip" tabindex="0" data-tip="1">?<span class="tiptext">'+esc(t)+'</span></span>':'';}
+function tip(k){var t=TIPS[k];return t?'<span class="tip" tabindex="0" data-tiptext="'+esc(t)+'">?</span>':'';}
 
 var o=D.overview||{},shows=(D.shows||[]).slice(),social=D.social||{by_page:[],posts:[]},B=D.benchmark||{},yc=D.youtube_channel||{};
 var totDeep=(o.deep_listens!=null)?o.deep_listens:shows.reduce(function(a,s){return a+(s.deep_total||0);},0);
@@ -232,9 +231,7 @@ function leaderboardTable(){
 
 /* full rankings — every metric, every show, who leads */
 var MX=[
-  {k:'deep',name:'סך האזנה',tip:'deep',get:function(s){return s.deep_total;},fmt:nf},
-  {k:'yt',name:'YouTube',get:function(s){return s.platforms.youtube;},fmt:nf},
-  {k:'sp',name:'Spotify',get:function(s){return s.platforms.spotify;},fmt:nf},
+  {k:'deep',name:'סך האזנה (כל הפלטפורמות)',tip:'deep',get:function(s){return s.deep_total;},fmt:nf},
   {k:'uniq',name:'צופים ייחודיים',tip:'unique',get:function(s){return s.yt&&s.yt.unique_viewers;},fmt:nf},
   {k:'watch',name:'שעות צפייה',tip:'watch',get:function(s){return s.yt&&s.yt.watch_hours;},fmt:function(v){return v==null?'–':Math.round(v);}},
   {k:'ytret',name:'שימור YT',tip:'ytret',get:function(s){return s.yt&&s.yt.avg_pct;},fmt:function(v){return v==null?'–':v+'%';}},
@@ -256,9 +253,8 @@ function rankMatrix(){
   return h+'</tbody></table></div>';
 }
 
-function richFunnel(f,impr,aud){f=f||aggF;var r2i=pct(f.interested,f.reached),i2c=pct(f.consumed,f.interested);
-  return '<div class="fmeta"><div class="it"><span>חשיפות בספוטיפיי'+tip('impressions')+'</span><b class="num">'+nf(impr!=null?impr:aggImpr)+'</b></div>'+
-    '<div class="it"><span>קהל שנחשף'+tip('audience')+'</span><b class="num">'+nf(aud!=null?aud:aggAud)+'</b></div></div>'+
+function richFunnel(f,impr){f=f||aggF;var r2i=pct(f.interested,f.reached),i2c=pct(f.consumed,f.interested);
+  return '<div class="fmeta"><div class="it"><span>חשיפות בספוטיפיי'+tip('impressions')+'</span><b class="num">'+nf(impr!=null?impr:aggImpr)+'</b></div></div>'+
   '<div class="funnel">'+
     '<div class="fseg s1"><div class="fl">נחשפו'+tip('reached')+'</div><div class="fv num">'+nf(f.reached)+'</div><div class="fx">ספוטיפיי הציג להם</div></div>'+
     '<div class="fconn"><span class="pct num">'+r2i+'%</span><span class="ar">◀</span></div>'+
@@ -328,8 +324,8 @@ function buildShow(s,idx){
   if(f){out+='<div class="block">'+RB('S'+idx+'e')+'<div class="bh"><span class="btag r">המרה</span><h3>מחשיפה להאזנה · '+esc(s.name)+'</h3></div><div class="sub">בספוטיפיי.</div>'+richFunnel(f,s.impressions&&s.impressions.total,s.audience_size)+'</div>';}
   if(big.length){out+='<div class="block deep">'+RB('S'+idx+'f')+'<div class="bh"><span class="btag d">עומק</span><h3>עד כמה מקשיבים לפרק'+tip('curve')+'</h3></div><div class="sub">מתוך מי שהתחיל את הפרק — כמה החזיקו עד כל נקודה. (פרקים עם מספיק האזנות.)</div><div class="curvebox" id="cv-'+idx+'"></div><div id="cvleg-'+idx+'" class="glegend" style="margin-top:6px"></div></div>';}
   out+='<div class="two3">'+
-    '<div class="block">'+RB('S'+idx+'g')+'<div class="bh"><h3>ביצועים לפי פרק</h3></div><div class="sub">ספוטיפיי · זמן חציוני'+tip('median')+' · הקשבה אמיתית'+tip('foreground')+' · קהל</div>'+
-    '<div class="scroll"><table><thead><tr><th>פרק</th><th>האזנות</th><th>זמן חציוני</th><th>הקשבה</th><th>קהל</th></tr></thead><tbody>'+
+    '<div class="block">'+RB('S'+idx+'g')+'<div class="bh"><h3>ביצועים לפי פרק</h3></div><div class="sub">ספוטיפיי · זמן חציוני'+tip('median')+' · האזנה ממוקדת'+tip('foreground')+' · קהל</div>'+
+    '<div class="scroll"><table><thead><tr><th>פרק</th><th>האזנות</th><th>זמן חציוני</th><th>ממוקד</th><th>קהל</th></tr></thead><tbody>'+
     ((s.curves||[]).map(function(e,i){return '<tr><td>'+(i+1)+'. '+esc(e.title.replace(/^פרק \d+ - /,'').slice(0,22))+'</td><td class="num" style="font-weight:700">'+nf(e.count)+'</td><td class="num">'+(e.median_completion_sec?Math.round(e.median_completion_sec/60)+'ד׳':'–')+'</td><td class="num">'+(e.foreground_pct!=null?Math.round(e.foreground_pct*100)+'%':'–')+'</td><td class="num">'+nf(e.total_audience)+'</td></tr>';}).join('')||'<tr><td class="sub">אין נתונים</td></tr>')+'</tbody></table></div>'+
     '<div class="explain">יוטיוב נמדד ברמת התוכנית ('+nf(p.youtube)+' צפיות, '+(yt.avg_pct!=null?yt.avg_pct+'% שימור':'')+'), לא פר-פרק.</div></div>'+
     '<div class="block">'+RB('S'+idx+'h')+'<div class="bh"><h3>מאיפה החשיפה'+tip('impressions')+'</h3></div><div class="sub">ספוטיפיי · '+nf(s.impressions&&s.impressions.total)+' חשיפות</div>'+sourcesBars(srcMp)+'</div>'+
@@ -346,7 +342,7 @@ function drawShowCurve(idx){var s=shows[idx];if(!s)return;var big=(s.curves||[])
   var paths='',leg='';big.forEach(function(e,ci){var col=cols[ci%4];
     var pp=xs.map(function(x){var yv=(x===0)?100:(e.retention&&(e.retention['p'+x]!=null?e.retention['p'+x]:e.retention[x])||0);return [pl+(x/100)*(W-pl-6),pt+(1-yv/100)*(H-pt-pb)];});
     paths+='<path d="'+pp.map(function(q,i){return (i?'L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1);}).join(' ')+'" fill="none" stroke="'+col+'" stroke-width="2.2" opacity=".9"/>';
-    leg+='<span><i style="background:'+col+'"></i>'+esc(e.title.replace(/^פרק (\d+).*/,'פרק $1'))+(e.median_completion_sec?' · '+Math.round(e.median_completion_sec/60)+'ד׳':'')+(e.foreground_pct!=null?' · '+Math.round(e.foreground_pct*100)+'% הקשבה':'')+'</span>';});
+    leg+='<span><i style="background:'+col+'"></i>'+esc(e.title.replace(/^פרק (\d+).*/,'פרק $1'))+(e.median_completion_sec?' · '+Math.round(e.median_completion_sec/60)+'ד׳':'')+(e.foreground_pct!=null?' · '+Math.round(e.foreground_pct*100)+'% ממוקד':'')+'</span>';});
   var xl=xs.map(function(x){return '<text class="xlab" x="'+(pl+(x/100)*(W-pl-6)).toFixed(1)+'" y="'+(H-5)+'" text-anchor="middle">'+x+'%</text>';}).join('');
   box.innerHTML='<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none" style="width:100%;height:150px;overflow:visible">'+g+paths+xl+'</svg>';
   var lg=$('cvleg-'+idx);if(lg)lg.innerHTML=leg;}
@@ -384,7 +380,7 @@ function buildBenchmark(){
 /* ============ RAW DATA ============ */
 function buildRaw(){
   return '<div class="toolbar">'+RB('RD0')+'<button class="btn" onclick="window.__exportJSON()">'+svgIco('<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/>')+'ייצא הכל · JSON</button><button class="btn" onclick="window.__exportCSV()">'+svgIco('<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/>')+'ייצא טבלאות · CSV</button></div>'+
-  '<div class="block">'+RB('RD1')+'<div class="bh"><h3>כל הפרקים · נתונים מלאים</h3></div><div class="scroll"><table><thead><tr><th>תוכנית</th><th>פרק</th><th>האזנות</th><th>זמן חציוני</th><th>הקשבה'+tip('foreground')+'</th><th>קהל</th><th>25%</th><th>50%</th><th>סוף</th></tr></thead><tbody>'+
+  '<div class="block">'+RB('RD1')+'<div class="bh"><h3>כל הפרקים · נתונים מלאים</h3></div><div class="scroll"><table><thead><tr><th>תוכנית</th><th>פרק</th><th>האזנות</th><th>זמן חציוני</th><th>ממוקד'+tip('foreground')+'</th><th>קהל</th><th>25%</th><th>50%</th><th>סוף</th></tr></thead><tbody>'+
     shows.map(function(s){return (s.curves||[]).map(function(e){var r=e.retention||{};function rr(x){var v=r['p'+x]!=null?r['p'+x]:r[x];return v!=null?Math.round(v)+'%':'–';}return '<tr><td class="nm">'+esc(s.name)+'</td><td>'+esc(e.title.replace(/^פרק (\d+).*/,'פרק $1'))+'</td><td class="num">'+nf(e.count)+'</td><td class="num">'+(e.median_completion_sec?Math.round(e.median_completion_sec/60)+'ד׳':'–')+'</td><td class="num">'+(e.foreground_pct!=null?Math.round(e.foreground_pct*100)+'%':'–')+'</td><td class="num">'+nf(e.total_audience)+'</td><td class="num">'+rr(25)+'</td><td class="num">'+rr(50)+'</td><td class="num">'+rr(100)+'</td></tr>';}).join('');}).join('')+'</tbody></table></div></div>'+
   '<div class="block">'+RB('RD2')+'<div class="bh"><h3>כל הרילס · עם קישורים</h3></div><div class="scroll"><table><thead><tr><th>עמוד</th><th>פלטפורמה</th><th>תיאור</th><th>צפיות</th><th>קישור</th></tr></thead><tbody>'+
     ((social.posts||[]).slice().sort(function(a,b){return (b.views||0)-(a.views||0);}).map(function(pp){return '<tr><td class="nm">'+esc(pp.account)+'</td><td>'+pp.platform+'</td><td>'+esc((pp.label||'').slice(0,34))+'</td><td class="num">'+nf(pp.views)+'</td><td>'+(pp.url?'<a href="'+esc(pp.url)+'" target="_blank" rel="noopener" style="color:var(--reach)">↗ פתח</a>':'–')+'</td></tr>';}).join('')||'<tr><td class="sub">אין</td></tr>')+'</tbody></table></div></div>';
@@ -397,7 +393,7 @@ window.__exportCSV=function(){var rows=[['תוכנית','פרקים','סך הא�
   var c='﻿'+rows.map(function(r){return r.join(',');}).join('\n');var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([c],{type:'text/csv'}));a.download='remax-wedo.csv';a.click();toast('הטבלאות יוצאו · CSV');};
 function toast(msg){var t=$('toast');if(!t)return;t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},1800);}
 
-var TABS=[{k:'ov',name:'סקירה'},{k:'bm',name:'מול השוק',star:1}].concat(shows.map(function(s,i){return {k:'s'+i,name:s.name};})).concat([{k:'raw',name:'נתונים גולמיים'}]);
+var TABS=[{k:'ov',name:'סקירה'}].concat(shows.map(function(s,i){return {k:'s'+i,name:s.name};})).concat([{k:'raw',name:'נתונים גולמיים'}]);
 var tabsEl=$('tabs'),panelsEl=$('panels');
 TABS.forEach(function(t,i){var b=document.createElement('button');b.className='tab'+(t.star?' star':'');b.textContent=t.name;b.setAttribute('aria-selected',i===0?'true':'false');b.onclick=function(){sel(i);};tabsEl.appendChild(b);var p=document.createElement('div');p.className='panel'+(i===0?' on':'');p.id='pan'+i;panelsEl.appendChild(p);});
 function buildTab(i){var t=TABS[i],p=$('pan'+i);if(p.dataset.built)return;
@@ -410,13 +406,24 @@ function buildTab(i){var t=TABS[i],p=$('pan'+i);if(p.dataset.built)return;
   p.dataset.built='1';}
 function sel(i){[].forEach.call(tabsEl.children,function(t,j){t.setAttribute('aria-selected',i===j?'true':'false');});buildTab(i);[].forEach.call(panelsEl.children,function(p,j){p.classList.toggle('on',i===j);});window.scrollTo({top:0,behavior:'smooth'});}
 
-/* matrix-row expand + tooltip tap */
+/* floating tooltip (position:fixed, never clipped) */
+var tf=null,tfa=null;
+function showTip(el){hideTip();var txt=el.getAttribute('data-tiptext');if(!txt)return;
+  tf=document.createElement('div');tf.className='tipfloat';tf.textContent=txt;document.body.appendChild(tf);
+  var r=el.getBoundingClientRect(),tw=tf.offsetWidth,th=tf.offsetHeight;
+  var left=Math.max(8,Math.min(r.left+r.width/2-tw/2,window.innerWidth-tw-8));
+  var top=r.bottom+8;if(top+th>window.innerHeight-8)top=Math.max(8,r.top-th-8);
+  tf.style.left=left+'px';tf.style.top=top+'px';requestAnimationFrame(function(){if(tf)tf.classList.add('show');});
+  el.classList.add('active');tfa=el;}
+function hideTip(){if(tf){tf.remove();tf=null;}if(tfa){tfa.classList.remove('active');tfa=null;}}
+document.addEventListener('mouseover',function(e){var t=e.target.closest&&e.target.closest('.tip');if(t&&t!==tfa)showTip(t);});
+document.addEventListener('mouseout',function(e){var t=e.target.closest&&e.target.closest('.tip');if(t)hideTip();});
+window.addEventListener('scroll',hideTip,true);
 document.addEventListener('click',function(e){
   var ml=e.target.closest&&e.target.closest('.ml[data-exp]');
   if(ml){var x=$(ml.getAttribute('data-exp'));if(x)x.style.display=(x.style.display==='table-row')?'none':'table-row';}
   var t=e.target.closest&&e.target.closest('.tip');
-  document.querySelectorAll('.tip.show').forEach(function(x){if(x!==t)x.classList.remove('show');});
-  if(t){e.stopPropagation();t.classList.toggle('show');}
+  if(t){e.stopPropagation();if(tfa===t)hideTip();else showTip(t);}else hideTip();
 });
 (function(){var t=$('editToggle');if(t)t.onclick=function(){document.body.classList.toggle('editmode');this.classList.toggle('on');};})();
 buildTab(0);
