@@ -186,7 +186,7 @@ var TIPS={
   foreground:'איזה אחוז מההאזנה היה כשהאפליקציה פתוחה ובפוקוס — לא ברקע תוך כדי נהיגה או עבודה. מדד לאיכות ההקשבה.',
   median:'הזמן שבו המאזין החציוני עדיין החזיק בפרק (חצי עזבו לפניו, חצי אחריו).',
   curve:'מתוך מי שהתחיל את הפרק — איזה אחוז החזיק עד כל נקודה. 100% = הגיעו לסוף.',
-  episodes:'כל תוכנית מתוכננת ל-12 פרקים. אנחנו בתחילת הסדרה.',
+  episodes:'כל תוכנית מתוכננת ל-26 פרקים (12 לתוכנית של ברנרד). כאן נספרים פרקים שכבר פורסמו ויש להם נתוני האזנה — בטאב "סטטוס" מוצגים גם הפרקים שצולמו וטרם פורסמו.',
   watch:'סך כל שעות הצפייה המצטברות ביוטיוב.',
   traffic:'דרך איזה ערוץ הגיעו הצופים לסרטונים ביוטיוב (חיצוני = לינק מאתר/רשת אחרת).',
   source_social:'החשיפה שייכת לעמוד שבו עלה הפוסט, לא לתוכנית — לכן זה מדד נפרד.',
@@ -197,7 +197,8 @@ function tip(k){var t=TIPS[k];return t?'<span class="tip" tabindex="0" data-tipt
 var o=D.overview||{},shows=(D.shows||[]).slice(),social=D.social||{by_page:[],posts:[]},B=D.benchmark||{},yc=D.youtube_channel||{};
 var totDeep=(o.deep_listens!=null)?o.deep_listens:shows.reduce(function(a,s){return a+(s.deep_total||0);},0);
 var totReach=(social.total_views!=null)?social.total_views:(o.reach_reels||0);
-var EP_PLANNED=12;
+var EP_PLANNED=26;
+var STATUS=D.status||{summary:{},programs:[],assets:[]};
 function pubEps(s){return (s.curves&&s.curves.length)||(s.episodes&&s.episodes.length)||0;}
 var totPub=shows.reduce(function(a,s){return a+pubEps(s);},0),totPlan=shows.length*EP_PLANNED;
 var lead=shows.slice().sort(function(a,b){return (b.deep_total||0)-(a.deep_total||0);});
@@ -377,6 +378,31 @@ function buildBenchmark(){
   return out;
 }
 
+/* ============ STATUS (programs + assets, from the deck) ============ */
+function buildStatus(){
+  var sm=STATUS.summary||{},progs=STATUS.programs||[],assets=STATUS.assets||[];
+  var chips='<div class="chrow">'+
+    '<div class="chip"><div class="cn num">'+(sm.total_programs||shows.length)+'</div><div class="cl">תוכניות</div></div>'+
+    '<div class="chip"><div class="cn num">'+(sm.episodes_year||'')+'</div><div class="cl">פרקים בשנה</div></div>'+
+    '<div class="chip"><div class="cn num" style="color:var(--good)">'+esc(sm.launched||'')+'</div><div class="cl">הושקו</div></div>'+
+    '<div class="chip"><div class="cn num" style="color:var(--warn)">'+esc(sm.in_production||'')+'</div><div class="cl">בהפקה</div></div>'+
+    '<div class="chip"><div class="cn num">'+esc(sm.shot||'')+'</div><div class="cl">פרקים צולמו</div></div>'+
+  '</div>';
+  var ST_COL={'הושקה':'var(--good)','בהפקה':'var(--warn)','טרם הותנעה':'var(--mut2)'};
+  var prog='<div class="scroll"><table><thead><tr><th>תוכנית</th><th>מנחה</th><th>מנהלת</th><th>צולמו</th><th>יעד</th><th>השקה</th><th>סטטוס</th></tr></thead><tbody>'+
+    progs.map(function(p){var col=ST_COL[p.status]||'var(--mut)',mx=p.target||26;
+      return '<tr><td class="nm">'+esc(p.name)+'</td><td>'+esc(p.host)+'</td><td>'+esc(p.manager)+'</td>'+
+        '<td class="cell"><span class="cellbar" style="background:'+col+';width:'+pct(p.shot,mx)+'%"></span><span class="cellv num">'+p.shot+'</span></td>'+
+        '<td class="num">'+p.target+'</td><td class="num">'+esc(p.launch)+'</td><td><span style="color:'+col+';font-weight:700">'+esc(p.status)+'</span></td></tr>';
+    }).join('')+'</tbody></table></div>';
+  var asset=assets.map(function(a){return '<div class="pg"><div><span class="nm">'+esc(a.channel)+'</span><div class="meta">'+esc(a.metric)+'</div></div><div class="vv num">'+esc(a.value)+'</div></div>';}).join('');
+  return '<div class="block deep">'+RB('ST1')+'<div class="bh"><span class="btag d">סטטוס</span><h3>בית התוכן · תכנון מול ביצוע</h3></div>'+
+      '<div class="sub">'+(sm.total_programs||7)+' תוכניות, '+(sm.episodes_year||168)+' פרקים בשנה · 4 הושקו, 1 בהפקה, 2 טרם הותנעו.</div>'+chips+prog+
+      '<div class="explain"><b>צולמו</b> = פרקים שהוקלטו באולפן (חלקם עוד לא פורסמו) · היעד 26 פרקים לתוכנית (12 לתוכנית של ברנרד) · '+(sm.episodes_year||168)+' פרקים סה״כ בשנה.</div></div>'+
+    '<div class="block reach">'+RB('ST2')+'<div class="bh"><span class="btag r">הפצה</span><h3>נכסי ההפצה · טווח ההגעה</h3></div>'+
+      '<div class="sub">הקהל שאפשר להגיע אליו דרך נכסי RE/MAX הקיימים — מעבר לביצועים בפועל של הפרקים.</div>'+asset+'</div>';
+}
+
 /* ============ RAW DATA ============ */
 function buildRaw(){
   return '<div class="toolbar">'+RB('RD0')+'<button class="btn" onclick="window.__exportJSON()">'+svgIco('<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/>')+'ייצא הכל · JSON</button><button class="btn" onclick="window.__exportCSV()">'+svgIco('<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/>')+'ייצא טבלאות · CSV</button></div>'+
@@ -393,12 +419,13 @@ window.__exportCSV=function(){var rows=[['תוכנית','פרקים','סך הא�
   var c='﻿'+rows.map(function(r){return r.join(',');}).join('\n');var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([c],{type:'text/csv'}));a.download='remax-wedo.csv';a.click();toast('הטבלאות יוצאו · CSV');};
 function toast(msg){var t=$('toast');if(!t)return;t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},1800);}
 
-var TABS=[{k:'ov',name:'סקירה'}].concat(shows.map(function(s,i){return {k:'s'+i,name:s.name};})).concat([{k:'raw',name:'נתונים גולמיים'}]);
+var TABS=[{k:'status',name:'סטטוס'},{k:'ov',name:'סקירה'}].concat(shows.map(function(s,i){return {k:'s'+i,name:s.name};})).concat([{k:'raw',name:'נתונים גולמיים'}]);
 var tabsEl=$('tabs'),panelsEl=$('panels');
 TABS.forEach(function(t,i){var b=document.createElement('button');b.className='tab'+(t.star?' star':'');b.textContent=t.name;b.setAttribute('aria-selected',i===0?'true':'false');b.onclick=function(){sel(i);};tabsEl.appendChild(b);var p=document.createElement('div');p.className='panel'+(i===0?' on':'');p.id='pan'+i;panelsEl.appendChild(p);});
 function buildTab(i){var t=TABS[i],p=$('pan'+i);if(p.dataset.built)return;
   try{
-    if(t.k==='ov')p.innerHTML=buildOverview();
+    if(t.k==='status')p.innerHTML=buildStatus();
+    else if(t.k==='ov')p.innerHTML=buildOverview();
     else if(t.k==='bm')p.innerHTML=buildBenchmark();
     else if(t.k==='raw')p.innerHTML=buildRaw();
     else {var idx=+t.k.slice(1);p.innerHTML=buildShow(shows[idx],idx);drawShowCurve(idx);}
