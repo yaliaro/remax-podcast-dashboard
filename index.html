@@ -118,7 +118,7 @@ td.eps b{font-weight:800;color:var(--tx)}td.eps .epd{color:var(--mut2);font-size
 .post{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--card2);border:1px solid var(--bd);border-radius:10px;padding:10px 12px;text-decoration:none;color:inherit;margin-bottom:7px;transition:border-color var(--d-quick)}
 .post:hover{border-color:var(--bd2)}
 .post .pl{font-size:13px;font-weight:600}.post .pl .lk{font-size:11px;color:var(--reach);margin-inline-start:6px}.post .pmeta{font-size:11px;color:var(--mut2);margin-top:2px}.post .pv{font-size:16px;font-weight:800;white-space:nowrap}
-.curvebox{height:150px}
+.curvebox{height:140px;max-width:600px;margin:6px auto 0}
 .gl{stroke:rgba(255,255,255,.06);stroke-width:1}.glt{fill:var(--mut2);font-size:9.5px}.xlab{fill:var(--mut2);font-size:9.5px}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}.two3{display:grid;grid-template-columns:1.25fr 1fr;gap:14px}
 /* benchmark */
@@ -147,7 +147,7 @@ td.eps b{font-weight:800;color:var(--tx)}td.eps .epd{color:var(--mut2);font-size
 .toast.show{opacity:1;transform:translateX(-50%)}
 @media(max-width:760px){
   .statgrid,.statgrid.four{grid-template-columns:1fr 1fr;gap:9px}.statcard .v{font-size:27px}
-  .two,.two3{grid-template-columns:1fr}.funnel{flex-direction:column}.fseg{flex:0 0 auto}.fconn{min-height:22px;min-width:0;transform:rotate(-90deg)}
+  .two,.two3{grid-template-columns:1fr}.funnel{flex-direction:column}.fseg{flex:0 0 auto}.fconn{min-height:26px;min-width:0;transform:none}.fconn .ar{display:inline-block;transform:rotate(-90deg)}
   .bbrow{grid-template-columns:1fr;gap:3px}.bars .bl{grid-template-columns:80px 1fr 44px}
   table{font-size:12.5px}td,th{padding-inline:5px}
 }
@@ -483,11 +483,27 @@ function buildInsights(){
   var v5='<div class="bars">'+shows.map(function(s){var il=0;(s.spotify_geo||[]).forEach(function(g){if((g.displayName||'').indexOf('Israel')>=0)il=g.value;});return {name:s.name,il:Math.round(il*100)};}).sort(function(a,b){return b.il-a.il;}).map(function(r){return '<div class="bl"><span>'+esc(r.name)+'</span><div class="bb"><span style="width:'+r.il+'%;background:'+(r.il<50?'var(--yt)':'var(--sp)')+'"></span></div><span class="num">'+r.il+'%</span></div>';}).join('')+'</div>';
   html+=card('I5','קהל',TG.aud,'הפיצוח מגיעה לקהל אחר','אחוז המאזינים מישראל, לפי תוכנית',v5,'שלוש התוכניות מגיעות לקהל ישראלי (84-95%). הפיצוח מגיעה לקהל שרובו אמריקאי, ובלי גרעין גילאי היעד. לכן אי אפשר להשוות את המספרים שלה לשאר, וכדאי לבדוק אותה בנפרד ולוודא שהתנועה אמיתית.');
 
-  /* 6 — שני רפי השוואה */
-  var rp=(B.v2&&B.v2.remax_position)||[];
-  var v6=rp.length?'<div class="bars">'+rp.slice().sort(function(a,b){return b.percentile-a.percentile;}).map(function(r){return '<div class="bl"><span>'+esc(r.name)+'</span><div class="bb"><span style="width:'+Math.round(r.percentile)+'%;background:var(--reach)"></span></div><span class="num">אחוזון '+Math.round(r.percentile)+'</span></div>';}).join('')+'</div>':'<div class="sub">אין נתוני השוואה</div>';
-  var med=(B.v2&&B.v2.portfolio_stats&&B.v2.portfolio_stats.median_month1)||431;
-  html+=card('I6','מול השוק',TG.mkt,'התחלה צעירה — תלוי במי משווים','מיקום מול 73 הפודקאסטים של WeDo (חודש ראשון)',v6,'מול כלל הפודקאסטים בעולם, התוכניות שלנו כבר מעל החציון. אבל מול הפודקאסטים של WeDo עצמנו (חציון '+nf(med)+' האזנות בחודש הראשון), הן עדיין בתחילת הדרך — אחוזון 15-20. זה טבעי אחרי 12-19 ימים בלבד, והרבה מהפודקאסטים הגדולים שלנו התחילו בדיוק כאן.');
+  /* 6 — מול הפורטפוליו שלנו (איפה אנחנו) */
+  var ps=(B.v2&&B.v2.portfolio_stats)||{},rp=(B.v2&&B.v2.remax_position)||[];
+  var v6=rp.length?'<div class="bars">'+rp.slice().sort(function(a,b){return b.percentile-a.percentile;}).map(function(r){return '<div class="bl"><span>'+esc(r.name)+'</span><div class="bb"><span style="width:'+Math.round(r.percentile)+'%;background:var(--reach)"></span></div><span class="num">אחוזון '+Math.round(r.percentile)+'</span></div>';}).join('')+'</div>':'<div class="sub">אין נתונים</div>';
+  html+=card('I6','מול השוק',TG.mkt,'מול הפודקאסטים של עצמנו — בתחילת הדרך','מיקום כל תוכנית מול '+nf(ps.sample_size||73)+' הפודקאסטים של WeDo (חודש ראשון)',v6,'חציון התיק הוא '+nf(ps.median_month1)+' האזנות בחודש הראשון, וארבע התוכניות נמצאות באחוזון 1-21 — טבעי אחרי 12-19 ימים בלבד. מול כלל הפודקאסטים בעולם (סף נמוך בהרבה) הן כבר מעל החציון, אבל הרף הרלוונטי לנו הוא הפורטפוליו שלנו.');
+
+  /* 7 — נקודת פתיחה נורמלית */
+  var u120=(B.v2&&B.v2.under_120_bucket)||{};
+  var v7='<div class="chrow"><div class="chip"><div class="cn num" style="color:var(--deep)">'+(u120.pct_portfolio_under_120!=null?Math.round(u120.pct_portfolio_under_120)+'%':'~22%')+'</div><div class="cl">מהפודקאסטים שלנו התחילו מתחת ל-120</div></div>'+
+    '<div class="chip"><div class="cn num">'+nf(ps.median_month1)+'</div><div class="cl">חציון התיק (חודש 1)</div></div>'+
+    '<div class="chip"><div class="cn num">'+nf(ps.sample_size||73)+'</div><div class="cl">פודקאסטים בהשוואה</div></div></div>';
+  html+=card('I7','מול השוק',TG.mkt,'נקודת הפתיחה שלנו נורמלית לחלוטין','כמה מהפודקאסטים שלנו התחילו במקום דומה',v7,'אחד מכל חמישה פודקאסטים שהפקנו אי-פעם סיים את החודש הראשון מתחת ל-120 האזנות, בדיוק כמונו. התחלה קטנה היא הנורמה בתיק, לא חריגה.');
+
+  /* 8 — התחילו כאן, היום ענקיים */
+  var mat=(B.growth&&B.growth.mature||[]).filter(function(x){return x.all_time>=120000&&x.month1!=null;}).sort(function(a,b){return a.month1-b.month1;}).slice(0,3);
+  var maxAt=Math.max.apply(null,mat.map(function(x){return x.all_time;}).concat([1]));
+  var v8=mat.length?'<div class="bars">'+mat.map(function(x){return '<div class="bl"><span>התחיל ב-'+nf(x.month1)+'</span><div class="bb"><span style="width:'+pct(x.all_time,maxAt)+'%;background:var(--reach)"></span></div><span class="num">'+kf(x.all_time)+'</span></div>';}).join('')+'</div>':'<div class="sub">אין נתונים</div>';
+  html+=card('I8','מול השוק',TG.mkt,'התחילו בדיוק כאן, היום ענקיים','פודקאסטים בתיק שלנו — האזנות בחודש הראשון מול סך-הכל היום',v8,'פודקאסט ותיק שלנו התחיל עם 116 האזנות בחודש הראשון — בדיוק כמו המבוגר האחראי היום — ומונה כיום מעל 225 אלף. ההתחלה לא מנבאת את התקרה.');
+
+  /* 9 — לאן זה יכול להגיע (הקרנה) */
+  var proj=(B.synthesis&&B.synthesis.projection)||{};
+  if(proj.statement_he)html+=card('I9','מול השוק',TG.mkt,'לאן זה יכול להגיע','הקרנה מבוססת-נתונים — לא הבטחה','',esc(proj.statement_he),'');
 
   return html;
 }
