@@ -13,21 +13,22 @@
   --tx:#f1f3f8; --mut:#9aa2b2; --mut2:#6b7488;
   --reach:#36d6c6; --deep:#f3a23e; --good:#46c98a; --warn:#e0b34d;
   --ig:#ec5e9c; --fb:#4d8df5; --yt:#ff6a5a; --sp:#39d077; --ap:#a87bf0;
+  --male:#4d8df5; --female:#ec5e9c; --nb:#a87bf0;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Heebo',system-ui,sans-serif;background:var(--bg);color:var(--tx);line-height:1.45;-webkit-font-smoothing:antialiased;font-feature-settings:"tnum";font-size:15px}
-.num{font-variant-numeric:tabular-nums}
+.num{font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
 .wrap{max-width:1160px;margin:0 auto;padding:0 16px 70px}
 svg.ic{width:15px;height:15px;stroke:currentColor;stroke-width:1.9;fill:none;stroke-linecap:round;stroke-linejoin:round;vertical-align:-2px}
 a{color:inherit}
-.vsw{display:flex;gap:6px;justify-content:center;align-items:center;flex-wrap:wrap;padding:12px 0 4px}
-.vsw a{font-size:12.5px;font-weight:600;color:var(--mut);text-decoration:none;padding:6px 13px;border:1px solid var(--bd);border-radius:20px;transition:all var(--d-fast)}
-.vsw a.on{background:var(--card2);color:var(--tx);border-color:var(--bd2)}
-.vsw .edit{margin-inline-start:auto;cursor:pointer}
+.vsw{display:flex;gap:6px;justify-content:flex-end;align-items:center;flex-wrap:wrap;padding:12px 0 4px}
+.vsw a{font-size:12.5px;font-weight:600;color:var(--mut);text-decoration:none;padding:6px 13px;border:1px solid var(--bd);border-radius:20px;cursor:pointer;transition:all var(--d-fast)}
+.vsw a:hover{color:var(--tx);border-color:var(--bd2)}
 .vsw .edit.on{background:rgba(243,162,62,.16);color:var(--deep);border-color:rgba(243,162,62,.4)}
 header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;padding:8px 0 10px}
 .brand{font-weight:900;font-size:18px}.brand .s{color:var(--mut2);font-weight:300;margin:0 6px}.brand .r{color:var(--reach)}
 .hmeta{font-size:12px;color:var(--mut);text-align:left}
+/* tabs */
 .tabwrap{position:sticky;top:0;z-index:20;background:linear-gradient(var(--bg),var(--bg) 72%,transparent);padding:6px 0 12px}
 .tabs{display:flex;gap:5px;background:var(--card);border:1px solid var(--bd);border-radius:13px;padding:5px;overflow-x:auto;scrollbar-width:none}
 .tabs::-webkit-scrollbar{display:none}
@@ -36,120 +37,124 @@ header{display:flex;justify-content:space-between;align-items:center;flex-wrap:w
 .tab.star[aria-selected="true"]{color:var(--deep);box-shadow:inset 0 0 0 1px rgba(243,162,62,.4)}
 .panel{display:none}.panel.on{display:block;animation:fade var(--d-fast) var(--ease)}
 @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-/* KPI strip */
-.strip{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:16px}
-.kpi{flex:1 1 0;min-width:150px;background:var(--card);border:1px solid var(--bd);border-radius:13px;padding:12px 15px;position:relative}
-.kpi.lead{border-inline-start:3px solid var(--deep)}
-.kpi .l{font-size:11.5px;color:var(--mut);display:flex;align-items:center;gap:6px}
-.kpi .v{font-size:24px;font-weight:900;letter-spacing:-.5px;margin-top:3px}
-.kpi .v.reach{color:var(--reach)}.kpi .v.deep{color:var(--deep)}
-.kpi .s{font-size:11px;color:var(--mut2);margin-top:1px}
+/* status strip */
+.status{display:flex;align-items:center;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--mut);background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:11px 16px;margin-bottom:16px;position:relative}
+.status .it{display:flex;align-items:center;gap:7px}.status .it b{color:var(--tx);font-weight:700}
+.status .sep{width:1px;height:15px;background:var(--bd2)}
+.status .dot{width:7px;height:7px;border-radius:50%;background:var(--good);box-shadow:0 0 0 3px rgba(70,201,138,.18)}
 /* blocks */
 .block{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:15px 17px;margin-bottom:14px;position:relative}
 .block.reach{border-top:3px solid var(--reach)}.block.deep{border-top:3px solid var(--deep)}
-.block.star{border-top:3px solid var(--deep)}
 .bh{display:flex;align-items:center;gap:9px;margin-bottom:3px;flex-wrap:wrap}
 .bh h3{font-size:15.5px;font-weight:800}
 .btag{font-size:10.5px;font-weight:700;padding:2px 9px;border-radius:20px}
 .btag.r{background:rgba(54,214,198,.14);color:var(--reach)}.btag.d{background:rgba(243,162,62,.14);color:var(--deep)}
 .sub{font-size:12.5px;color:var(--mut);margin-bottom:12px}
-.explain{font-size:12px;color:var(--mut2);line-height:1.5;margin-top:3px}
+.explain{font-size:12px;color:var(--mut2);line-height:1.5;margin-top:8px}
 .explain b{color:var(--mut);font-weight:600}
-/* ref badge for editing */
+/* tooltip ? */
+.tip{position:relative;display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:50%;background:var(--card2);border:1px solid var(--bd2);color:var(--mut);font-size:10px;font-weight:800;cursor:help;margin-inline-start:5px;vertical-align:middle;flex:0 0 auto}
+.tip:hover,.tip.show{background:var(--deep);color:#1a1206;border-color:var(--deep)}
+.tiptext{display:none;position:absolute;bottom:calc(100% + 9px);inset-inline-end:50%;transform:translateX(50%);background:#232e40;border:1px solid var(--bd2);border-radius:10px;padding:9px 12px;font-size:12px;font-weight:500;color:var(--tx);width:max-content;max-width:230px;line-height:1.55;z-index:60;box-shadow:0 10px 30px rgba(0,0,0,.5);text-align:right;white-space:normal}
+.tip:hover .tiptext,.tip.show .tiptext{display:block;animation:fade var(--d-quick) var(--ease)}
+/* ref badge */
 .refbadge{display:none;position:absolute;top:-8px;inset-inline-start:12px;background:var(--deep);color:#1a1206;font-size:11px;font-weight:800;padding:1px 8px;border-radius:7px;letter-spacing:.3px;z-index:5}
 body.editmode .refbadge{display:inline-block}
-body.editmode .block{outline:1px dashed rgba(243,162,62,.35)}
+body.editmode .block,body.editmode .statcard,body.editmode .status{outline:1px dashed rgba(243,162,62,.35)}
+/* stat cards */
+.statgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-bottom:16px}
+.statcard{background:var(--card);border:1px solid var(--bd);border-radius:15px;padding:17px 18px 16px;position:relative;overflow:hidden}
+.statcard.lead{border-top:3px solid var(--deep)}.statcard.r{border-top:3px solid var(--reach)}
+.statcard .ico{position:absolute;top:14px;inset-inline-end:15px;color:var(--mut2);opacity:.7}.statcard .ico svg{width:18px;height:18px}
+.statcard .t{font-size:12.5px;color:var(--mut);font-weight:600;display:flex;align-items:center}
+.statcard .v{font-size:38px;font-weight:900;letter-spacing:-1.4px;line-height:1.05;margin:6px 0 5px}
+.statcard .v.deep{color:var(--deep)}.statcard .v.reach{color:var(--reach)}
+.statcard .v .unit{font-size:20px;font-weight:800;letter-spacing:-.5px}
+.statcard .x{font-size:11.5px;color:var(--mut2);line-height:1.5}
+.epstat{display:inline-flex;align-items:baseline;gap:3px}.epstat .ec{font-weight:900}.epstat .ep{color:var(--mut2);font-size:24px}
+.statgrid.four{grid-template-columns:repeat(4,1fr)}
+/* leaders */
+.leaders{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:16px}
+.leadchip{flex:1 1 240px;background:var(--card2);border:1px solid var(--bd);border-radius:12px;padding:11px 14px;display:flex;align-items:center;gap:11px;position:relative}
+.leadchip .lic{flex:0 0 auto;width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:rgba(54,214,198,.13);color:var(--reach)}
+.leadchip.d .lic{background:rgba(243,162,62,.13);color:var(--deep)}
+.leadchip .lk{font-size:11px;color:var(--mut2);font-weight:600;display:flex;align-items:center}
+.leadchip .lv{font-size:13.5px;font-weight:700;color:var(--tx)}.leadchip .lv b{color:var(--deep)}.leadchip .lv .n{font-variant-numeric:tabular-nums}
 /* tables */
 table{width:100%;border-collapse:collapse;font-size:14px}
 th{font-size:11px;color:var(--mut);font-weight:600;text-align:right;padding:0 9px 9px;white-space:nowrap}
+th .tip{margin-inline-start:3px}
 td{padding:9px;border-top:1px solid rgba(255,255,255,.06);vertical-align:middle}
 td.nm{font-weight:700;white-space:nowrap}
-.cell{position:relative}.cellbar{position:absolute;inset:0;border-radius:6px;opacity:.15;z-index:0}.cellv{position:relative;z-index:1;font-weight:600}
+.cell{position:relative}.cellbar{position:absolute;inset:0;border-radius:6px;opacity:.16;z-index:0}.cellv{position:relative;z-index:1;font-weight:600}
 td.tot{font-weight:800;color:var(--deep)}
-.tag-sm{font-size:10px;color:var(--mut2);background:var(--bg);border:1px solid var(--bd);border-radius:6px;padding:1px 7px;margin-inline-start:6px}
 .scroll{overflow-x:auto;scrollbar-width:thin}
+.miniretain{display:inline-flex;align-items:center;gap:6px}
+.miniretain .rb{width:46px;height:6px;background:var(--bg);border-radius:4px;overflow:hidden}.miniretain .rb>span{display:block;height:100%;background:var(--deep);border-radius:4px}
+td.eps b{font-weight:800;color:var(--tx)}td.eps .epd{color:var(--mut2);font-size:11.5px}
 /* funnel */
-.fnl{display:flex;flex-direction:column;gap:7px}
-.fstep{display:grid;grid-template-columns:88px 1fr auto;gap:10px;align-items:center}
-.fstep .fl{font-size:13px;font-weight:600}
-.fstep .fbarwrap{height:30px;background:var(--bg);border-radius:7px;overflow:hidden;position:relative}
-.fstep .fbar{height:100%;border-radius:7px;display:flex;align-items:center;justify-content:flex-end;padding-inline-end:9px;font-size:13px;font-weight:800;color:#08110d;transition:width var(--d-fast) var(--ease)}
-.fstep .fnote{font-size:11.5px;color:var(--mut2);white-space:nowrap}
-/* retention curve */
-.curve{position:relative;height:140px;margin:8px 0 2px}
-.curve svg{width:100%;height:100%;overflow:visible}
-.gl{stroke:rgba(255,255,255,.06);stroke-width:1}.glt{fill:var(--mut2);font-size:9.5px}
-.xlab{fill:var(--mut2);font-size:9.5px}
-.spark{height:46px}.spark svg{width:100%;height:100%;overflow:visible}
-/* mini-cards */
-.mgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-bottom:14px}
-.mc{background:var(--card2);border:1px solid var(--bd);border-radius:11px;padding:11px 12px}
-.mc .l{font-size:11px;color:var(--mut);display:flex;align-items:center;gap:5px}
-.mc .n{font-size:18px;font-weight:800;margin-top:2px}.mc .x{font-size:10.5px;color:var(--mut2);margin-top:1px}
-/* social by page */
+.funnel{display:flex;gap:9px;align-items:stretch}
+.fseg{flex:1 1 0;background:var(--card2);border:1px solid var(--bd);border-radius:11px;padding:11px 13px;position:relative}
+.fseg .fl{font-size:11.5px;color:var(--mut);font-weight:600;display:flex;align-items:center}
+.fseg .fv{font-size:25px;font-weight:900;letter-spacing:-.8px;margin-top:2px}
+.fseg .fx{font-size:10.5px;color:var(--mut2);margin-top:1px}
+.fseg.s1 .fv{color:#7d8ba8}.fseg.s2 .fv{color:#5a9bd6}.fseg.s3 .fv{color:var(--reach)}
+.fconn{flex:0 0 auto;display:grid;place-items:center;color:var(--mut2);min-width:46px}
+.fconn .pct{font-size:14px;font-weight:900;color:var(--tx)}.fconn .ar{color:var(--mut2);font-size:11px}
+/* demo */
+.demo .dl{display:grid;grid-template-columns:58px 1fr 38px;gap:8px;align-items:center;font-size:12px;color:var(--mut);padding:3px 0}
+.demo .db{height:9px;background:var(--bg);border-radius:5px;overflow:hidden;display:flex}.demo .db>span{display:block;height:100%}
+.demo .dl .num{color:var(--tx);font-weight:600;text-align:left}
+.glegend{display:flex;gap:12px;font-size:11px;color:var(--mut2);margin-bottom:8px;flex-wrap:wrap}
+.glegend i{width:9px;height:9px;border-radius:3px;display:inline-block;margin-inline-end:4px;vertical-align:-1px}
+/* social */
 .pg{display:grid;grid-template-columns:1fr auto;gap:5px 12px;align-items:center;padding:9px 0;border-top:1px solid rgba(255,255,255,.06)}
 .pg:first-child{border-top:none}
-.pg .nm{font-weight:600}.pg .nm a{text-decoration:none;border-bottom:1px dotted var(--mut2)}
+.pg .nm{font-weight:600}.pg .nm a{text-decoration:none;border-bottom:1px dotted var(--mut2);cursor:pointer}.pg .nm a:hover{border-bottom-style:solid}
+.tag-sm{font-size:10px;color:var(--mut2);background:var(--bg);border:1px solid var(--bd);border-radius:6px;padding:1px 7px;margin-inline-start:6px}
 .pg .meta{font-size:11px;color:var(--mut2);margin-top:1px}
 .pg .vv{font-size:16px;font-weight:800;text-align:left;white-space:nowrap}
-.pg .bar{grid-column:1/-1;height:6px;background:var(--bg);border-radius:5px;overflow:hidden}
-.pg .bar>span{display:block;height:100%;border-radius:5px}
-/* demo bars */
-.demo .dl{display:grid;grid-template-columns:70px 1fr 42px;gap:8px;align-items:center;font-size:12.5px;color:var(--mut);padding:3px 0}
-.demo .db{height:8px;background:var(--bg);border-radius:5px;overflow:hidden;display:flex}
-.demo .db>span{display:block;height:100%}
-.demo .dl .num{color:var(--tx);font-weight:600;text-align:left}
-.glegend{display:flex;gap:12px;font-size:11px;color:var(--mut2);margin-bottom:7px}
-.glegend i{width:9px;height:9px;border-radius:3px;display:inline-block;margin-inline-end:4px;vertical-align:-1px}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-/* benchmark bars */
-.bbar{display:grid;grid-template-columns:1fr;gap:9px}
-.bbrow{display:grid;grid-template-columns:200px 1fr auto;gap:10px;align-items:center;font-size:13px}
-.bbrow .bl{color:var(--mut);font-weight:500}
-.bbrow .bl b{color:var(--tx);font-weight:700}
-.bbrow .bw{height:22px;background:var(--bg);border-radius:6px;overflow:hidden;position:relative}
-.bbrow .bf{height:100%;border-radius:6px;transition:width var(--d-fast) var(--ease)}
-.bbrow .bv{font-weight:800;white-space:nowrap}
-.thresh{position:relative;border-top:1px dashed rgba(224,179,77,.5);margin:4px 0;font-size:11px;color:var(--warn);padding-top:3px}
-.story{list-style:none;display:flex;flex-direction:column;gap:11px}
-.story li{padding-inline-start:26px;position:relative;font-size:13.5px;line-height:1.55;color:#d6dae4}
-.story li:before{content:"";position:absolute;inset-inline-start:6px;top:8px;width:7px;height:7px;border-radius:3px;background:var(--deep)}
-.story li b{color:#fff}
-.proj{background:rgba(243,162,62,.07);border:1px solid rgba(243,162,62,.22);border-radius:12px;padding:13px 15px;margin-top:4px}
+.pg .bar{grid-column:1/-1;height:6px;background:var(--bg);border-radius:5px;overflow:hidden}.pg .bar>span{display:block;height:100%;border-radius:5px}
+.post{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--card2);border:1px solid var(--bd);border-radius:10px;padding:10px 12px;text-decoration:none;color:inherit;margin-bottom:7px}
+.post .pl{font-size:13px;font-weight:500}.post .pmeta{font-size:11px;color:var(--mut2);margin-top:2px}.post .pv{font-size:16px;font-weight:800}
+/* spark + curve */
+.sparkbox{height:54px}.curvebox{height:150px}
+.gl{stroke:rgba(255,255,255,.06);stroke-width:1}.glt{fill:var(--mut2);font-size:9.5px}.xlab{fill:var(--mut2);font-size:9.5px}
+/* benchmark */
+.bbar{display:flex;flex-direction:column;gap:10px}
+.bbrow{display:grid;grid-template-columns:188px 1fr auto;gap:11px;align-items:center;font-size:13px}
+.bbrow .bl{color:var(--mut)}.bbrow .bl b{color:var(--tx);font-weight:700}
+.bbrow .bw{height:22px;background:var(--bg);border-radius:6px;overflow:hidden}
+.bbrow .bf{height:100%;border-radius:6px}
+.bbrow .bv{font-weight:800;white-space:nowrap}.bbrow .bv .sm{color:var(--mut2);font-weight:500;font-size:11px}
+.proj{background:rgba(243,162,62,.07);border:1px solid rgba(243,162,62,.22);border-radius:12px;padding:13px 15px}
 .proj .pt{font-size:11px;font-weight:800;color:var(--deep);letter-spacing:.4px;margin-bottom:5px}
-.note{font-size:11.5px;color:var(--mut2);font-style:italic;margin-top:7px}
-.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
-.chip{background:var(--card2);border:1px solid var(--bd);border-radius:9px;padding:9px 12px;font-size:12.5px;flex:1 1 150px}
-.chip .cn{font-size:17px;font-weight:800;color:var(--reach)}.chip .cl{color:var(--mut);font-size:11.5px;margin-top:1px}
-/* explorer */
-.exctl{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
-.exsel{display:inline-flex;flex-direction:column;gap:3px}
-.exsel label{font-size:10.5px;color:var(--mut2);font-weight:600}
-.exsel select{background:var(--card2);border:1px solid var(--bd2);color:var(--tx);font-family:inherit;font-size:13.5px;font-weight:600;padding:8px 11px;border-radius:9px;cursor:pointer}
-.excards{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.excard{background:var(--card2);border:1px solid var(--bd);border-radius:14px;padding:15px}
-.excard h4{font-size:14px;font-weight:800;margin-bottom:2px}
-.excard .exsub{font-size:11.5px;color:var(--mut2);margin-bottom:11px}
-.exbig{font-size:30px;font-weight:900;letter-spacing:-1px}
-.exdrill{margin-top:12px;border-top:1px solid var(--bd);padding-top:11px}
-.exrow{display:flex;justify-content:space-between;font-size:13px;padding:5px 0;cursor:default}
-.exrow .ev{font-weight:700;color:var(--tx)}
-.exrow.clickable{cursor:pointer;border-radius:7px;padding:5px 8px;margin:0 -8px;transition:background var(--d-quick)}
-.exrow.clickable:hover{background:rgba(255,255,255,.04)}
-.exrow .caret{color:var(--mut2);font-size:11px}
-.exdd{display:none;font-size:12px;color:var(--mut);padding:6px 8px 2px;line-height:1.6}
-.exdd.open{display:block;animation:fade var(--d-quick) var(--ease)}
-/* toolbar */
+.note{font-size:11px;color:var(--mut2);font-style:italic;margin-top:7px;line-height:1.5}
+/* matrix (compare) */
+.mx{border-collapse:separate;border-spacing:0}
+.mx th,.mx td{text-align:center;padding:8px 10px;font-size:13px}
+.mx th:first-child,.mx td:first-child{text-align:right;position:sticky;inset-inline-start:0;background:var(--card);z-index:1}
+.mx td{border-top:1px solid rgba(255,255,255,.06);position:relative}
+.mx .ml{font-weight:600;color:var(--mut);cursor:pointer;white-space:nowrap}
+.mx .ml:hover{color:var(--tx)}
+.mx .mcell{position:relative}.mx .mbar{position:absolute;inset:3px;border-radius:5px;opacity:.15;z-index:0}.mx .mv{position:relative;z-index:1;font-weight:700;font-variant-numeric:tabular-nums}
+.mx .lead-cell .mv{color:var(--deep)}
+.mxexp{font-size:12px;color:var(--mut);background:var(--card2);border-radius:8px;padding:8px 11px;margin:3px 0}
+/* deep dive */
+.dd-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.dd-tab{font-size:12.5px;font-weight:600;color:var(--mut);background:var(--card2);border:1px solid var(--bd);border-radius:8px;padding:6px 12px;cursor:pointer}
+.dd-tab.on{color:var(--tx);border-color:var(--bd2);background:var(--card)}
 .toolbar{display:flex;justify-content:flex-end;gap:8px;margin-bottom:12px;flex-wrap:wrap}
 .btn{background:var(--card2);border:1px solid var(--bd);color:var(--tx);font-family:inherit;font-size:12.5px;font-weight:600;padding:7px 13px;border-radius:9px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{border-color:var(--bd2)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}.two3{display:grid;grid-template-columns:1.3fr 1fr;gap:14px}
 .foot{margin-top:28px;padding-top:14px;border-top:1px solid var(--bd);font-size:11px;color:var(--mut2);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
 .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(16px);background:#1d2433;border:1px solid var(--bd2);padding:10px 18px;border-radius:11px;font-size:13.5px;opacity:0;transition:all var(--d-fast) var(--ease);z-index:99}
 .toast.show{opacity:1;transform:translateX(-50%)}
 @media(max-width:760px){
-  .strip{gap:7px}.kpi{min-width:calc(50% - 4px);padding:11px 13px}.kpi .v{font-size:21px}
-  .two{grid-template-columns:1fr}.excards{grid-template-columns:1fr}
-  .bbrow{grid-template-columns:1fr;gap:3px}.bbrow .bl{font-size:12px}
-  .fstep{grid-template-columns:70px 1fr;gap:7px}.fstep .fnote{grid-column:2;text-align:left}
+  .statgrid,.statgrid.four{grid-template-columns:1fr;gap:10px}.statcard .v{font-size:32px}
+  .two,.two3{grid-template-columns:1fr}.funnel{flex-direction:column}.fconn{min-height:28px;transform:rotate(90deg)}
+  .leaders{flex-direction:column}.bbrow{grid-template-columns:1fr;gap:3px}.bbrow .bl{font-size:12px}
   table{font-size:12.5px}td,th{padding-inline:5px}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
@@ -157,11 +162,7 @@ td.tot{font-weight:800;color:var(--deep)}
 </head>
 <body>
 <div class="wrap">
-  <div class="vsw">
-    <a class="on" href="index.html">דשבורד</a>
-    <a href="explorer.html">וריאנט · חקירה</a>
-    <a class="edit" id="editToggle">✎ מצב עריכה</a>
-  </div>
+  <div class="vsw"><a class="edit" id="editToggle">✎ מצב עריכה</a></div>
   <header>
     <div class="brand">wedo<span class="s">|</span><span class="r">RE/MAX</span></div>
     <div class="hmeta"><span id="org"></span><br><span id="range"></span></div>
@@ -173,327 +174,310 @@ td.tot{font-weight:800;color:var(--deep)}
 <div class="toast" id="toast"></div>
 <script src="data.js"></script>
 <script>
-const D=window.DASHBOARD_DATA;
-const nf=n=>(n==null?'–':Math.round(n).toLocaleString('en-US'));
-const $=id=>document.getElementById(id),el=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e;};
-const COL={ig:'#ec5e9c',fb:'#4d8df5',yt:'#ff6a5a',sp:'#39d077',ap:'#a87bf0',reach:'#36d6c6',deep:'#f3a23e',male:'#4d8df5',female:'#ec5e9c',nb:'#a87bf0'};
-const o=D.overview,shows=D.shows,social=D.social,B=D.benchmark;
-const deepOf=s=>s.deep_total;
-$('org').textContent=D.meta.organic_note;$('range').textContent=D.meta.range;$('sources').textContent='מקורות: '+D.meta.sources.join(' · ');
+(function(){
+"use strict";
+var D=(window&&window.DASHBOARD_DATA)||null;
+function nf(n){return (n==null||isNaN(n))?'–':Math.round(n).toLocaleString('en-US');}
+function kf(n){return (n==null||isNaN(n))?'–':(n>=1000?(Math.round(n/100)/10).toLocaleString('en-US')+'K':Math.round(n).toLocaleString('en-US'));}
+function $(id){return document.getElementById(id);}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function RB(r){return '<span class="refbadge">'+r+'</span>';}
+function pct(a,b){return b?Math.round(100*a/b):0;}
+var COL={ig:'#ec5e9c',fb:'#4d8df5',yt:'#ff6a5a',sp:'#39d077',ap:'#a87bf0',reach:'#36d6c6',deep:'#f3a23e',male:'#4d8df5',female:'#ec5e9c',nb:'#a87bf0'};
+if(!D){$('panels').innerHTML='<div class="block"><div class="bh"><h3>שגיאה בטעינת נתונים</h3></div><div class="sub">data.js לא נטען.</div></div>';return;}
 
-// ---- tabs ----
-const TABS=[{k:'ov',name:'סקירה'},{k:'bm',name:'מול השוק',star:1}]
-  .concat(shows.map((s,i)=>({k:'s'+i,name:s.name})))
-  .concat([{k:'ex',name:'חקירה'}]);
-const tabsEl=$('tabs'),panelsEl=$('panels');
-TABS.forEach((t,i)=>{
-  const b=el('button','tab'+(t.star?' star':''),t.name);
-  b.setAttribute('aria-selected',i===0?'true':'false');b.onclick=()=>sel(i);tabsEl.appendChild(b);
-  const p=el('div','panel'+(i===0?' on':''));p.id='pan'+i;panelsEl.appendChild(p);
-});
-function build(i){const t=TABS[i],p=$('pan'+i);if(p.dataset.built)return;
-  if(t.k==='ov')p.innerHTML=overviewHTML();
-  else if(t.k==='bm')p.innerHTML=benchmarkHTML();
-  else if(t.k==='ex')p.innerHTML=explorerHTML();
-  else p.innerHTML=showHTML(shows[+t.k.slice(1)],+t.k.slice(1));
-  p.dataset.built='1';afterBuild(t,i);}
-function sel(i){[...tabsEl.children].forEach((t,j)=>t.setAttribute('aria-selected',i===j?'true':'false'));
-  build(i);[...panelsEl.children].forEach((p,j)=>p.classList.toggle('on',i===j));window.scrollTo({top:0,behavior:'smooth'});}
-function afterBuild(t,i){
-  if(t.k==='ov'){renderLead();renderPages();drawSpark();renderApps('ov');}
-  if(t.k==='bm'){drawBench();}
-  if(t.k.startsWith('s')){const idx=+t.k.slice(1);drawCurves(idx);}
-  if(t.k==='ex'){initExplorer();}
+var m=D.meta||{};
+if($('org'))$('org').textContent=m.organic_note||'';
+if($('range'))$('range').textContent=m.range||'';
+if($('sources'))$('sources').textContent='מקורות: '+((m.sources||[]).join(' · '));
+
+/* ---- tooltip dictionary ---- */
+var TIPS={
+  deep:'מי שהאזין לפרק שלם — לא רק לחץ. נספר ביוטיוב, ספוטיפיי ואפל.',
+  reach:'כמה פעמים רילס נצפה. מדד רחב ונפרד — לא מסכמים אותו עם האזנה לפרק.',
+  conv:'מתוך מי שנכנס לבדוק את התוכנית בספוטיפיי — כמה התחילו להאזין בפועל.',
+  ytret:'איזה אחוז מאורך הסרטון נצפה בממוצע. ככל שגבוה יותר — מחזיקים יותר זמן.',
+  unique:'מספר האנשים השונים שצפו — לא כולל צפיות חוזרות של אותו אדם.',
+  reached:'ספוטיפיי הציג להם את התוכנית — בחיפוש או במסך הבית.',
+  interested:'נכנסו לעמוד התוכנית כדי לבדוק.',
+  consumed:'התחילו להאזין לפרק בפועל.',
+  impressions:'כמה פעמים ספוטיפיי הציג את התוכנית למישהו (חשיפה, עוד לפני האזנה).',
+  foreground:'האזינו בתשומת לב מלאה — לא ברקע תוך כדי משהו אחר.',
+  median:'הזמן שבו המאזין החציוני עדיין החזיק בפרק.',
+  curve:'מתוך מי שהתחיל את הפרק — כמה החזיקו עד כל נקודה. 100% = הגיעו לסוף.',
+  episodes:'כל תוכנית מתוכננת ל-12 פרקים. אנחנו בתחילת הסדרה.',
+  watch:'סך כל שעות הצפייה המצטברות ביוטיוב.',
+  source_social:'החשיפה שייכת לעמוד שבו עלה הפוסט, לא לתוכנית — לכן זה מדד נפרד.'
+};
+function tip(k){var t=TIPS[k];return t?'<span class="tip" tabindex="0" data-tip="1">?<span class="tiptext">'+esc(t)+'</span></span>':'';}
+
+/* ---- derive ---- */
+var o=D.overview||{},shows=(D.shows||[]).slice(),social=D.social||{by_page:[]},B=D.benchmark||{};
+var totDeep=(o.deep_listens!=null)?o.deep_listens:shows.reduce(function(a,s){return a+(s.deep_total||0);},0);
+var totReach=(social.total_views!=null)?social.total_views:(o.reach_reels||0);
+var pageCount=(social.page_count!=null)?social.page_count:(social.by_page?social.by_page.length:0);
+var EP_PLANNED=12;
+function pubEps(s){return (s.curves&&s.curves.length)||(s.episodes&&s.episodes.length)||0;}
+var totPub=shows.reduce(function(a,s){return a+pubEps(s);},0),totPlan=shows.length*EP_PLANNED;
+var byDeep=shows.slice().sort(function(a,b){return (b.deep_total||0)-(a.deep_total||0);});
+var lead=byDeep, leadDeep=byDeep[0]||null;
+var withFunnel=shows.filter(function(s){return s.funnel;});
+var leadConv=withFunnel.slice().sort(function(a,b){return (b.funnel.i2c_pct||0)-(a.funnel.i2c_pct||0);})[0]||null;
+var withYt=shows.filter(function(s){return s.yt&&s.yt.avg_pct!=null;});
+var leadYt=withYt.slice().sort(function(a,b){return (b.yt.avg_pct||0)-(a.yt.avg_pct||0);})[0]||null;
+var aggF=withFunnel.reduce(function(a,s){return {reached:a.reached+(s.funnel.reached||0),interested:a.interested+(s.funnel.interested||0),consumed:a.consumed+(s.funnel.consumed||0)};},{reached:0,interested:0,consumed:0});
+var trendMap={};shows.forEach(function(s){(s.trend||[]).forEach(function(p){trendMap[p.d]=(trendMap[p.d]||0)+(p.v||0);});});
+var trendKeys=Object.keys(trendMap).sort(),trendSeries=trendKeys.map(function(k){return trendMap[k];});
+var AGE_ORDER=['18-22','23-27','28-34','35-44','45-59','60+','60-150'];
+function ageRank(b){var i=AGE_ORDER.indexOf(b);return i<0?99:i;}
+function ageRowsFor(list){var mp={};list.forEach(function(s){(s.age||[]).forEach(function(a){var br=a.displayName||a.ageBracket;if(!br||br==='Unknown'||br==='0-17')return;var c=(a.genderBreakdown&&a.genderBreakdown.counts)||[];function g(k){var f=c.filter(function(x){return x.gender===k;})[0];return f?f.count:0;}if(!mp[br])mp[br]={m:0,f:0,nb:0};mp[br].m+=g('MALE');mp[br].f+=g('FEMALE');mp[br].nb+=g('NON_BINARY')+g('NOT_SPECIFIED');});});return Object.keys(mp).map(function(br){var r=mp[br];return {br:br,m:r.m,f:r.f,nb:r.nb,n:r.m+r.f+r.nb};}).filter(function(r){return r.n>0;}).sort(function(a,b){return ageRank(a.br)-ageRank(b.br);});}
+var ageRowsAll=ageRowsFor(shows);
+
+/* ---- icons ---- */
+function svgIco(p){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">'+p+'</svg>';}
+var IC={headphones:'<path d="M3 14v-2a9 9 0 0 1 18 0v2"/><rect x="2.5" y="14" width="4.5" height="7" rx="2"/><rect x="17" y="14" width="4.5" height="7" rx="2"/>',eye:'<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>',trophy:'<path d="M8 21h8M12 17v4M7 4h10v4a5 5 0 0 1-10 0Z"/><path d="M7 5H4v2a3 3 0 0 0 3 3M17 5h3v2a3 3 0 0 1-3 3"/>',trend:'<path d="M3 17l6-6 4 4 7-7"/><path d="M14 8h6v6"/>',convert:'<path d="M4 7h16M4 7l4-3M4 7l4 3"/><path d="M20 17H4M20 17l-4-3M20 17l-4 3"/>',filter:'<path d="M4 5h16l-6 8v5l-4 2v-7Z"/>',users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'};
+
+/* ---- shared fragments ---- */
+function statusStrip(tag){return '<div class="status">'+RB(tag)+'<div class="it"><span class="dot"></span><b>'+nf(o.shows_count||shows.length)+'</b> תוכניות</div><div class="sep"></div><div class="it">חודש ראשון לאוויר</div><div class="sep"></div><div class="it"><b>100%</b> אורגני</div><div class="sep"></div><div class="it"><b>'+nf(totPub)+'</b>/'+nf(totPlan)+' פרקים'+tip('episodes')+'</div></div>';}
+function leaderboardTable(){
+  var mxD=Math.max.apply(null,lead.map(function(s){return s.deep_total||0;}).concat([1]));
+  var mxR=Math.max.apply(null,lead.map(function(s){return (s.yt&&s.yt.avg_pct)||0;}).concat([1]));
+  var h='<div class="scroll"><table><thead><tr><th>תוכנית</th><th>פרקים</th><th>סך האזנה'+tip('deep')+'</th><th>YouTube</th><th>Spotify</th><th>Apple</th><th>צופים ייח׳'+tip('unique')+'</th><th>שימור YT'+tip('ytret')+'</th></tr></thead><tbody>';
+  lead.forEach(function(s){var p=s.platforms||{},ret=(s.yt&&s.yt.avg_pct!=null)?s.yt.avg_pct:null,eps=pubEps(s);
+    h+='<tr><td class="nm">'+esc(s.name)+'</td><td class="num eps"><b>'+eps+'</b><span class="epd">/'+EP_PLANNED+'</span></td>'+
+    '<td class="cell tot"><span class="cellbar" style="background:'+COL.deep+';width:'+pct(s.deep_total,mxD)+'%"></span><span class="cellv num">'+nf(s.deep_total)+'</span></td>'+
+    '<td class="num">'+nf(p.youtube)+'</td><td class="num">'+nf(p.spotify)+'</td><td class="num">'+nf(p.apple)+'</td><td class="num">'+nf(s.yt&&s.yt.unique_viewers)+'</td>'+
+    '<td>'+(ret!=null?'<span class="miniretain"><span class="rb"><span style="width:'+pct(ret,mxR)+'%"></span></span><span class="num">'+ret+'%</span></span>':'<span class="num">–</span>')+'</td></tr>';});
+  return h+'</tbody></table></div>';
 }
-const RB=r=>`<span class="refbadge">${r}</span>`; // ref badge
-
-/* =================== OVERVIEW =================== */
-function overviewHTML(){
-  const totDeep=o.deep_listens, pos=B.portfolio;
-  const above=B.benchmark?.synthesis;
-  return `
-  <div class="strip">
-    <div class="kpi lead">${RB('A1')}<div class="l"><span class="dot"></span>האזנה לפרקים</div><div class="v deep num">${nf(totDeep)}</div><div class="s">פרקים מלאים · YouTube + Spotify + Apple</div></div>
-    <div class="kpi">${RB('A2')}<div class="l">חשיפה בסושיאל</div><div class="v reach num">${nf(social.total_views)}</div><div class="s">צפיות רילס · ${social.page_count} עמודים</div></div>
-    <div class="kpi">${RB('A3')}<div class="l">מיקום מול השוק</div><div class="v num">×2</div><div class="s">2 מ-4 מעל חציון הפודקאסטים בעולם</div></div>
-  </div>
-
-  <div class="block deep">${RB('B1')}
-    <div class="bh"><span class="btag d">האזנה</span><h3>האזנה לפרקים · לפי תוכנית</h3></div>
-    <div class="sub">פרק מלא שנצרך בפועל. כאן הקרדיט שייך לתוכנית עצמה. מסודר לפי סך ההאזנה בכל הפלטפורמות.</div>
-    <div class="scroll"><table id="lead"></table></div>
-    <div class="explain"><b>שימור YouTube</b> = איזה אחוז מהסרטון נצפה בממוצע · <b>צופים ייחודיים</b> = אנשים שונים, לא צפיות חוזרות.</div>
-  </div>
-
-  <div class="block">${RB('C1')}
-    <div class="bh"><h3>משפך ההמרה · ספוטיפיי</h3></div>
-    <div class="sub">המסע מחשיפה להאזנה — כמה אנשים ספוטיפיי הציג להם את התוכנית, וכמה מהם הפכו למאזינים בפועל.</div>
-    <div id="funnels"></div>
-  </div>
-
-  <div class="block">${RB('C2')}
-    <div class="bh"><h3>מאיפה מגיעה החשיפה · ספוטיפיי</h3></div>
-    <div class="sub">איך אנשים נתקלים בתוכנית בתוך ספוטיפיי. <b>הרבה יותר מהאזנות</b> — החשיפה רחבה, ההמרה היא הצעד הבא.</div>
-    <div id="impr"></div>
-  </div>
-
-  <div class="block reach">${RB('D1')}
-    <div class="bh"><span class="btag r">חשיפה</span><h3>חשיפה בסושיאל · לפי עמוד</h3></div>
-    <div class="explain" style="margin-bottom:10px">החשיפה שייכת ל<b>עמוד שבו עלה הפוסט</b>, לא לתוכנית — רוב הנפח מגיע מעמודי-המותג (מאני, רימקס), לא מעמודי המגישים. לכן זה מדד נפרד מהאזנה, ואי-אפשר לסכם ביניהם.</div>
-    <div id="pages"></div>
-  </div>
-
-  <div class="block">${RB('E1')}
-    <div class="bh"><h3>מגמת האזנות יומית · ספוטיפיי</h3></div>
-    <div class="sub">סך ההזרמות היומיות בכל 4 התוכניות, 30 הימים האחרונים.</div>
-    <div class="spark"><svg id="sp-ov" viewBox="0 0 640 46" preserveAspectRatio="none"></svg></div>
-  </div>
-
-  <div class="toolbar">
-    <button class="btn" onclick="copyT()"><svg class="ic" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>העתק טבלה</button>
-    <button class="btn" onclick="csvT()"><svg class="ic" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>CSV</button>
-  </div>`;
+function funnelStrip(f,label){f=f||aggF;var r2i=pct(f.interested,f.reached),i2c=pct(f.consumed,f.interested);
+  return '<div class="funnel">'+
+    '<div class="fseg s1"><div class="fl">נחשפו'+tip('reached')+'</div><div class="fv num">'+nf(f.reached)+'</div><div class="fx">ספוטיפיי הציג להם</div></div>'+
+    '<div class="fconn"><span class="pct num">'+r2i+'%</span><span class="ar">◀</span></div>'+
+    '<div class="fseg s2"><div class="fl">התעניינו'+tip('interested')+'</div><div class="fv num">'+nf(f.interested)+'</div><div class="fx">נכנסו לבדוק</div></div>'+
+    '<div class="fconn"><span class="pct num">'+i2c+'%</span><span class="ar">◀</span></div>'+
+    '<div class="fseg s3"><div class="fl">צרכו'+tip('consumed')+'</div><div class="fv num">'+nf(f.consumed)+'</div><div class="fx">התחילו להאזין</div></div>'+
+  '</div>';
 }
-function renderLead(){
-  const mx={yt:Math.max(...shows.map(s=>s.platforms.youtube)),sp:Math.max(...shows.map(s=>s.platforms.spotify)),ap:Math.max(...shows.map(s=>s.platforms.apple)),d:Math.max(...shows.map(deepOf))};
-  const c=(v,m,col)=>`<td class="cell"><span class="cellbar" style="background:${col};width:${m?Math.round(100*v/m):0}%"></span><span class="cellv num">${nf(v)}</span></td>`;
-  let h=`<thead><tr><th>תוכנית</th><th>סך האזנה</th><th>YouTube</th><th>Spotify</th><th>Apple</th><th>צופים ייחודיים</th><th>שעות צפייה</th><th>שימור YT</th></tr></thead><tbody>`;
-  shows.forEach(s=>{h+=`<tr><td class="nm">${s.name}</td>`+
-    `<td class="tot num">${nf(deepOf(s))}</td>`+
-    c(s.platforms.youtube,mx.yt,COL.yt)+c(s.platforms.spotify,mx.sp,COL.sp)+c(s.platforms.apple,mx.ap,COL.ap)+
-    `<td class="num">${nf(s.yt.unique_viewers)}</td><td class="num">${s.yt.watch_hours!=null?Math.round(s.yt.watch_hours):'–'}</td><td class="num">${s.yt.avg_pct!=null?s.yt.avg_pct+'%':'–'}</td></tr>`;});
-  $('lead').innerHTML=h+'</tbody>';
-  // funnels
-  $('funnels').innerHTML=shows.filter(s=>s.funnel).map(s=>funnelHTML(s)).join('');
-  // impressions sources
-  $('impr').innerHTML=shows.filter(s=>s.impressions.total).map(s=>imprHTML(s)).join('');
+function ageBars(rows){rows=rows||ageRowsAll;if(!rows.length)return '<div class="sub">מדגם קטן מדי לפילוח אמין</div>';
+  var mx=Math.max.apply(null,rows.map(function(r){return r.n;}).concat([1]));
+  var body=rows.map(function(a){return '<div class="dl"><span>'+esc(a.br)+'</span><div class="db"><span style="width:'+pct(a.m,mx)+'%;background:'+COL.male+'"></span><span style="width:'+pct(a.f,mx)+'%;background:'+COL.female+'"></span><span style="width:'+pct(a.nb,mx)+'%;background:'+COL.nb+'"></span></div><span class="num">'+nf(a.n)+'</span></div>';}).join('');
+  return '<div class="glegend"><span><i style="background:'+COL.male+'"></i>גברים</span><span><i style="background:'+COL.female+'"></i>נשים</span><span><i style="background:'+COL.nb+'"></i>אחר</span></div><div class="demo">'+body+'</div>';
 }
-function funnelHTML(s){
-  const f=s.funnel,mx=f.reached||1;
-  const row=(lbl,v,col,note)=>`<div class="fstep"><span class="fl">${lbl}</span><div class="fbarwrap"><div class="fbar" style="width:${Math.max(8,Math.round(100*v/mx))}%;background:${col}">${nf(v)}</div></div><span class="fnote">${note||''}</span></div>`;
-  return `<div style="margin-bottom:15px"><div class="bh" style="margin-bottom:7px"><b style="font-size:13.5px">${s.name}</b></div>
-    ${row('נחשפו',f.reached,'#5b6b85','ספוטיפיי הציג להם')}
-    ${row('התעניינו',f.interested,'#5a9bd6',f.r2i_pct+'% נכנסו לבדוק')}
-    ${row('צרכו',f.consumed,COL.reach,f.i2c_pct+'% הפכו למאזינים')}</div>`;
+function socialPages(){var pages=social.by_page||[];var mx=Math.max.apply(null,pages.map(function(p){return p.views||0;}).concat([1]));
+  return pages.map(function(p){var col=p.platform==='Instagram'?COL.ig:COL.fb;var nm=p.url?'<a href="'+esc(p.url)+'" target="_blank" rel="noopener">'+esc(p.page)+'</a>':esc(p.page);
+    return '<div class="pg"><div><span class="nm">'+nm+'</span><span class="tag-sm">'+(p.platform==='Instagram'?'IG':'FB')+' · '+esc(p.type)+'</span><div class="meta">'+nf(p.posts)+' פוסט'+(p.posts>1?'ים':'')+'</div></div><div class="vv num">'+nf(p.views)+'</div><div class="bar"><span style="width:'+pct(p.views,mx)+'%;background:'+col+'"></span></div></div>';}).join('');
 }
-function imprHTML(s){
-  const tot=s.impressions.total,src=s.impressions.sources;const mx=Math.max(...src.map(x=>x.count),1);
-  const TR={Search:'חיפוש',Home:'מסך הבית',Library:'הספרייה','Other Spotify Features':'אחר'};
-  return `<div style="margin-bottom:13px"><div style="display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:5px"><b>${s.name}</b><span class="num" style="color:var(--mut)">${nf(tot)} חשיפות</span></div>
-    <div class="demo">${src.map(x=>`<div class="dl"><span>${TR[x.name]||x.name}</span><div class="db"><span style="width:${Math.round(100*x.count/mx)}%;background:var(--sp)"></span></div><span class="num">${nf(x.count)}</span></div>`).join('')}</div></div>`;
+function leadersLine(){var parts=[];
+  if(leadDeep)parts.push('<div class="leadchip d">'+RB('OvLD')+'<div class="lic">'+svgIco(IC.trophy)+'</div><div><div class="lk">מוביל בהאזנה</div><div class="lv"><b>'+esc(leadDeep.name)+'</b> · <span class="n num">'+nf(leadDeep.deep_total)+'</span> האזנות</div></div></div>');
+  if(leadConv)parts.push('<div class="leadchip">'+RB('OvLC')+'<div class="lic">'+svgIco(IC.convert)+'</div><div><div class="lk">ההמרה הטובה ביותר'+tip('conv')+'</div><div class="lv"><b>'+esc(leadConv.name)+'</b> · <span class="n num">'+leadConv.funnel.i2c_pct+'%</span> מהמתעניינים האזינו</div></div></div>');
+  if(leadYt)parts.push('<div class="leadchip">'+RB('OvLY')+'<div class="lic">'+svgIco(IC.eye)+'</div><div><div class="lk">השימור הגבוה ביותר ביוטיוב'+tip('ytret')+'</div><div class="lv"><b>'+esc(leadYt.name)+'</b> · <span class="n num">'+Math.round(leadYt.yt.avg_pct)+'%</span> מהסרטון</div></div></div>');
+  return parts.join('');
 }
-function renderPages(){
-  const mx=Math.max(...social.by_page.map(p=>p.views))||1;
-  $('pages').innerHTML=social.by_page.map(p=>{
-    const shows_in=[...new Set(p.items.map(i=>i.show).filter(Boolean))].join(', ');
-    const col=p.platform==='Instagram'?COL.ig:COL.fb;
-    const nm=p.url?`<a href="${p.url}" target="_blank">${p.page}</a>`:p.page;
-    return `<div class="pg"><div><span class="nm">${nm}</span><span class="tag-sm">${p.platform==='Instagram'?'IG':'FB'} · ${p.type}</span><div class="meta">${p.posts} פוסט${p.posts>1?'ים':''}${shows_in?' · '+shows_in:''}</div></div><div class="vv num">${nf(p.views)}</div><div class="bar"><span style="width:${Math.round(100*p.views/mx)}%;background:${col}"></span></div></div>`;}).join('');
-}
-function renderApps(scope){}
-/* spark + curves */
-function drawSparkInto(id,series,keys){
-  const svg=$(id);if(!svg)return;const W=640,H=svg.id.startsWith('sp')?46:140;
-  const n=series.length,max=Math.max(...series,1);
-  if(!n){svg.innerHTML='';return;}
-  const X=i=>4+(n>1?i*(W-8)/(n-1):0),Y=v=>4+(1-v/max)*(H-8);
-  const pts=series.map((v,i)=>[X(i),Y(v)]);
-  const ln=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');
-  const ar=`M${X(0)} ${H-4} `+ln.slice(1)+` L${X(n-1)} ${H-4} Z`;
-  const mxi=series.indexOf(max),mp=pts[mxi];
-  svg.innerHTML=`<path d="${ar}" fill="${COL.reach}" opacity=".1"/><path d="${ln}" fill="none" stroke="${COL.reach}" stroke-width="2"/>`+
-    `<circle cx="${mp[0]}" cy="${mp[1]}" r="2.6" fill="${COL.reach}"/>`;
-}
-const aggMap={};shows.forEach(s=>(s.trend||[]).forEach(p=>{aggMap[p.d]=(aggMap[p.d]||0)+(p.v||0)}));
-const aggKeys=Object.keys(aggMap).sort(),aggSeries=aggKeys.map(k=>aggMap[k]);
-function drawSpark(){drawSparkInto('sp-ov',aggSeries,aggKeys);}
-
-/* =================== BENCHMARK (מול השוק) =================== */
-function benchmarkHTML(){
-  const sy=B.synthesis;
-  const ranks=B.portfolio.our_ranks;
-  return `
-  <div class="block star">${RB('BM1')}
-    <div class="bh"><span class="btag d">מול השוק</span><h3>איפה אנחנו עומדים — חודש ראשון</h3></div>
-    <div class="explain" style="font-size:13px;color:#d6dae4;line-height:1.6">${sy.headline_he}</div>
-  </div>
-
-  <div class="block">${RB('BM2')}
-    <div class="bh"><h3>חודש ראשון מול חציון הפודקאסטים בעולם</h3></div>
-    <div class="sub">פודקאסט חציוני בעולם עושה ~28 הורדות בשבוע הראשון / ~145 בחודש (Buzzsprout 2026). מי שמעל — בחצי העליון.</div>
-    <div class="bbar" id="bench-anchor"></div>
-    <div class="explain" style="margin-top:9px">${sy.percentile_position.framing_he}</div>
-  </div>
-
-  <div class="block">${RB('BM3')}
-    <div class="bh"><h3>"ככה התחילו תוכניות שצמחו" · פורטפוליו WeDo</h3></div>
-    <div class="sub">השוואה לחודש הראשון של פודקאסטים ותיקים בפורטפוליו שלנו (אנונימי) שהיום מונים מאות-אלפי האזנות.</div>
-    <div class="bbar" id="bench-mature"></div>
-    <div class="explain" style="margin-top:9px">${sy.benchmark_bars_explainer_he}</div>
-  </div>
-
-  <div class="block">${RB('BM4')}
-    <div class="bh"><h3>מה הנתונים אומרים</h3></div>
-    <ul class="story">${sy.growth_story_he.map(x=>`<li>${boldFirst(x)}</li>`).join('')}</ul>
-  </div>
-
-  <div class="block">${RB('BM5')}
-    <div class="bh"><h3>מיקום בפורטפוליו · 86 הפודקאסטים של WeDo</h3></div>
-    <div class="chips">${ranks.map(r=>`<div class="chip"><div class="cn num">#${r.rank}</div><div class="cl">${r.name} · ${nf(r.streams)} האזנות</div></div>`).join('')}</div>
-    <div class="explain" style="margin-top:9px">מתוך 86 פודקאסטים פעילים. החציון בפורטפוליו הוא ${nf(B.portfolio.median)} האזנות — שנצברו על פני שנים. ארבעת השואים בני פחות מחודש.</div>
-  </div>
-
-  <div class="block">${RB('BM6')}
-    <div class="proj"><div class="pt">▸ תחזית (לא הבטחה)</div>
-      <div style="font-size:13.5px;line-height:1.6;color:#e8ebf1">${sy.projection.statement_he}</div>
-      <div class="note">בסיס: ${sy.projection.basis}</div>
-    </div>
-  </div>`;
-}
-function boldFirst(t){const i=t.indexOf('.');return i>0&&i<90?`<b>${t.slice(0,i+1)}</b>${t.slice(i+1)}`:t;}
-function drawBench(){
-  const sy=B.synthesis;
-  // anchor: each RE/MAX show vs 145 threshold
-  const rm=B.growth.remax;const TH=145;const mx=Math.max(TH,...rm.map(r=>r.month1));
-  $('bench-anchor').innerHTML=rm.map(r=>{
-    const above=r.month1>=28; const col=r.month1>=TH?COL.deep:(above?COL.reach:'#5b6b85');
-    return bbRow(`<b>${r.name}</b> · ${r.days} ימים`,r.month1,mx,col,r.month1>=TH?'מעל רף 30-יום':(above?'מעל החציון':'בטווח הפתיחה'));
-  }).join('')+`<div class="thresh">— קו 145 = רף "חצי עליון בעולם" ל-30 יום —</div>`;
-  // mature: month1 of mature shows (anonymized) vs RE/MAX leader
-  const mat=B.growth.mature.filter(m=>m.month1!=null).slice(0,4);
-  const lead=B.growth.remax[0];
-  const rows=[{l:`<b>המבוגר האחראי</b> (RE/MAX, היום)`,v:lead.month1,note:`${lead.days} ימים`,col:COL.deep}]
-    .concat(mat.map(m=>({l:`פודקאסט ותיק ${m.label} · היום ${nf(m.all_time)}`,v:m.month1,note:'חודש 1 שלו',col:'#6f7da0'})));
-  const mx2=Math.max(...rows.map(r=>r.v));
-  $('bench-mature').innerHTML=rows.map(r=>bbRow(r.l,r.v,mx2,r.col,r.note)).join('');
-}
-function bbRow(lbl,v,mx,col,note){return `<div class="bbrow"><span class="bl">${lbl}</span><div class="bw"><div class="bf" style="width:${Math.max(3,Math.round(100*v/mx))}%;background:${col}"></div></div><span class="bv num">${nf(v)}${note?` <span style="color:var(--mut2);font-weight:500;font-size:11px">· ${note}</span>`:''}</span></div>`;}
-
-/* =================== PER-SHOW =================== */
-function showHTML(s,idx){
-  const f=s.funnel;
-  const ages=demoAges(s);
-  const social_posts=(s.social_posts||[]).slice(0,5).map(p=>{
-    const inner=`<div><div style="font-size:13px;font-weight:500">${p.label}</div><div style="font-size:11px;color:var(--mut2);margin-top:2px">עלה ב: ${p.account} · ${p.platform} · ❤ ${nf(p.likes)} · ↗ ${nf(p.shares)}</div></div><div class="num" style="font-size:16px;font-weight:800;color:${p.platform==='Instagram'?COL.ig:COL.fb}">${nf(p.views)}</div>`;
-    return p.url?`<a class="pg" style="grid-template-columns:1fr auto;text-decoration:none" href="${p.url}" target="_blank">${inner}</a>`:`<div class="pg" style="grid-template-columns:1fr auto">${inner}</div>`;}).join('')||'<div class="sub">אין רילס שזוהו לתוכנית</div>';
-  return `
-  <div class="strip">
-    <div class="kpi lead">${RB('S'+idx+'a')}<div class="l">סך האזנה</div><div class="v deep num">${nf(deepOf(s))}</div><div class="s">YT ${nf(s.platforms.youtube)} · SP ${nf(s.platforms.spotify)} · AP ${nf(s.platforms.apple)}</div></div>
-    <div class="kpi">${RB('S'+idx+'b')}<div class="l">צופים ייחודיים</div><div class="v num">${nf(s.yt.unique_viewers)}</div><div class="s">YouTube · אנשים שונים</div></div>
-    <div class="kpi">${RB('S'+idx+'c')}<div class="l">זמן צפייה ממוצע</div><div class="v num">${s.yt.avg_dur||'–'}</div><div class="s">YouTube · ${s.yt.avg_pct!=null?s.yt.avg_pct+'% מהסרטון':''}</div></div>
-  </div>
-
-  ${f?`<div class="block">${RB('S'+idx+'d')}
-    <div class="bh"><h3>משפך ההמרה · ${s.name}</h3></div>
-    <div class="sub">מהחשיפה בספוטיפיי להאזנה בפועל.</div>
-    ${funnelHTML(s)}
-  </div>`:''}
-
-  ${s.curves&&s.curves.length?`<div class="block deep">${RB('S'+idx+'e')}
-    <div class="bh"><span class="btag d">עומק</span><h3>עד כמה מקשיבים לפרק · עקומת שימור</h3></div>
-    <div class="sub">מתוך מי שהתחיל את הפרק — כמה החזיקו עד כל נקודה. ה-100% = הגיעו לסוף.</div>
-    <div class="curve"><svg id="cv-${idx}" viewBox="0 0 640 140" preserveAspectRatio="none"></svg></div>
-    <div id="cvleg-${idx}" class="glegend"></div>
-    <div class="explain"><b>הקשבה אמיתית</b> = איזה אחוז האזין בתשומת לב מלאה ולא ברקע · <b>זמן חציוני</b> = כמה זמן החזיק המאזין החציוני.</div>
-  </div>`:''}
-
-  <div class="two">
-    <div class="block">${RB('S'+idx+'f')}
-      <div class="bh"><h3>ביצועים לפי פרק</h3></div>
-      <div class="sub">האזנות ספוטיפיי + שימור</div>
-      <table><tbody>${(s.curves||[]).map((e,i)=>`<tr><td>${i+1}. ${e.title.replace(/^פרק \d+ - /,'').slice(0,30)}</td><td class="num" style="text-align:left;font-weight:700">${nf(e.count)}</td><td class="num" style="text-align:left;color:var(--mut)">${e.median_completion_sec?Math.round(e.median_completion_sec/60)+'ד׳':''}</td></tr>`).join('')||'<tr><td class="sub">אין נתונים</td></tr>'}</tbody></table>
-    </div>
-    <div class="block reach">${RB('S'+idx+'g')}
-      <div class="bh"><span class="btag r">חשיפה</span><h3>רילס שעלו על התוכנית</h3></div>
-      <div class="explain" style="margin-bottom:9px">בעמודים שונים — החשיפה היא של העמוד שבו עלה הפוסט, לא של התוכנית.</div>
-      ${social_posts}
-    </div>
-  </div>
-
-  <div class="block">${RB('S'+idx+'h')}
-    <div class="bh"><h3>גיל ומגדר הקהל · ספוטיפיי</h3></div>
-    ${s.demo_reliable?`<div class="sub">לפי ${nf(s.spotify_streams)} האזנות.</div>
-      <div class="glegend"><span><i style="background:${COL.male}"></i>גברים</span><span><i style="background:${COL.female}"></i>נשים</span><span><i style="background:${COL.nb}"></i>אחר</span></div>
-      <div class="demo">${ages}</div>`
-    :`<div class="sub">מדגם קטן מדי לפילוח אמין (${nf(s.spotify_streams)} האזנות) — נציג כשייצבר.</div>`}
-  </div>`;
-}
-function demoAges(s){
-  const ord=['18-22','23-27','28-34','35-44','45-59','60-150'];
-  const rows=(s.age||[]).map(a=>{const c=a.genderBreakdown?.counts||[];const g=k=>(c.find(x=>x.gender===k)||{}).count||0;
-    return {br:a.displayName||a.ageBracket,m:g('MALE'),f:g('FEMALE'),nb:g('NON_BINARY')+g('NOT_SPECIFIED'),n:(a.genderBreakdown?.total)||0};})
-    .filter(a=>a.n>0&&a.br!=='Unknown').sort((x,y)=>ord.indexOf(x.br)-ord.indexOf(y.br));
-  const mx=Math.max(1,...rows.map(a=>a.n));
-  return rows.map(a=>`<div class="dl"><span>${a.br}</span><div class="db">
-    <span style="width:${Math.round(100*a.m/mx)}%;background:${COL.male}"></span><span style="width:${Math.round(100*a.f/mx)}%;background:${COL.female}"></span><span style="width:${Math.round(100*a.nb/mx)}%;background:${COL.nb}"></span>
-    </div><span class="num">${a.n}</span></div>`).join('')||'<div class="sub">אין נתונים</div>';
-}
-function drawCurves(idx){
-  const s=shows[idx];if(!s.curves||!s.curves.length)return;
-  const svg=$('cv-'+idx);if(!svg)return;
-  const W=640,H=140,pl=30,pb=20,pt=8;
-  const xs=[0,25,50,75,95,100];
-  const colors=['#f3a23e','#36d6c6','#4d8df5','#a87bf0'];
-  let g='';for(let k=0;k<=2;k++){const v=100*k/2,y=pt+(1-v/100)*(H-pt-pb);g+=`<line class="gl" x1="${pl}" y1="${y.toFixed(1)}" x2="${W}" y2="${y.toFixed(1)}"/><text class="glt" x="${pl-5}" y="${(y+3).toFixed(1)}" text-anchor="end">${v}%</text>`;}
-  let paths='',leg='';
-  const eps=s.curves.filter(e=>e.count>=3).slice(0,4);
-  eps.forEach((e,ci)=>{
-    const col=colors[ci%4];
-    const pts=xs.map(x=>{const yv=x===0?100:(e.retention['p'+x]??e.retention[x]??0);
-      const X=pl+(x/100)*(W-pl-6),Y=pt+(1-yv/100)*(H-pt-pb);return [X,Y];});
-    paths+=`<path d="${pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ')}" fill="none" stroke="${col}" stroke-width="2.2" opacity=".9"/>`;
-    leg+=`<span><i style="background:${col}"></i>${e.title.replace(/^פרק (\d+).*/,'פרק $1')} · ${e.median_completion_sec?Math.round(e.median_completion_sec/60)+'ד׳ חציון':''} · ${e.foreground_pct!=null?Math.round(e.foreground_pct*100)+'% הקשבה אמיתית':''}</span>`;
-  });
-  let xl='';xs.forEach(x=>{const X=pl+(x/100)*(W-pl-6);xl+=`<text class="xlab" x="${X}" y="${H-5}" text-anchor="middle">${x}%</text>`;});
-  svg.innerHTML=g+paths+xl;
-  $('cvleg-'+idx).innerHTML=leg;
+/* clean SVG sparkline (fixed height — no smear) */
+function sparkSVG(series,h){h=h||54;if(!series.length)return '<div class="sub">אין נתוני מגמה</div>';
+  var W=640,max=Math.max.apply(null,series.concat([1])),n=series.length;
+  var X=function(i){return 4+(n>1?i*(W-8)/(n-1):0);},Y=function(v){return 4+(1-v/max)*(h-8);};
+  var ln=series.map(function(v,i){return (i?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1);}).join(' ');
+  var ar='M'+X(0).toFixed(1)+' '+(h-4)+' '+ln.slice(1)+' L'+X(n-1).toFixed(1)+' '+(h-4)+' Z';
+  return '<svg viewBox="0 0 '+W+' '+h+'" preserveAspectRatio="none" style="width:100%;height:'+h+'px;overflow:visible"><path d="'+ar+'" fill="'+COL.reach+'" opacity=".1"/><path d="'+ln+'" fill="none" stroke="'+COL.reach+'" stroke-width="2"/></svg>';
 }
 
-/* =================== EXPLORER =================== */
-const METRICS=[
-  {k:'deep',name:'סך האזנה (פרקים)',get:s=>deepOf(s),fmt:nf,drill:s=>[['YouTube',s.platforms.youtube],['Spotify',s.platforms.spotify],['Apple',s.platforms.apple]]},
-  {k:'reach',name:'חשיפה בסושיאל',get:s=>(s.instagram_views+s.facebook_views),fmt:nf,drill:s=>[['Instagram',s.instagram_views],['Facebook',s.facebook_views]]},
-  {k:'funnel',name:'משפך המרה',get:s=>s.funnel?s.funnel.consumed:0,fmt:nf,drill:s=>s.funnel?[['נחשפו',s.funnel.reached],['התעניינו',s.funnel.interested],['צרכו',s.funnel.consumed]]:[]},
-  {k:'unique',name:'צופים ייחודיים (YT)',get:s=>s.yt.unique_viewers||0,fmt:nf,drill:s=>[['שעות צפייה',Math.round(s.yt.watch_hours||0)],['שימור %',s.yt.avg_pct||0]]},
-  {k:'impr',name:'חשיפות בספוטיפיי',get:s=>s.impressions.total||0,fmt:nf,drill:s=>s.impressions.sources.map(x=>[x.name,x.count])},
+/* ================= OVERVIEW ================= */
+function buildOverview(){
+  return statusStrip('Ast')+
+  '<div class="statgrid">'+
+    '<div class="statcard lead">'+RB('A1')+'<div class="ico">'+svgIco(IC.headphones)+'</div><div class="t">האזנה לפרקים'+tip('deep')+'</div><div class="v deep num">'+nf(totDeep)+'</div><div class="x">הליבה: מי שהאזין לפרק מלא · YouTube + Spotify + Apple</div></div>'+
+    '<div class="statcard r">'+RB('A2')+'<div class="ico">'+svgIco(IC.eye)+'</div><div class="t">חשיפה בסושיאל'+tip('reach')+'</div><div class="v reach num">'+kf(totReach)+'</div><div class="x">צפיות רילס · מדד נפרד, רחב — לא מסכמים עם האזנה</div></div>'+
+    '<div class="statcard">'+RB('A3')+'<div class="ico">'+svgIco(IC.filter)+'</div><div class="t">פרקים שפורסמו'+tip('episodes')+'</div><div class="v num"><span class="epstat"><span class="ec">'+nf(totPub)+'</span><span class="ep">/ '+nf(totPlan)+'</span></span></div><div class="x">כל תוכנית מתוכננת ל-'+EP_PLANNED+' פרקים · אנחנו בתחילת הסדרה</div></div>'+
+  '</div>'+
+  '<div class="leaders">'+leadersLine()+'</div>'+
+  '<div class="block deep">'+RB('A4')+'<div class="bh"><span class="btag d">האזנה</span><h3>טבלת מובילים · האזנה לפרקים</h3></div><div class="sub">פרק מלא שנצרך בפועל — הקרדיט שייך לתוכנית. מסודר לפי סך ההאזנה.</div>'+leaderboardTable()+'</div>'+
+  '<div class="two3">'+
+    '<div class="block">'+RB('A5')+'<div class="bh"><span class="btag r">המרה</span><h3>משפך ההמרה · מצרפי</h3></div><div class="sub">סך ארבע התוכניות יחד, בספוטיפיי.</div>'+funnelStrip()+'<div class="explain"><b>נחשפו</b> = ספוטיפיי הציג להם · <b>התעניינו</b> = נכנסו לבדוק · <b>צרכו</b> = התחילו להאזין.</div></div>'+
+    '<div class="block">'+RB('A6')+'<div class="bh"><h3>גיל ומגדר · מצרפי</h3></div><div class="sub">פילוח מאזיני ספוטיפיי בכל התוכניות.</div>'+ageBars()+'</div>'+
+  '</div>'+
+  '<div class="two">'+
+    '<div class="block reach">'+RB('A7')+'<div class="bh"><span class="btag r">חשיפה</span><h3>חשיפה בסושיאל · לפי עמוד'+tip('source_social')+'</h3></div><div class="explain" style="margin-top:0;margin-bottom:9px">רוב הנפח מעמודי-המותג (מאני, רימקס), לא מעמודי המגישים. שמות העמודים = קישורים.</div>'+socialPages()+'</div>'+
+    '<div class="block">'+RB('A8')+'<div class="bh"><span class="btag r">מגמה</span><h3>מגמת האזנות יומית</h3></div><div class="sub">סך ההזרמות היומיות בכל 4 התוכניות · ספוטיפיי · 30 ימים.</div><div class="sparkbox">'+sparkSVG(trendSeries)+'</div></div>'+
+  '</div>';
+}
+
+/* ================= BENCHMARK (מול השוק — internal) ================= */
+function buildBenchmark(){
+  var mature=(B.growth&&B.growth.mature||[]).filter(function(x){return x.month1!=null;});
+  // pick the most FLATTERING parallels: veterans that started SMALL and grew huge (sorted by all_time)
+  var grewSmall=mature.filter(function(x){return x.month1<=900;}).sort(function(a,b){return (b.all_time||0)-(a.all_time||0);});
+  var topVets=mature.slice().sort(function(a,b){return (b.all_time||0)-(a.all_time||0);}).slice(0,4);
+  var ourLead=(B.growth&&B.growth.remax||[])[0]||{name:'המבוגר האחראי',month1:116};
+  // month-1 compare: our lead vs veterans-that-started-small
+  var m1rows=[{lbl:'<b>'+esc(ourLead.name)+'</b> (RE/MAX, היום)',v:ourLead.month1,col:COL.deep,sm:(ourLead.days||19)+' ימים'}]
+    .concat(grewSmall.slice(0,3).map(function(x){return {lbl:'פודקאסט ותיק '+x.label+' · היום '+kf(x.all_time),v:x.month1,col:'#6f7da0',sm:'חודש 1 שלו'};}));
+  var m1mx=Math.max.apply(null,m1rows.map(function(r){return r.v;}).concat([1]));
+  // potential: where veterans are TODAY
+  var potRows=topVets.map(function(x){return {lbl:'פודקאסט ותיק '+x.label,v:x.all_time,col:COL.reach};});
+  potRows.push({lbl:'<b>'+esc(ourLead.name)+'</b> (היום)',v:leadDeep?leadDeep.deep_total:416,col:COL.deep});
+  var potMx=Math.max.apply(null,potRows.map(function(r){return r.v;}).concat([1]));
+  // growth shape: month 1→2→3 of a veteran that started small (clearest story)
+  var shapeVet=grewSmall[0]||topVets[0];
+  var sy=B.synthesis||{};
+  function bbar(rows,mx,fmt){return '<div class="bbar">'+rows.map(function(r){return '<div class="bbrow"><span class="bl">'+r.lbl+'</span><div class="bw"><div class="bf" style="width:'+Math.max(3,pct(r.v,mx))+'%;background:'+r.col+'"></div></div><span class="bv num">'+fmt(r.v)+(r.sm?' <span class="sm">· '+r.sm+'</span>':'')+'</span></div>';}).join('')+'</div>';}
+  var out='<div class="block deep">'+RB('B1')+'<div class="bh"><span class="btag d">מול השוק</span><h3>איפה אנחנו — מול הפודקאסטים שלנו</h3></div>'+
+    '<div class="sub">לא משווים לכל העולם — משווים למה שאנחנו מכירים: הפודקאסטים של WeDo עצמם, שכמה מהם התחילו בדיוק כאן והיום מונים מאות-אלפי האזנות.</div></div>';
+  out+='<div class="block">'+RB('B2')+'<div class="bh"><h3>חודש ראשון · אנחנו מול תוכניות שלנו שצמחו</h3></div>'+
+    '<div class="sub">החודש הראשון של המוביל שלנו, מול החודש הראשון של פודקאסטים ותיקים בפורטפוליו (אנונימי) שהיום ענקיים.</div>'+
+    bbar(m1rows,m1mx,nf)+
+    (shapeVet?'<div class="explain"><b>פודקאסט ותיק '+shapeVet.label+'</b> עשה '+nf(shapeVet.month1)+' בחודש הראשון'+(shapeVet.month2!=null?', אפילו '+nf(shapeVet.month2)+' בלבד בחודש השני':'')+' — והיום '+kf(shapeVet.all_time)+'. ההתחלה לא מנבאת את התקרה.</div>':'')+'</div>';
+  // growth shape mini chart (month 1/2/3)
+  if(shapeVet&&shapeVet.month3!=null){
+    var sm=[shapeVet.month1,shapeVet.month2,shapeVet.month3],smx=Math.max.apply(null,sm.concat([1]));
+    var W=560,H=120,pl=8,pb=20,pt=8;
+    var X=function(i){return pl+i*(W-pl-8)/2;},Y=function(v){return pt+(1-v/smx)*(H-pt-pb);};
+    var pts=sm.map(function(v,i){return [X(i),Y(v)];});
+    var ln=pts.map(function(p,i){return (i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1);}).join(' ');
+    var dots=pts.map(function(p,i){return '<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="3.5" fill="'+COL.reach+'"/><text x="'+p[0].toFixed(1)+'" y="'+(p[1]-9).toFixed(1)+'" fill="#fff" font-size="11" font-weight="700" text-anchor="middle">'+nf(sm[i])+'</text>';}).join('');
+    var xl=['חודש 1','חודש 2','חודש 3'].map(function(t,i){return '<text class="xlab" x="'+X(i).toFixed(1)+'" y="'+(H-5)+'" text-anchor="middle">'+t+'</text>';}).join('');
+    out+='<div class="block">'+RB('B3')+'<div class="bh"><span class="btag d">צמיחה</span><h3>צורת הצמיחה · 3 חודשים ראשונים</h3></div>'+
+      '<div class="sub">פודקאסט ותיק '+shapeVet.label+' (היום '+kf(shapeVet.all_time)+') — איטי בהתחלה, הצמיחה מגיעה אחר כך.</div>'+
+      '<div class="curvebox"><svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none" style="width:100%;height:120px;overflow:visible"><path d="M'+pl+' '+(H-pb)+' '+ln.slice(1)+' L'+X(2).toFixed(1)+' '+(H-pb)+' Z" fill="'+COL.reach+'" opacity=".1"/><path d="'+ln+'" fill="none" stroke="'+COL.reach+'" stroke-width="2.4"/>'+dots+xl+'</svg></div></div>';
+  }
+  out+='<div class="block">'+RB('B4')+'<div class="bh"><span class="btag r">פוטנציאל</span><h3>לאן אפשר להגיע</h3></div>'+
+    '<div class="sub">היכן הפודקאסטים הוותיקים שלנו עומדים היום (סך האזנות) — מול המוביל שלנו עכשיו.</div>'+
+    bbar(potRows,potMx,kf)+'</div>';
+  if(sy.projection&&sy.projection.statement_he){
+    out+='<div class="block">'+RB('B5')+'<div class="proj"><div class="pt">▸ תחזית (לא הבטחה)</div><div style="font-size:13px;line-height:1.6;color:#e8ebf1">'+esc(sy.projection.statement_he)+'</div><div class="note">בסיס: '+esc(sy.projection.basis||'')+'</div></div></div>';
+  }
+  return out;
+}
+
+/* ================= PER-SHOW ================= */
+function buildShow(s,idx){
+  var p=s.platforms||{},yt=s.yt||{},f=s.funnel;
+  var curvesBig=(s.curves||[]).filter(function(e){return (e.count||0)>=10;});
+  var posts=(s.social_posts||[]).slice(0,5);
+  var ages=ageRowsFor([s]);
+  var out=statusStrip('S'+idx+'st').replace('Ast','S'+idx+'st');
+  out='<div class="statgrid four">'+
+    '<div class="statcard lead">'+RB('S'+idx+'a')+'<div class="ico">'+svgIco(IC.headphones)+'</div><div class="t">סך האזנה'+tip('deep')+'</div><div class="v deep num">'+nf(s.deep_total)+'</div><div class="x">YT '+nf(p.youtube)+' · SP '+nf(p.spotify)+' · AP '+nf(p.apple)+'</div></div>'+
+    '<div class="statcard">'+RB('S'+idx+'b')+'<div class="ico">'+svgIco(IC.filter)+'</div><div class="t">פרקים'+tip('episodes')+'</div><div class="v num"><span class="epstat"><span class="ec">'+pubEps(s)+'</span><span class="ep">/ '+EP_PLANNED+'</span></span></div><div class="x">מתוכננים '+EP_PLANNED+' פרקים</div></div>'+
+    '<div class="statcard">'+RB('S'+idx+'c')+'<div class="ico">'+svgIco(IC.users)+'</div><div class="t">צופים ייחודיים'+tip('unique')+'</div><div class="v num">'+nf(yt.unique_viewers)+'</div><div class="x">YouTube · אנשים שונים</div></div>'+
+    '<div class="statcard">'+RB('S'+idx+'d')+'<div class="ico">'+svgIco(IC.clock)+'</div><div class="t">זמן צפייה ממוצע</div><div class="v num" style="font-size:30px">'+(yt.avg_dur||'–')+'</div><div class="x">YouTube'+(yt.avg_pct!=null?' · '+yt.avg_pct+'% מהסרטון'+tip('ytret'):'')+'</div></div>'+
+  '</div>';
+  if(f){out+='<div class="block">'+RB('S'+idx+'e')+'<div class="bh"><span class="btag r">המרה</span><h3>משפך ההמרה · '+esc(s.name)+'</h3></div><div class="sub">מהחשיפה בספוטיפיי להאזנה בפועל.</div>'+funnelStrip(f)+'</div>';}
+  // retention curve — only for episodes with enough listens
+  if(curvesBig.length){
+    out+='<div class="block deep">'+RB('S'+idx+'f')+'<div class="bh"><span class="btag d">עומק</span><h3>עד כמה מקשיבים לפרק'+tip('curve')+'</h3></div><div class="sub">מתוך מי שהתחיל את הפרק — כמה החזיקו עד כל נקודה. (פרקים עם מספיק האזנות בלבד.)</div><div class="curvebox" id="cv-'+idx+'"></div><div id="cvleg-'+idx+'" class="glegend" style="margin-top:6px"></div></div>';
+  }
+  out+='<div class="two">'+
+    '<div class="block">'+RB('S'+idx+'g')+'<div class="bh"><h3>ביצועים לפי פרק</h3></div><div class="sub">האזנות ספוטיפיי · זמן חציוני'+tip('median')+'</div><table><tbody>'+
+    ((s.curves||[]).map(function(e,i){return '<tr><td>'+(i+1)+'. '+esc(e.title.replace(/^פרק \d+ - /,'').slice(0,28))+'</td><td class="num" style="text-align:left;font-weight:700">'+nf(e.count)+'</td><td class="num" style="text-align:left;color:var(--mut)">'+(e.median_completion_sec?Math.round(e.median_completion_sec/60)+'ד׳':'')+'</td></tr>';}).join('')||'<tr><td class="sub">אין נתונים</td></tr>')+'</tbody></table></div>'+
+    '<div class="block reach">'+RB('S'+idx+'h')+'<div class="bh"><span class="btag r">חשיפה</span><h3>רילס שעלו על התוכנית</h3></div><div class="explain" style="margin-top:0;margin-bottom:9px">בעמודים שונים — החשיפה היא של העמוד שבו עלה הפוסט.</div>'+
+    (posts.map(function(pp){var inner='<div><div class="pl">'+esc(pp.label)+'</div><div class="pmeta">עלה ב: '+esc(pp.account)+' · '+pp.platform+' · ❤ '+nf(pp.likes)+'</div></div><div class="pv num" style="color:'+(pp.platform==='Instagram'?COL.ig:COL.fb)+'">'+nf(pp.views)+'</div>';return pp.url?'<a class="post" href="'+esc(pp.url)+'" target="_blank" rel="noopener">'+inner+'</a>':'<div class="post">'+inner+'</div>';}).join('')||'<div class="sub">אין רילס שזוהו</div>')+'</div>'+
+  '</div>'+
+  '<div class="block">'+RB('S'+idx+'i')+'<div class="bh"><h3>גיל ומגדר הקהל · ספוטיפיי</h3></div>'+
+    (s.demo_reliable?'<div class="sub">לפי '+nf(s.spotify_streams)+' האזנות.</div>'+ageBars(ages):'<div class="sub">מדגם קטן מדי לפילוח אמין ('+nf(s.spotify_streams)+' האזנות) — נציג כשייצבר.</div>')+'</div>';
+  return out;
+}
+function drawShowCurve(idx){
+  var s=shows[idx];if(!s)return;var big=(s.curves||[]).filter(function(e){return (e.count||0)>=10;}).slice(0,4);
+  var box=$('cv-'+idx);if(!box||!big.length)return;
+  var W=640,H=150,pl=30,pb=20,pt=8,xs=[0,25,50,75,95,100],cols=['#f3a23e','#36d6c6','#4d8df5','#a87bf0'];
+  var g='';for(var k=0;k<=2;k++){var v=100*k/2,y=pt+(1-v/100)*(H-pt-pb);g+='<line class="gl" x1="'+pl+'" y1="'+y.toFixed(1)+'" x2="'+W+'" y2="'+y.toFixed(1)+'"/><text class="glt" x="'+(pl-5)+'" y="'+(y+3).toFixed(1)+'" text-anchor="end">'+v+'%</text>';}
+  var paths='',leg='';
+  big.forEach(function(e,ci){var col=cols[ci%4];
+    var pp=xs.map(function(x){var yv=(x===0)?100:(e.retention&&(e.retention['p'+x]!=null?e.retention['p'+x]:e.retention[x])||0);var X=pl+(x/100)*(W-pl-6),Y=pt+(1-yv/100)*(H-pt-pb);return [X,Y];});
+    paths+='<path d="'+pp.map(function(q,i){return (i?'L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1);}).join(' ')+'" fill="none" stroke="'+col+'" stroke-width="2.2" opacity=".9"/>';
+    leg+='<span><i style="background:'+col+'"></i>'+esc(e.title.replace(/^פרק (\d+).*/,'פרק $1'))+(e.median_completion_sec?' · '+Math.round(e.median_completion_sec/60)+'ד׳':'')+(e.foreground_pct!=null?' · '+Math.round(e.foreground_pct*100)+'% הקשבה אמיתית':'')+'</span>';});
+  var xl=xs.map(function(x){var X=pl+(x/100)*(W-pl-6);return '<text class="xlab" x="'+X.toFixed(1)+'" y="'+(H-5)+'" text-anchor="middle">'+x+'%</text>';}).join('');
+  box.innerHTML='<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none" style="width:100%;height:150px;overflow:visible">'+g+paths+xl+'</svg>';
+  var lg=$('cvleg-'+idx);if(lg)lg.innerHTML=leg;
+}
+
+/* ================= COMPARE (matrix) ================= */
+var MX_METRICS=[
+  {k:'deep',name:'סך האזנה',tip:'deep',get:function(s){return s.deep_total;},fmt:nf},
+  {k:'yt',name:'YouTube',get:function(s){return s.platforms.youtube;},fmt:nf},
+  {k:'sp',name:'Spotify',get:function(s){return s.platforms.spotify;},fmt:nf},
+  {k:'uniq',name:'צופים ייחודיים',tip:'unique',get:function(s){return s.yt&&s.yt.unique_viewers;},fmt:nf},
+  {k:'watch',name:'שעות צפייה',tip:'watch',get:function(s){return s.yt&&s.yt.watch_hours;},fmt:function(v){return v==null?'–':Math.round(v);}},
+  {k:'ytret',name:'שימור YT %',tip:'ytret',get:function(s){return s.yt&&s.yt.avg_pct;},fmt:function(v){return v==null?'–':v+'%';}},
+  {k:'impr',name:'חשיפות ספוטיפיי',tip:'impressions',get:function(s){return s.impressions&&s.impressions.total;},fmt:nf},
+  {k:'conv',name:'המרה (צרכו/התעניינו)',tip:'conv',get:function(s){return s.funnel&&s.funnel.i2c_pct;},fmt:function(v){return v==null?'–':v+'%';}},
+  {k:'reach',name:'חשיפה בסושיאל',tip:'reach',get:function(s){return (s.instagram_views||0)+(s.facebook_views||0);},fmt:nf}
 ];
-function explorerHTML(){
-  return `
-  <div class="block">${RB('EX1')}
-    <div class="bh"><h3>חקירה · בחר מדד והשווה</h3></div>
-    <div class="sub">בחר מדד ושתי תוכניות להשוואה. לחיצה על שורה בפירוק פותחת הסבר.</div>
-    <div class="exctl">
-      <div class="exsel"><label>מדד</label><select id="exMetric">${METRICS.map((m,i)=>`<option value="${i}">${m.name}</option>`).join('')}</select></div>
-      <div class="exsel"><label>תוכנית א'</label><select id="exA">${shows.map((s,i)=>`<option value="${i}">${s.name}</option>`).join('')}</select></div>
-      <div class="exsel"><label>תוכנית ב'</label><select id="exB">${shows.map((s,i)=>`<option value="${i}" ${i===1?'selected':''}>${s.name}</option>`).join('')}</select></div>
-    </div>
-    <div class="excards" id="exCards"></div>
-  </div>`;
+function buildCompare(){
+  var h='<div class="block">'+RB('CMP1')+'<div class="bh"><h3>השוואה · כל המדדים, כל התוכניות</h3></div><div class="sub">לחיצה על שם מדד פותחת הסבר. הצבע = מי מוביל בכל שורה.</div>'+
+    '<div class="scroll"><table class="mx"><thead><tr><th>מדד</th>'+shows.map(function(s){return '<th>'+esc(s.name)+'</th>';}).join('')+'</tr></thead><tbody>';
+  MX_METRICS.forEach(function(mt,mi){
+    var vals=shows.map(function(s){var v=mt.get(s);return (v==null||isNaN(v))?null:v;});
+    var mx=Math.max.apply(null,vals.filter(function(v){return v!=null;}).concat([1]));
+    var leadIdx=vals.indexOf(Math.max.apply(null,vals.filter(function(v){return v!=null;}).concat([-1])));
+    h+='<tr><td class="ml" onclick="(function(e){var x=document.getElementById(\'mxe-'+mi+'\');x.style.display=x.style.display===\'table-row\'?\'none\':\'table-row\';})()">'+esc(mt.name)+(mt.tip?tip(mt.tip):'')+'</td>';
+    shows.forEach(function(s,si){var v=vals[si];h+='<td class="mcell'+(si===leadIdx&&v!=null?' lead-cell':'')+'">'+(v!=null?'<span class="mbar" style="background:'+(si===leadIdx?COL.deep:COL.reach)+';width:'+pct(v,mx)+'%"></span>':'')+'<span class="mv">'+mt.fmt(v)+'</span></td>';});
+    h+='</tr>';
+    if(mt.tip)h+='<tr id="mxe-'+mi+'" style="display:none"><td colspan="'+(shows.length+1)+'"><div class="mxexp">'+esc(TIPS[mt.tip]||'')+'</div></td></tr>';
+  });
+  return h+'</tbody></table></div></div>';
 }
-const DRILL_EXPLAIN={'נחשפו':'ספוטיפיי הציג להם את התוכנית (בחיפוש/מסך הבית).','התעניינו':'נכנסו לבדוק את עמוד התוכנית.','צרכו':'באמת התחילו להאזין לפרק.','Search':'נתקלו בתוכנית דרך חיפוש.','Home':'הופיע להם במסך הבית של ספוטיפיי.','Library':'שמרו/עוקבים — הגיע מהספרייה שלהם.','שימור %':'אחוז ממוצע מהסרטון שנצפה.','שעות צפייה':'סך שעות הצפייה המצטברות.'};
-function exCard(mi,si){
-  const m=METRICS[mi],s=shows[si],dr=m.drill(s);
-  return `<div class="excard"><h4>${s.name}</h4><div class="exsub">${m.name}</div>
-    <div class="exbig num" style="color:var(--deep)">${m.fmt(m.get(s))}</div>
-    <div class="exdrill">${dr.map((d,i)=>{
-      const ex=DRILL_EXPLAIN[d[0]];
-      return `<div class="exrow ${ex?'clickable':''}" ${ex?`onclick="this.nextElementSibling.classList.toggle('open')"`:''}><span>${d[0]} ${ex?'<span class="caret">▾</span>':''}</span><span class="ev num">${m.fmt(d[1])}</span></div>${ex?`<div class="exdd">${ex}</div>`:''}`;
-    }).join('')||'<div class="sub">אין פירוק</div>'}</div>
-  </div>`;
+
+/* ================= DEEP DIVE ================= */
+function buildDeepDive(){
+  return '<div class="toolbar">'+RB('DD0')+
+    '<button class="btn" onclick="window.__exportJSON()"><svg class="ic" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>ייצא הכל · JSON</button>'+
+    '<button class="btn" onclick="window.__exportCSV()"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg>ייצא טבלאות · CSV</button>'+
+  '</div>'+
+  '<div class="block">'+RB('DD1')+'<div class="bh"><h3>כל הפרקים · נתונים מלאים</h3></div><div class="sub">האזנות, זמן חציוני, הקשבה אמיתית'+tip('foreground')+', וגודל קהל — פר פרק.</div>'+
+    '<div class="scroll"><table><thead><tr><th>תוכנית</th><th>פרק</th><th>האזנות</th><th>זמן חציוני'+tip('median')+'</th><th>הקשבה אמיתית'+tip('foreground')+'</th><th>קהל</th><th>שימור 25%</th><th>50%</th><th>סוף</th></tr></thead><tbody>'+
+    shows.map(function(s){return (s.curves||[]).map(function(e){var r=e.retention||{};function rr(x){var v=r['p'+x]!=null?r['p'+x]:r[x];return v!=null?Math.round(v)+'%':'–';}
+      return '<tr><td class="nm">'+esc(s.name)+'</td><td>'+esc(e.title.replace(/^פרק (\d+).*/,'פרק $1'))+'</td><td class="num">'+nf(e.count)+'</td><td class="num">'+(e.median_completion_sec?Math.round(e.median_completion_sec/60)+'ד׳':'–')+'</td><td class="num">'+(e.foreground_pct!=null?Math.round(e.foreground_pct*100)+'%':'–')+'</td><td class="num">'+nf(e.total_audience)+'</td><td class="num">'+rr(25)+'</td><td class="num">'+rr(50)+'</td><td class="num">'+rr(100)+'</td></tr>';}).join('');}).join('')+
+    '</tbody></table></div></div>'+
+  '<div class="block">'+RB('DD2')+'<div class="bh"><h3>מקורות חשיפה בספוטיפיי'+tip('impressions')+'</h3></div><div class="sub">איך אנשים נתקלים בתוכנית בתוך ספוטיפיי.</div>'+
+    '<div class="scroll"><table><thead><tr><th>תוכנית</th><th>סך חשיפות</th><th>חיפוש</th><th>מסך הבית</th><th>ספרייה</th></tr></thead><tbody>'+
+    shows.map(function(s){var src=(s.impressions&&s.impressions.sources)||[];function f(n){var x=src.filter(function(c){return c.name===n;})[0];return x?nf(x.count):'–';}
+      return '<tr><td class="nm">'+esc(s.name)+'</td><td class="num">'+nf(s.impressions&&s.impressions.total)+'</td><td class="num">'+f('Search')+'</td><td class="num">'+f('Home')+'</td><td class="num">'+f('Library')+'</td></tr>';}).join('')+
+    '</tbody></table></div></div>'+
+  '<div class="block">'+RB('DD3')+'<div class="bh"><h3>כל הרילס · סושיאל</h3></div><div class="sub">כל הפוסטים שזוהו, לפי צפיות.</div>'+
+    '<div class="scroll"><table><thead><tr><th>עמוד</th><th>פלטפורמה</th><th>תיאור</th><th>צפיות</th><th>לייקים</th></tr></thead><tbody>'+
+    ((social.posts||[]).map(function(pp){return '<tr><td class="nm">'+esc(pp.account)+'</td><td>'+pp.platform+'</td><td>'+esc((pp.label||'').slice(0,40))+'</td><td class="num">'+nf(pp.views)+'</td><td class="num">'+nf(pp.likes)+'</td></tr>';}).join('')||'<tr><td class="sub">אין</td></tr>')+
+    '</tbody></table></div></div>';
 }
-function renderEx(){const mi=+$('exMetric').value,a=+$('exA').value,b=+$('exB').value;$('exCards').innerHTML=exCard(mi,a)+exCard(mi,b);}
-function initExplorer(){['exMetric','exA','exB'].forEach(id=>$(id).addEventListener('change',renderEx));renderEx();}
 
-/* =================== export + edit =================== */
-function tRows(){let r=[['תוכנית','סך האזנה','YouTube','Spotify','Apple','צופים ייחודיים','שעות צפייה','שימור YT%']];
-  shows.forEach(s=>r.push([s.name,deepOf(s),s.platforms.youtube,s.platforms.spotify,s.platforms.apple,s.yt.unique_viewers,s.yt.watch_hours,s.yt.avg_pct]));
-  r.push([],['עמוד סושיאל','פלטפורמה','סוג','פוסטים','חשיפה']);social.by_page.forEach(p=>r.push([p.page,p.platform,p.type,p.posts,p.views]));return r;}
-function copyT(){navigator.clipboard.writeText(tRows().map(r=>r.join('\t')).join('\n')).then(()=>toast('הטבלה הועתקה'));}
-function csvT(){const c='﻿'+tRows().map(r=>r.join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([c],{type:'text/csv'}));a.download='remax-wedo.csv';a.click();}
-function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800);}
-$('editToggle').onclick=function(){document.body.classList.toggle('editmode');this.classList.toggle('on');};
+/* ---- export ---- */
+window.__exportJSON=function(){var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(D,null,1)],{type:'application/json'}));a.download='remax-wedo-data.json';a.click();toast('הנתונים יוצאו · JSON');};
+window.__exportCSV=function(){
+  var rows=[['תוכנית','פרקים','סך האזנה','YouTube','Spotify','Apple','צופים ייחודיים','שעות צפייה','שימור YT%','חשיפות ספוטיפיי','המרה%']];
+  shows.forEach(function(s){rows.push([s.name,pubEps(s),s.deep_total,s.platforms.youtube,s.platforms.spotify,s.platforms.apple,s.yt&&s.yt.unique_viewers,s.yt&&s.yt.watch_hours,s.yt&&s.yt.avg_pct,s.impressions&&s.impressions.total,s.funnel&&s.funnel.i2c_pct]);});
+  rows.push([],['עמוד','פלטפורמה','סוג','פוסטים','חשיפה']);(social.by_page||[]).forEach(function(p){rows.push([p.page,p.platform,p.type,p.posts,p.views]);});
+  var c='﻿'+rows.map(function(r){return r.join(',');}).join('\n');var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([c],{type:'text/csv'}));a.download='remax-wedo.csv';a.click();toast('הטבלאות יוצאו · CSV');
+};
+function toast(msg){var t=$('toast');if(!t)return;t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},1800);}
 
-build(0);
+/* ---- tabs ---- */
+var TABS=[{k:'ov',name:'סקירה'},{k:'bm',name:'מול השוק',star:1}].concat(shows.map(function(s,i){return {k:'s'+i,name:s.name};})).concat([{k:'cmp',name:'השוואה'},{k:'dd',name:'Deep Dive'}]);
+var tabsEl=$('tabs'),panelsEl=$('panels');
+TABS.forEach(function(t,i){var b=document.createElement('button');b.className='tab'+(t.star?' star':'');b.textContent=t.name;b.setAttribute('aria-selected',i===0?'true':'false');b.onclick=function(){sel(i);};tabsEl.appendChild(b);var p=document.createElement('div');p.className='panel'+(i===0?' on':'');p.id='pan'+i;panelsEl.appendChild(p);});
+function buildTab(i){var t=TABS[i],p=$('pan'+i);if(p.dataset.built)return;
+  try{
+    if(t.k==='ov')p.innerHTML=buildOverview();
+    else if(t.k==='bm')p.innerHTML=buildBenchmark();
+    else if(t.k==='cmp')p.innerHTML=buildCompare();
+    else if(t.k==='dd')p.innerHTML=buildDeepDive();
+    else {var idx=+t.k.slice(1);p.innerHTML=buildShow(shows[idx],idx);drawShowCurve(idx);}
+  }catch(e){if(window.console)console.error('tab '+t.k,e);p.innerHTML='<div class="block"><div class="bh"><h3>שגיאה</h3></div><div class="sub">'+esc(e&&e.message||e)+'</div></div>';}
+  p.dataset.built='1';
+}
+function sel(i){[].forEach.call(tabsEl.children,function(t,j){t.setAttribute('aria-selected',i===j?'true':'false');});buildTab(i);[].forEach.call(panelsEl.children,function(p,j){p.classList.toggle('on',i===j);});window.scrollTo({top:0,behavior:'smooth'});}
+
+/* ---- tooltip tap (mobile) ---- */
+document.addEventListener('click',function(e){var t=e.target.closest&&e.target.closest('.tip');
+  document.querySelectorAll('.tip.show').forEach(function(x){if(x!==t)x.classList.remove('show');});
+  if(t){e.stopPropagation();t.classList.toggle('show');}});
+
+/* ---- edit mode ---- */
+(function(){var t=$('editToggle');if(t)t.onclick=function(){document.body.classList.toggle('editmode');this.classList.toggle('on');};})();
+
+buildTab(0);
+})();
 </script>
 </body>
 </html>
