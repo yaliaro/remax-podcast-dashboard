@@ -131,6 +131,15 @@ td.eps b{font-weight:800;color:var(--tx)}td.eps .epd{color:var(--mut2);font-size
 .proj .pt{font-size:11px;font-weight:800;color:var(--deep);letter-spacing:.4px;margin-bottom:5px}
 .note{font-size:11px;color:var(--mut2);font-style:italic;margin-top:7px;line-height:1.5}
 .story{list-style:none;display:flex;flex-direction:column;gap:10px}.story li{padding-inline-start:24px;position:relative;font-size:13px;line-height:1.55;color:#d6dae4}.story li:before{content:"";position:absolute;inset-inline-start:5px;top:8px;width:7px;height:7px;border-radius:3px;background:var(--deep)}
+/* insights */
+.ins .insrow{padding:9px 0;border-top:1px solid rgba(255,255,255,.05)}
+.ins .insrow:first-child{border-top:none}
+.ins .insname{font-size:12.5px;font-weight:700;margin-bottom:5px;color:var(--tx)}
+.ins .insrow .bars{margin:0}
+.ins .bars .bl{grid-template-columns:104px 1fr 72px;font-size:12px}
+.inssub{font-size:11.5px;color:var(--mut2);margin-bottom:9px}
+.inssw{font-size:12.5px;color:#cfd4de;line-height:1.65;margin-top:13px;border-top:1px solid var(--bd);padding-top:10px}
+.insnote{font-size:11px;color:var(--mut2);font-style:italic;margin-top:7px}
 .toolbar{display:flex;justify-content:flex-end;gap:8px;margin-bottom:12px;flex-wrap:wrap}
 .btn{background:var(--card2);border:1px solid var(--bd);color:var(--tx);font-family:inherit;font-size:12.5px;font-weight:600;padding:7px 13px;border-radius:9px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}.btn:hover{border-color:var(--bd2)}
 .foot{margin-top:28px;padding-top:14px;border-top:1px solid var(--bd);font-size:11px;color:var(--mut2);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
@@ -428,13 +437,59 @@ function buildStatus(){
 /* ============ COMPARE (matrix) ============ */
 function buildCompare(){return '<div class="block">'+RB('CMP')+'<div class="bh"><h3>השוואה · כל המדדים, כל התוכניות</h3></div><div class="sub">כל מדד מול כל תוכנית. הצבע מסמן מי מוביל בשורה. לחיצה על שם מדד פותחת הסבר.</div>'+rankMatrix()+'</div>';}
 
-/* ============ RAW DATA ============ */
-function buildRaw(){
-  return '<div class="toolbar">'+RB('RD0')+'<button class="btn" onclick="window.__exportJSON()">'+svgIco('<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/>')+'ייצא הכל · JSON</button><button class="btn" onclick="window.__exportCSV()">'+svgIco('<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/>')+'ייצא טבלאות · CSV</button></div>'+
-  '<div class="block">'+RB('RD1')+'<div class="bh"><h3>כל הפרקים · נתונים מלאים</h3></div><div class="scroll"><table><thead><tr><th>תוכנית</th><th>פרק</th><th>האזנות</th><th>זמן חציוני</th><th>ממוקד'+tip('foreground')+'</th><th>קהל</th><th>25%</th><th>50%</th><th>סוף</th></tr></thead><tbody>'+
-    shows.map(function(s){return (s.curves||[]).map(function(e){var r=e.retention||{};function rr(x){var v=r['p'+x]!=null?r['p'+x]:r[x];return v!=null?Math.round(v)+'%':'–';}return '<tr><td class="nm">'+esc(s.name)+'</td><td>'+esc(e.title.replace(/^פרק (\d+).*/,'פרק $1'))+'</td><td class="num">'+nf(e.count)+'</td><td class="num">'+(e.median_completion_sec?Math.round(e.median_completion_sec/60)+'ד׳':'–')+'</td><td class="num">'+(e.foreground_pct!=null?Math.round(e.foreground_pct*100)+'%':'–')+'</td><td class="num">'+nf(e.total_audience)+'</td><td class="num">'+rr(25)+'</td><td class="num">'+rr(50)+'</td><td class="num">'+rr(100)+'</td></tr>';}).join('');}).join('')+'</tbody></table></div></div>'+
-  '<div class="block">'+RB('RD2')+'<div class="bh"><h3>כל הרילס · עם קישורים</h3></div><div class="scroll"><table><thead><tr><th>עמוד</th><th>פלטפורמה</th><th>תיאור</th><th>צפיות</th><th>קישור</th></tr></thead><tbody>'+
-    ((social.posts||[]).slice().sort(function(a,b){return (b.views||0)-(a.views||0);}).map(function(pp){return '<tr><td class="nm">'+esc(pp.account)+'</td><td>'+pp.platform+'</td><td>'+esc((pp.label||'').slice(0,34))+'</td><td class="num">'+nf(pp.views)+'</td><td>'+(pp.url?'<a href="'+esc(pp.url)+'" target="_blank" rel="noopener" style="color:var(--reach)">↗ פתח</a>':'–')+'</td></tr>';}).join('')||'<tr><td class="sub">אין</td></tr>')+'</tbody></table></div></div>';
+/* ============ INSIGHTS (data-driven) ============ */
+function buildInsights(){
+  function card(ref,tag,tagstyle,title,sub,viz,sw,note){
+    return '<div class="block ins">'+RB(ref)+'<div class="bh"><span class="btag" style="'+tagstyle+'">'+tag+'</span><h3>'+title+'</h3></div>'+(sub?'<div class="inssub">'+sub+'</div>':'')+viz+'<div class="inssw">'+sw+'</div>'+(note?'<div class="insnote">'+note+'</div>':'')+'</div>';
+  }
+  var TG={conv:'background:rgba(243,162,62,.14);color:var(--deep)',reach:'background:rgba(54,214,198,.14);color:var(--reach)',aud:'background:rgba(168,123,240,.14);color:var(--nb)',mkt:'background:rgba(57,208,119,.14);color:var(--sp)'};
+  var html='<div class="sub" style="margin-bottom:15px">תובנות שעלו מהצלבת הנתונים בין הפלטפורמות. כל תובנה מבוססת על המספרים שמוצגים לידה.</div>';
+
+  /* 1 — חשיפה מול המרה */
+  var maxImp=Math.max.apply(null,shows.map(function(s){return (s.impressions&&s.impressions.total)||0;}).concat([1]));
+  var v1='<div>'+shows.slice().sort(function(a,b){return ((b.impressions&&b.impressions.total)||0)-((a.impressions&&a.impressions.total)||0);}).map(function(s){
+    var imp=(s.impressions&&s.impressions.total)||0,conv=(s.funnel&&s.funnel.i2c_pct)||0;
+    return '<div class="insrow"><div class="insname">'+esc(s.name)+'</div><div class="bars">'+
+      '<div class="bl"><span>חשיפה</span><div class="bb"><span style="width:'+pct(imp,maxImp)+'%;background:var(--reach)"></span></div><span class="num">'+nf(imp)+'</span></div>'+
+      '<div class="bl"><span>ממירה</span><div class="bb"><span style="width:'+conv+'%;background:var(--deep)"></span></div><span class="num">'+conv+'%</span></div>'+
+    '</div></div>';
+  }).join('')+'</div>';
+  html+=card('I1','המרה',TG.conv,'חשיפה גבוהה לא מבטיחה האזנה','חשיפה בספוטיפיי מול אחוז המתעניינים שהתחילו להאזין',v1,'אוויר פסגות מקבלת את החשיפה הגבוהה ביותר, אבל רק 52% מהמתעניינים מתחילים להאזין. סוגרים עסקה, עם רבע מהחשיפה, ממירה 88%. כדאי להפנות מאמצי-חשיפה לתוכניות שיודעות להמיר, ולתת לאוויר פסגות לעבוד על איכות-ההאזנה.');
+
+  /* 2 — איפה נופל הקהל במשפך */
+  var aImp=0,aR=0,aI=0,aC=0;shows.forEach(function(s){var f=s.funnel||{};aImp+=(s.impressions&&s.impressions.total)||0;aR+=f.reached||0;aI+=f.interested||0;aC+=f.consumed||0;});
+  var stg=[['מהצגה להגעה',pct(aR,aImp)],['מהגעה לבדיקה',pct(aI,aR)],['מבדיקה להאזנה',pct(aC,aI)]];
+  var v2='<div class="bars">'+stg.map(function(r){return '<div class="bl"><span>'+r[0]+'</span><div class="bb"><span style="width:'+r[1]+'%;background:'+(r[1]<25?'var(--yt)':'var(--sp)')+'"></span></div><span class="num">'+r[1]+'%</span></div>';}).join('')+'</div>';
+  html+=card('I2','חשיפה',TG.reach,'רוב האובדן קורה בשלב הגילוי','מתוך כל שלב — איזה אחוז ממשיך לשלב הבא (מצרפי, ארבע התוכניות)',v2,'רק '+pct(aR,aImp)+'% ממי שספוטיפיי הציג לו את התוכנית באמת הגיע אליה. אבל מי שכבר הגיע ממשיך הלאה בשיעור סביר ('+pct(aI,aR)+'% נכנסו לבדוק, ומתוכם '+pct(aC,aI)+'% התחילו להאזין). הקושי העיקרי הוא להיחשף, לא לשכנע — לכן כדאי להשקיע בכותרות, תמונות ותיוג שמגדילים הצגה.');
+
+  /* 3 — ריל גדול מול האזנות */
+  var rows3=shows.map(function(s){var rv=(s.social_posts||[]).reduce(function(a,p){return a+(p.views||0);},0);var str=(s.platforms&&s.platforms.spotify)||0;return {name:s.name,rv:rv,ratio:rv?str/rv*1000:0};}).filter(function(r){return r.rv>0;}).sort(function(a,b){return b.ratio-a.ratio;});
+  var maxR=Math.max.apply(null,rows3.map(function(r){return r.ratio;}).concat([1]));
+  var v3='<div class="bars">'+rows3.map(function(r){return '<div class="bl"><span>'+esc(r.name)+'</span><div class="bb"><span style="width:'+pct(r.ratio,maxR)+'%;background:var(--deep)"></span></div><span class="num">'+(Math.round(r.ratio*10)/10)+'</span></div>';}).join('')+'</div>';
+  html+=card('I3','המרה',TG.conv,'ריל עם הרבה צפיות לא מביא בהכרח האזנות','האזנות בספוטיפיי לכל 1,000 צפיות בריל, לפי תוכנית',v3,'הריל של המבוגר האחראי קיבל כ-80 אלף צפיות אבל הביא כ-1.5 האזנות לכל 1,000 צפיות. הריל הקטן של סוגרים עסקה הביא הרבה יותר ביחס לגודלו. צפיות בריל הן חשיפה רחבה, ולא בהכרח האזנה — כדאי לבדוק מה היה שונה בריל שכן הוביל להאזנות.','המספרים מקרבים (האזנות כלל-הזמן מול צפיות הריל) ומראים כיוון, לא ייחוס מדויק.');
+
+  /* 4 — ריכוז הקהל */
+  var c4=0,t4=0,m4=0,f4=0,ilSum=0,ilN=0;
+  shows.forEach(function(s){if(!s.demo_reliable)return;
+    (s.age||s.spotify_age||[]).forEach(function(a){var gb=a.genderBreakdown||{};var lo=parseInt(((String(a.ageBracket||a.displayName||'')).match(/\d+/)||[0])[0],10);
+      Object.keys(gb).forEach(function(k){var n=+gb[k]||0;t4+=n;if(lo>=35&&lo<=59)c4+=n;var kl=k.toLowerCase();if(kl.indexOf('female')>=0||kl.indexOf('woman')>=0)f4+=n;else if(kl.indexOf('male')>=0||kl.indexOf('man')>=0)m4+=n;});});
+    (s.spotify_geo||[]).forEach(function(g){if((g.displayName||'').indexOf('Israel')>=0){ilSum+=g.value;ilN++;}});});
+  var v4='<div class="chrow"><div class="chip"><div class="cn num" style="color:var(--deep)">'+pct(c4,t4)+'%</div><div class="cl">בגילאי 35-59</div></div>'+
+    '<div class="chip"><div class="cn num">פי '+(f4?Math.round(m4/f4*10)/10:'–')+'</div><div class="cl">יותר גברים מנשים</div></div>'+
+    '<div class="chip"><div class="cn num">'+(ilN?Math.round(ilSum/ilN*100):'–')+'%</div><div class="cl">מישראל</div></div></div>';
+  html+=card('I4','קהל',TG.aud,'הקהל מדויק לתחום הנדל"ן','פילוח מאזיני ספוטיפיי (ללא הפיצוח, שמדגמה קטן מדי)',v4,'רוב המאזינים הם ישראלים בגילאי 35-59 — בדיוק הקהל שקונה ומוכר דירות ושוקל קריירה בתיווך. החשיפה אולי לא ענקית, אבל היא מגיעה לאנשים הנכונים. אין צורך לרדוף קהל רחב.');
+
+  /* 5 — הפיצוח קהל אחר */
+  var v5='<div class="bars">'+shows.map(function(s){var il=0;(s.spotify_geo||[]).forEach(function(g){if((g.displayName||'').indexOf('Israel')>=0)il=g.value;});return {name:s.name,il:Math.round(il*100)};}).sort(function(a,b){return b.il-a.il;}).map(function(r){return '<div class="bl"><span>'+esc(r.name)+'</span><div class="bb"><span style="width:'+r.il+'%;background:'+(r.il<50?'var(--yt)':'var(--sp)')+'"></span></div><span class="num">'+r.il+'%</span></div>';}).join('')+'</div>';
+  html+=card('I5','קהל',TG.aud,'הפיצוח מגיעה לקהל אחר','אחוז המאזינים מישראל, לפי תוכנית',v5,'שלוש התוכניות מגיעות לקהל ישראלי (84-95%). הפיצוח מגיעה לקהל שרובו אמריקאי, ובלי גרעין גילאי היעד. לכן אי אפשר להשוות את המספרים שלה לשאר, וכדאי לבדוק אותה בנפרד ולוודא שהתנועה אמיתית.');
+
+  /* 6 — שני רפי השוואה */
+  var rp=(B.v2&&B.v2.remax_position)||[];
+  var v6=rp.length?'<div class="bars">'+rp.slice().sort(function(a,b){return b.percentile-a.percentile;}).map(function(r){return '<div class="bl"><span>'+esc(r.name)+'</span><div class="bb"><span style="width:'+Math.round(r.percentile)+'%;background:var(--reach)"></span></div><span class="num">אחוזון '+Math.round(r.percentile)+'</span></div>';}).join('')+'</div>':'<div class="sub">אין נתוני השוואה</div>';
+  var med=(B.v2&&B.v2.portfolio_stats&&B.v2.portfolio_stats.median_month1)||431;
+  html+=card('I6','מול השוק',TG.mkt,'התחלה צעירה — תלוי במי משווים','מיקום מול 73 הפודקאסטים של WeDo (חודש ראשון)',v6,'מול כלל הפודקאסטים בעולם, התוכניות שלנו כבר מעל החציון. אבל מול הפודקאסטים של WeDo עצמנו (חציון '+nf(med)+' האזנות בחודש הראשון), הן עדיין בתחילת הדרך — אחוזון 15-20. זה טבעי אחרי 12-19 ימים בלבד, והרבה מהפודקאסטים הגדולים שלנו התחילו בדיוק כאן.');
+
+  return html;
 }
 
 window.__exportJSON=function(){var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(D,null,1)],{type:'application/json'}));a.download='remax-wedo-data.json';a.click();toast('הנתונים יוצאו · JSON');};
@@ -444,7 +499,7 @@ window.__exportCSV=function(){var rows=[['תוכנית','פרקים','סך הא�
   var c='﻿'+rows.map(function(r){return r.join(',');}).join('\n');var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([c],{type:'text/csv'}));a.download='remax-wedo.csv';a.click();toast('הטבלאות יוצאו · CSV');};
 function toast(msg){var t=$('toast');if(!t)return;t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},1800);}
 
-var TABS=[{k:'status',name:'סטטוס'},{k:'ov',name:'סקירה'}].concat(shows.map(function(s,i){return {k:'s'+i,name:s.name};})).concat([{k:'raw',name:'נתונים גולמיים'}]);
+var TABS=[{k:'status',name:'סטטוס'},{k:'ov',name:'סקירה'}].concat(shows.map(function(s,i){return {k:'s'+i,name:s.name};})).concat([{k:'insights',name:'תובנות'}]);
 var tabsEl=$('tabs'),panelsEl=$('panels');
 TABS.forEach(function(t,i){var b=document.createElement('button');b.className='tab'+(t.star?' star':'');b.textContent=t.name;b.setAttribute('aria-selected',i===0?'true':'false');b.onclick=function(){sel(i);};tabsEl.appendChild(b);var p=document.createElement('div');p.className='panel'+(i===0?' on':'');p.id='pan'+i;panelsEl.appendChild(p);});
 function buildTab(i){var t=TABS[i],p=$('pan'+i);if(p.dataset.built)return;
@@ -453,7 +508,7 @@ function buildTab(i){var t=TABS[i],p=$('pan'+i);if(p.dataset.built)return;
     else if(t.k==='ov')p.innerHTML=buildOverview();
     else if(t.k==='bm')p.innerHTML=buildBenchmark();
     else if(t.k==='cmp')p.innerHTML=buildCompare();
-    else if(t.k==='raw')p.innerHTML=buildRaw();
+    else if(t.k==='insights')p.innerHTML=buildInsights();
     else {var idx=+t.k.slice(1);p.innerHTML=buildShow(shows[idx],idx);drawShowCurve(idx);}
   }catch(e){if(window.console)console.error('tab '+t.k,e);p.innerHTML='<div class="block"><div class="bh"><h3>שגיאה</h3></div><div class="sub">'+esc(e&&e.message||e)+'</div></div>';}
   p.dataset.built='1';}
