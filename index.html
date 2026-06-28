@@ -192,7 +192,8 @@ var TIPS={
   source_social:'החשיפה שייכת לעמוד שבו עלה הפוסט, לא לתוכנית — לכן זה מדד נפרד.',
   ctr:'מתוך מי שראה את התמונה הממוזערת ביוטיוב — איזה אחוז לחץ.',
   apps:'באיזו אפליקציה מאזינים בפועל — ספוטיפיי, אפל, או דפדפן.',
-  ret30:'מתוך מי שהתחיל את הסרטון ביוטיוב — כמה החזיקו מעבר ל-30 השניות הראשונות.'
+  ret30:'מתוך מי שהתחיל את הסרטון ביוטיוב — כמה החזיקו מעבר ל-30 השניות הראשונות.',
+  people:'סך האנשים השונים — צופים ייחודיים ביוטיוב + קהל שנחשף בספוטיפיי. ייתכן חפיפה קטנה בין הפלטפורמות.'
 };
 function tip(k){var t=TIPS[k];return t?'<span class="tip" tabindex="0" data-tiptext="'+esc(t)+'">?</span>':'';}
 
@@ -274,7 +275,10 @@ function appsBars(apps){apps=(apps||[]).filter(function(a){return a.pct;});if(!a
   return '<div class="bars">'+apps.sort(function(a,b){return b.pct-a.pct;}).map(function(a){var nm=a.name||'';var col=nm.indexOf('Spotify')>=0?COL.sp:(nm.indexOf('Apple')>=0?COL.ap:'#7d8ba8');
     return '<div class="bl"><span>'+esc(APP_TR[nm]||nm)+'</span><div class="bb"><span style="width:'+a.pct+'%;background:'+col+'"></span></div><span class="num">'+a.pct+'%</span></div>';}).join('')+'</div>';}
 function aggApps(){var mp={};shows.forEach(function(s){(s.apps||[]).forEach(function(a){if(!mp[a.name])mp[a.name]={sum:0,c:0};mp[a.name].sum+=a.pct;mp[a.name].c++;});});return Object.keys(mp).map(function(k){return {name:k,pct:Math.round(mp[k].sum/mp[k].c)};});}
-function assetsBlock(tag){var assets=STATUS.assets||[];if(!assets.length)return '';return '<div class="block reach">'+RB(tag)+'<div class="bh"><span class="btag r">הפצה</span><h3>נכסי ההפצה · טווח ההגעה</h3></div><div class="sub">הקהל שאפשר להגיע אליו דרך נכסי RE/MAX הקיימים — הפוטנציאל מאחורי המספרים.</div>'+assets.map(function(a){return '<div class="pg"><div><span class="nm">'+esc(a.channel)+'</span><div class="meta">'+esc(a.metric)+'</div></div><div class="vv num">'+esc(a.value)+'</div></div>';}).join('')+'</div>';}
+function platformSplit(yt,sp,ap){yt=yt||0;sp=sp||0;ap=ap||0;var tot=yt+sp+ap;if(!tot)return '<div class="sub">אין נתונים</div>';
+  var rows=[{n:'YouTube',v:yt,c:COL.yt},{n:'Spotify',v:sp,c:COL.sp},{n:'Apple',v:ap,c:COL.ap}].filter(function(r){return r.v;}).sort(function(a,b){return b.v-a.v;});var mx=rows[0].v;
+  return '<div class="bars">'+rows.map(function(r){return '<div class="bl"><span>'+r.n+'</span><div class="bb"><span style="width:'+pct(r.v,mx)+'%;background:'+r.c+'"></span></div><span class="num">'+nf(r.v)+' · '+pct(r.v,tot)+'%</span></div>';}).join('')+'</div>';}
+function assetsBlock(tag){var assets=STATUS.assets||[];if(!assets.length)return '';return '<div class="block">'+RB(tag)+'<div class="bh"><h3>נכסי ההפצה · טווח ההגעה</h3></div><div class="sub">הקהל שאפשר להגיע אליו דרך נכסי RE/MAX הקיימים.</div><div class="chrow" style="flex-wrap:wrap;gap:8px">'+assets.map(function(a){return '<div class="chip" style="flex:1 1 92px;text-align:center"><div class="cn num" style="font-size:15px">'+esc(a.value)+'</div><div class="cl">'+esc(a.channel)+'</div></div>';}).join('')+'</div></div>';}
 function trafficSources(){var t=yc.traffic_sources_28d||{};var keys=Object.keys(t);if(!keys.length)return '<div class="sub">אין נתונים</div>';
   var mx=Math.max.apply(null,keys.map(function(k){return t[k];}).concat([1]));
   return '<div class="bars">'+keys.sort(function(a,b){return t[b]-t[a];}).map(function(k){return '<div class="bl"><span>'+esc(k.replace(/_/g,' '))+'</span><div class="bb"><span style="width:'+pct(t[k],mx)+'%;background:var(--yt)"></span></div><span class="num">'+t[k]+'%</span></div>';}).join('')+'</div>';}
@@ -309,7 +313,7 @@ function buildOverview(){
     '<div class="block">'+RB('A7')+'<div class="bh"><h3>גיל ומגדר · מצרפי</h3></div><div class="sub">פילוח מאזיני ספוטיפיי בכל התוכניות.</div>'+ageBars()+'</div>'+
   '</div>'+
   '<div class="two">'+
-    '<div class="block">'+RB('A8')+'<div class="bh"><h3>חשיפה והאזנה · ספוטיפיי'+tip('impressions')+'</h3></div><div class="sub">מאיפה נתקלים בתוכניות (מצרפי).</div>'+sourcesBars(aggSources())+'<div class="sub" style="margin:13px 0 5px">איפה מאזינים'+tip('apps')+'</div>'+appsBars(aggApps())+'</div>'+
+    '<div class="block deep">'+RB('A8')+'<div class="bh"><span class="btag d">האזנה</span><h3>איפה מאזינים</h3></div><div class="sub">פילוח ההאזנה והצפייה בין הפלטפורמות (מצרפי).</div>'+platformSplit(o.deep_split&&o.deep_split.YouTube,o.deep_split&&o.deep_split.Spotify,o.deep_split&&o.deep_split.Apple)+'<div class="sub" style="margin:14px 0 5px">מאיפה נתקלים בספוטיפיי'+tip('impressions')+'</div>'+sourcesBars(aggSources())+'</div>'+
     '<div class="block">'+RB('A9')+'<div class="bh"><span class="btag" style="background:rgba(255,106,90,.14);color:var(--yt)">YouTube</span><h3>איך מגיעים · יוטיוב'+tip('traffic')+'</h3></div>'+ytChannelChips()+'<div class="sub" style="margin:4px 0 9px">מקור התנועה לסרטונים (28 ימים).</div>'+trafficSources()+'</div>'+
   '</div>'+
   '<div class="two">'+
@@ -326,23 +330,19 @@ function buildShow(s,idx){
   var ages=ageRowsFor([s]);var srcMp={};((s.impressions&&s.impressions.sources)||[]).forEach(function(c){srcMp[c.name]=c.count;});
   var ret30=(yc.retention_intro_pct_at_0_30||[]).filter(function(r){return r.title&&s.name&&r.title.indexOf(s.name)>=0;})[0];
   var topv=(yc.top_videos_28d_views||[]).filter(function(v){return v.show===s.name;})[0];
+  var reach=(yt.unique_viewers||0)+(s.audience_size||0);
   var out='<div class="statgrid four">'+
-    '<div class="statcard lead">'+RB('S'+idx+'a')+'<div class="ico">'+svgIco(IC.headphones)+'</div><div class="t">סך האזנה'+tip('deep')+'</div><div class="v deep num">'+nf(s.deep_total)+'</div><div class="x">בכל הפלטפורמות יחד</div></div>'+
-    '<div class="statcard">'+RB('S'+idx+'b')+'<div class="ico" style="color:var(--yt)">'+svgIco(IC.eye)+'</div><div class="t">צפיות · יוטיוב</div><div class="v num">'+nf(p.youtube)+'</div><div class="x">'+nf(yt.unique_viewers)+' צופים ייחודיים</div></div>'+
-    '<div class="statcard">'+RB('S'+idx+'c')+'<div class="ico" style="color:var(--sp)">'+svgIco(IC.headphones)+'</div><div class="t">האזנות · ספוטיפיי</div><div class="v num">'+nf(p.spotify)+'</div><div class="x">+ '+nf(p.apple)+' באפל</div></div>'+
-    '<div class="statcard">'+RB('S'+idx+'d')+'<div class="ico">'+svgIco(IC.filter)+'</div><div class="t">פרקים שפורסמו'+tip('episodes')+'</div><div class="v num"><span class="epstat"><span>'+pubEps(s)+'</span><span class="ep">/ '+EP_PLANNED+'</span></span></div><div class="x">מתוכננים '+EP_PLANNED+'</div></div>'+
+    '<div class="statcard lead">'+RB('S'+idx+'a')+'<div class="ico">'+svgIco(IC.headphones)+'</div><div class="t">סך האזנה'+tip('deep')+'</div><div class="v deep num">'+nf(s.deep_total)+'</div><div class="x">יוטיוב + ספוטיפיי + אפל יחד</div></div>'+
+    '<div class="statcard">'+RB('S'+idx+'b')+'<div class="ico">'+svgIco(IC.users)+'</div><div class="t">אנשים שונים'+tip('people')+'</div><div class="v num">'+nf(reach)+'</div><div class="x">צופי יוטיוב + קהל ספוטיפיי</div></div>'+
+    '<div class="statcard">'+RB('S'+idx+'c')+'<div class="ico">'+svgIco(IC.filter)+'</div><div class="t">פרקים שפורסמו'+tip('episodes')+'</div><div class="v num"><span class="epstat"><span>'+pubEps(s)+'</span><span class="ep">/ '+EP_PLANNED+'</span></span></div><div class="x">מתוכננים '+EP_PLANNED+'</div></div>'+
+    '<div class="statcard">'+RB('S'+idx+'d')+'<div class="ico" style="color:var(--yt)">'+svgIco(IC.eye)+'</div><div class="t">שימור · יוטיוב'+tip('ytret')+'</div><div class="v num">'+(yt.avg_pct!=null?yt.avg_pct+'%':'–')+'</div><div class="x">'+(yt.avg_dur?yt.avg_dur+' · ':'')+(yt.watch_hours!=null?Math.round(yt.watch_hours)+' שעות':'')+'</div></div>'+
   '</div>'+
-  '<div class="two">'+
-    '<div class="block">'+RB('S'+idx+'e')+'<div class="bh"><span class="btag" style="background:rgba(255,106,90,.14);color:var(--yt)">YouTube</span><h3>ביצועי יוטיוב</h3></div>'+
-      '<div class="chrow"><div class="chip"><div class="cn num">'+nf(yt.unique_viewers)+'</div><div class="cl">צופים ייחודיים'+tip('unique')+'</div></div><div class="chip"><div class="cn num">'+(yt.watch_hours!=null?Math.round(yt.watch_hours):'–')+'</div><div class="cl">שעות צפייה</div></div><div class="chip"><div class="cn num">'+(yt.avg_pct!=null?yt.avg_pct+'%':'–')+'</div><div class="cl">שימור'+tip('ytret')+'</div></div></div>'+
-      '<div class="bars"><div class="bl"><span>זמן צפייה ממוצע</span><div class="bb"></div><span class="num">'+(yt.avg_dur||'–')+'</span></div>'+
-        (ret30?'<div class="bl"><span>שימור ב-0:30'+tip('ret30')+'</span><div class="bb"><span style="width:'+ret30.pct+'%;background:var(--yt)"></span></div><span class="num">'+ret30.pct+'%</span></div>':'')+'</div>'+
-      (topv?'<a class="post" style="margin-top:10px" href="https://www.youtube.com/watch?v='+esc(topv.video_id)+'" target="_blank" rel="noopener"><div><div class="pl">הסרטון המוביל <span class="lk">↗ פתח</span></div><div class="pmeta">'+esc(topv.title.slice(0,42))+'</div></div><div class="pv num" style="color:var(--yt)">'+nf(topv.views)+'</div></a>':'')+
-    '</div>'+
-    '<div class="block">'+RB('S'+idx+'f')+'<div class="bh"><span class="btag" style="background:rgba(57,208,119,.14);color:var(--sp)">Spotify</span><h3>ביצועי ספוטיפיי</h3></div>'+
+  '<div class="two3">'+
+    '<div class="block deep">'+RB('S'+idx+'e')+'<div class="bh"><span class="btag d">האזנה</span><h3>איפה מאזינים</h3></div><div class="sub">פילוח ההאזנה והצפייה בין הפלטפורמות.</div>'+platformSplit(p.youtube,p.spotify,p.apple)+'</div>'+
+    '<div class="block">'+RB('S'+idx+'f')+'<div class="bh"><span class="btag" style="background:rgba(57,208,119,.14);color:var(--sp)">Spotify</span><h3>מחשיפה להאזנה</h3></div><div class="sub">המסע בספוטיפיי (קיים רק שם).</div>'+
       (f?richFunnel(f,s.impressions&&s.impressions.total):'<div class="sub">אין נתוני משפך</div>')+
       '<div class="sub" style="margin:12px 0 5px">מאיפה הגיעה החשיפה'+tip('impressions')+'</div>'+sourcesBars(srcMp)+
-      (apps.length?'<div class="sub" style="margin:12px 0 5px">איפה מאזינים'+tip('apps')+'</div>'+appsBars(apps):'')+
+      (apps.length?'<div class="sub" style="margin:12px 0 5px">באיזו אפליקציה'+tip('apps')+'</div>'+appsBars(apps):'')+
     '</div>'+
   '</div>'+
   (big.length?'<div class="block deep">'+RB('S'+idx+'g')+'<div class="bh"><span class="btag d">עומק</span><h3>עד כמה מקשיבים לפרק'+tip('curve')+'</h3></div><div class="sub">ספוטיפיי · מתוך מי שהתחיל את הפרק — כמה החזיקו עד כל נקודה.</div><div class="curvebox" id="cv-'+idx+'"></div><div id="cvleg-'+idx+'" class="glegend" style="margin-top:6px"></div></div>':'')+
@@ -352,7 +352,13 @@ function buildShow(s,idx){
     ((s.curves||[]).map(function(e,i){return '<tr><td>'+(i+1)+'. '+esc(e.title.replace(/^פרק \d+ - /,'').slice(0,20))+'</td><td class="num" style="font-weight:700">'+nf(e.count)+'</td><td class="num">'+(e.median_completion_sec?Math.round(e.median_completion_sec/60)+'ד׳':'–')+'</td><td class="num">'+(e.foreground_pct!=null?Math.round(e.foreground_pct*100)+'%':'–')+'</td><td class="num">'+nf(e.total_audience)+'</td></tr>';}).join('')||'<tr><td class="sub">אין נתונים</td></tr>')+'</tbody></table></div></div>'+
     '<div class="block">'+RB('S'+idx+'i')+'<div class="bh"><h3>גיל ומגדר · ספוטיפיי</h3></div>'+(s.demo_reliable?'<div class="sub">לפי '+nf(s.spotify_streams)+' האזנות.</div>'+ageBars(ages):'<div class="sub">מדגם קטן מדי לפילוח אמין ('+nf(s.spotify_streams)+' האזנות).</div>')+'</div>'+
   '</div>'+
-  '<div class="block reach">'+RB('S'+idx+'j')+'<div class="bh"><span class="btag r">חשיפה</span><h3>רילס שעלו על התוכנית</h3></div><div class="explain" style="margin-top:0;margin-bottom:9px">החשיפה היא של העמוד שבו עלה הפוסט. לחיצה פותחת.</div>'+topPosts(s.social_posts,5)+'</div>';
+  '<div class="two">'+
+    '<div class="block reach">'+RB('S'+idx+'j')+'<div class="bh"><span class="btag r">חשיפה</span><h3>רילס שעלו על התוכנית</h3></div><div class="explain" style="margin-top:0;margin-bottom:9px">החשיפה היא של העמוד שבו עלה הפוסט. לחיצה פותחת.</div>'+topPosts(s.social_posts,5)+'</div>'+
+    '<div class="block">'+RB('S'+idx+'k')+'<div class="bh"><span class="btag" style="background:rgba(255,106,90,.14);color:var(--yt)">YouTube</span><h3>נתוני יוטיוב נוספים</h3></div>'+
+      (ret30?'<div class="bars"><div class="bl"><span>שימור ב-0:30'+tip('ret30')+'</span><div class="bb"><span style="width:'+ret30.pct+'%;background:var(--yt)"></span></div><span class="num">'+ret30.pct+'%</span></div></div>':'')+
+      (topv?'<a class="post" style="margin-top:9px" href="https://www.youtube.com/watch?v='+esc(topv.video_id)+'" target="_blank" rel="noopener"><div><div class="pl">הסרטון המוביל <span class="lk">↗ פתח</span></div><div class="pmeta">'+esc(topv.title.slice(0,42))+'</div></div><div class="pv num" style="color:var(--yt)">'+nf(topv.views)+'</div></a>':(ret30?'':'<div class="sub">אין נתונים נוספים פר-תוכנית</div>'))+
+    '</div>'+
+  '</div>';
   return out;
 }
 function drawShowCurve(idx){var s=shows[idx];if(!s)return;var big=(s.curves||[]).filter(function(e){return (e.count||0)>=10;}).slice(0,4);var box=$('cv-'+idx);if(!box||!big.length)return;
@@ -419,6 +425,9 @@ function buildStatus(){
       '<div class="explain"><b>צולמו</b> = פרקים שהוקלטו באולפן (חלקם עוד לא פורסמו) · היעד 26 פרקים לתוכנית (12 לתוכנית של ברנרד) · '+(sm.episodes_year||168)+' פרקים סה״כ בשנה.</div></div>';
 }
 
+/* ============ COMPARE (matrix) ============ */
+function buildCompare(){return '<div class="block">'+RB('CMP')+'<div class="bh"><h3>השוואה · כל המדדים, כל התוכניות</h3></div><div class="sub">כל מדד מול כל תוכנית. הצבע מסמן מי מוביל בשורה. לחיצה על שם מדד פותחת הסבר.</div>'+rankMatrix()+'</div>';}
+
 /* ============ RAW DATA ============ */
 function buildRaw(){
   return '<div class="toolbar">'+RB('RD0')+'<button class="btn" onclick="window.__exportJSON()">'+svgIco('<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/>')+'ייצא הכל · JSON</button><button class="btn" onclick="window.__exportCSV()">'+svgIco('<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/>')+'ייצא טבלאות · CSV</button></div>'+
@@ -435,7 +444,7 @@ window.__exportCSV=function(){var rows=[['תוכנית','פרקים','סך הא�
   var c='﻿'+rows.map(function(r){return r.join(',');}).join('\n');var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([c],{type:'text/csv'}));a.download='remax-wedo.csv';a.click();toast('הטבלאות יוצאו · CSV');};
 function toast(msg){var t=$('toast');if(!t)return;t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},1800);}
 
-var TABS=[{k:'status',name:'סטטוס'},{k:'ov',name:'סקירה'}].concat(shows.map(function(s,i){return {k:'s'+i,name:s.name};})).concat([{k:'raw',name:'נתונים גולמיים'}]);
+var TABS=[{k:'status',name:'סטטוס'},{k:'ov',name:'סקירה'}].concat(shows.map(function(s,i){return {k:'s'+i,name:s.name};})).concat([{k:'cmp',name:'השוואה'},{k:'raw',name:'נתונים גולמיים'}]);
 var tabsEl=$('tabs'),panelsEl=$('panels');
 TABS.forEach(function(t,i){var b=document.createElement('button');b.className='tab'+(t.star?' star':'');b.textContent=t.name;b.setAttribute('aria-selected',i===0?'true':'false');b.onclick=function(){sel(i);};tabsEl.appendChild(b);var p=document.createElement('div');p.className='panel'+(i===0?' on':'');p.id='pan'+i;panelsEl.appendChild(p);});
 function buildTab(i){var t=TABS[i],p=$('pan'+i);if(p.dataset.built)return;
@@ -443,6 +452,7 @@ function buildTab(i){var t=TABS[i],p=$('pan'+i);if(p.dataset.built)return;
     if(t.k==='status')p.innerHTML=buildStatus();
     else if(t.k==='ov')p.innerHTML=buildOverview();
     else if(t.k==='bm')p.innerHTML=buildBenchmark();
+    else if(t.k==='cmp')p.innerHTML=buildCompare();
     else if(t.k==='raw')p.innerHTML=buildRaw();
     else {var idx=+t.k.slice(1);p.innerHTML=buildShow(shows[idx],idx);drawShowCurve(idx);}
   }catch(e){if(window.console)console.error('tab '+t.k,e);p.innerHTML='<div class="block"><div class="bh"><h3>שגיאה</h3></div><div class="sub">'+esc(e&&e.message||e)+'</div></div>';}
