@@ -3,240 +3,497 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>RE/MAX × WeDo — דשבורד (גרסה א)</title>
+<title>RE/MAX × WeDo — דשבורד פודקאסטים</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{
-  --d-fast:250ms; --ease:cubic-bezier(.22,1,.36,1);
+  --d-fast:250ms; --d-quick:150ms; --ease:cubic-bezier(.22,1,.36,1);
   --bg:#0b0e15; --card:#151a25; --card2:#1b2230; --bd:rgba(255,255,255,.09); --bd2:rgba(255,255,255,.17);
   --tx:#f1f3f8; --mut:#9aa2b2; --mut2:#6b7488;
-  --reach:#36d6c6; --deep:#f3a23e;
+  --reach:#36d6c6; --deep:#f3a23e; --good:#46c98a; --warn:#e0b34d;
   --ig:#ec5e9c; --fb:#4d8df5; --yt:#ff6a5a; --sp:#39d077; --ap:#a87bf0;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Heebo',system-ui,sans-serif;background:var(--bg);color:var(--tx);line-height:1.45;-webkit-font-smoothing:antialiased;font-feature-settings:"tnum";font-size:15px}
 .num{font-variant-numeric:tabular-nums}
-.wrap{max-width:1180px;margin:0 auto;padding:0 18px 60px}
+.wrap{max-width:1160px;margin:0 auto;padding:0 16px 70px}
 svg.ic{width:15px;height:15px;stroke:currentColor;stroke-width:1.9;fill:none;stroke-linecap:round;stroke-linejoin:round;vertical-align:-2px}
-/* version switcher */
-.vsw{display:flex;gap:6px;justify-content:center;padding:12px 0 4px}
+a{color:inherit}
+.vsw{display:flex;gap:6px;justify-content:center;align-items:center;flex-wrap:wrap;padding:12px 0 4px}
 .vsw a{font-size:12.5px;font-weight:600;color:var(--mut);text-decoration:none;padding:6px 13px;border:1px solid var(--bd);border-radius:20px;transition:all var(--d-fast)}
 .vsw a.on{background:var(--card2);color:var(--tx);border-color:var(--bd2)}
-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;padding:8px 0 12px}
+.vsw .edit{margin-inline-start:auto;cursor:pointer}
+.vsw .edit.on{background:rgba(243,162,62,.16);color:var(--deep);border-color:rgba(243,162,62,.4)}
+header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;padding:8px 0 10px}
 .brand{font-weight:900;font-size:18px}.brand .s{color:var(--mut2);font-weight:300;margin:0 6px}.brand .r{color:var(--reach)}
-.hmeta{font-size:12px;color:var(--mut)}
+.hmeta{font-size:12px;color:var(--mut);text-align:left}
 .tabwrap{position:sticky;top:0;z-index:20;background:linear-gradient(var(--bg),var(--bg) 72%,transparent);padding:6px 0 12px}
-.tabs{display:flex;gap:6px;background:var(--card);border:1px solid var(--bd);border-radius:13px;padding:5px;overflow-x:auto;scrollbar-width:none}
+.tabs{display:flex;gap:5px;background:var(--card);border:1px solid var(--bd);border-radius:13px;padding:5px;overflow-x:auto;scrollbar-width:none}
 .tabs::-webkit-scrollbar{display:none}
-.tab{flex:0 0 auto;padding:9px 15px;border:none;background:none;color:var(--mut);font-family:inherit;font-size:14px;font-weight:600;border-radius:9px;cursor:pointer;white-space:nowrap;transition:background var(--d-fast),color var(--d-fast)}
+.tab{flex:0 0 auto;padding:9px 14px;border:none;background:none;color:var(--mut);font-family:inherit;font-size:13.5px;font-weight:600;border-radius:9px;cursor:pointer;white-space:nowrap;transition:background var(--d-fast),color var(--d-fast)}
 .tab[aria-selected="true"]{background:var(--card2);color:var(--tx);box-shadow:inset 0 0 0 1px var(--bd2)}
+.tab.star[aria-selected="true"]{color:var(--deep);box-shadow:inset 0 0 0 1px rgba(243,162,62,.4)}
 .panel{display:none}.panel.on{display:block;animation:fade var(--d-fast) var(--ease)}
 @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
-.kpi{background:var(--card);border:1px solid var(--bd);border-radius:13px;padding:14px}
-.kpi .l{font-size:12px;color:var(--mut);display:flex;align-items:center;gap:6px}
-.kpi .v{font-size:25px;font-weight:900;letter-spacing:-.5px;margin-top:4px}
+/* KPI strip */
+.strip{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:16px}
+.kpi{flex:1 1 0;min-width:150px;background:var(--card);border:1px solid var(--bd);border-radius:13px;padding:12px 15px;position:relative}
+.kpi.lead{border-inline-start:3px solid var(--deep)}
+.kpi .l{font-size:11.5px;color:var(--mut);display:flex;align-items:center;gap:6px}
+.kpi .v{font-size:24px;font-weight:900;letter-spacing:-.5px;margin-top:3px}
 .kpi .v.reach{color:var(--reach)}.kpi .v.deep{color:var(--deep)}
-.kpi .s{font-size:11.5px;color:var(--mut2);margin-top:2px}
-.block{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:16px 18px;margin-bottom:16px}
+.kpi .s{font-size:11px;color:var(--mut2);margin-top:1px}
+/* blocks */
+.block{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:15px 17px;margin-bottom:14px;position:relative}
 .block.reach{border-top:3px solid var(--reach)}.block.deep{border-top:3px solid var(--deep)}
-.bh{display:flex;align-items:center;gap:9px;margin-bottom:3px}
-.bh h3{font-size:16px;font-weight:800}
-.btag{font-size:11px;font-weight:700;padding:2px 9px;border-radius:20px}
+.block.star{border-top:3px solid var(--deep)}
+.bh{display:flex;align-items:center;gap:9px;margin-bottom:3px;flex-wrap:wrap}
+.bh h3{font-size:15.5px;font-weight:800}
+.btag{font-size:10.5px;font-weight:700;padding:2px 9px;border-radius:20px}
 .btag.r{background:rgba(54,214,198,.14);color:var(--reach)}.btag.d{background:rgba(243,162,62,.14);color:var(--deep)}
-.block>.sub{font-size:12.5px;color:var(--mut);margin-bottom:13px}
-.dot{width:9px;height:9px;border-radius:3px;display:inline-block}
+.sub{font-size:12.5px;color:var(--mut);margin-bottom:12px}
+.explain{font-size:12px;color:var(--mut2);line-height:1.5;margin-top:3px}
+.explain b{color:var(--mut);font-weight:600}
+/* ref badge for editing */
+.refbadge{display:none;position:absolute;top:-8px;inset-inline-start:12px;background:var(--deep);color:#1a1206;font-size:11px;font-weight:800;padding:1px 8px;border-radius:7px;letter-spacing:.3px;z-index:5}
+body.editmode .refbadge{display:inline-block}
+body.editmode .block{outline:1px dashed rgba(243,162,62,.35)}
+/* tables */
 table{width:100%;border-collapse:collapse;font-size:14px}
-th{font-size:11.5px;color:var(--mut);font-weight:600;text-align:right;padding:0 10px 9px;white-space:nowrap}
-td{padding:10px;border-top:1px solid rgba(255,255,255,.06);vertical-align:middle}
+th{font-size:11px;color:var(--mut);font-weight:600;text-align:right;padding:0 9px 9px;white-space:nowrap}
+td{padding:9px;border-top:1px solid rgba(255,255,255,.06);vertical-align:middle}
 td.nm{font-weight:700;white-space:nowrap}
 .cell{position:relative}.cellbar{position:absolute;inset:0;border-radius:6px;opacity:.15;z-index:0}.cellv{position:relative;z-index:1;font-weight:600}
-td.tot{font-weight:800}
-.tag-sm{font-size:10.5px;color:var(--mut2);background:var(--bg);border:1px solid var(--bd);border-radius:6px;padding:1px 7px;margin-right:6px}
+td.tot{font-weight:800;color:var(--deep)}
+.tag-sm{font-size:10px;color:var(--mut2);background:var(--bg);border:1px solid var(--bd);border-radius:6px;padding:1px 7px;margin-inline-start:6px}
+.scroll{overflow-x:auto;scrollbar-width:thin}
+/* funnel */
+.fnl{display:flex;flex-direction:column;gap:7px}
+.fstep{display:grid;grid-template-columns:88px 1fr auto;gap:10px;align-items:center}
+.fstep .fl{font-size:13px;font-weight:600}
+.fstep .fbarwrap{height:30px;background:var(--bg);border-radius:7px;overflow:hidden;position:relative}
+.fstep .fbar{height:100%;border-radius:7px;display:flex;align-items:center;justify-content:flex-end;padding-inline-end:9px;font-size:13px;font-weight:800;color:#08110d;transition:width var(--d-fast) var(--ease)}
+.fstep .fnote{font-size:11.5px;color:var(--mut2);white-space:nowrap}
+/* retention curve */
+.curve{position:relative;height:140px;margin:8px 0 2px}
+.curve svg{width:100%;height:100%;overflow:visible}
+.gl{stroke:rgba(255,255,255,.06);stroke-width:1}.glt{fill:var(--mut2);font-size:9.5px}
+.xlab{fill:var(--mut2);font-size:9.5px}
+.spark{height:46px}.spark svg{width:100%;height:100%;overflow:visible}
+/* mini-cards */
+.mgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-bottom:14px}
+.mc{background:var(--card2);border:1px solid var(--bd);border-radius:11px;padding:11px 12px}
+.mc .l{font-size:11px;color:var(--mut);display:flex;align-items:center;gap:5px}
+.mc .n{font-size:18px;font-weight:800;margin-top:2px}.mc .x{font-size:10.5px;color:var(--mut2);margin-top:1px}
 /* social by page */
-.pg{display:grid;grid-template-columns:1fr auto;gap:6px 12px;align-items:center;padding:10px 0;border-top:1px solid rgba(255,255,255,.06)}
+.pg{display:grid;grid-template-columns:1fr auto;gap:5px 12px;align-items:center;padding:9px 0;border-top:1px solid rgba(255,255,255,.06)}
 .pg:first-child{border-top:none}
-.pg .nm{font-weight:600}.pg .meta{font-size:11.5px;color:var(--mut2);margin-top:1px}
-.pg .vv{font-size:17px;font-weight:800;text-align:left;white-space:nowrap}
-.pg .bar{grid-column:1/-1;height:7px;background:var(--bg);border-radius:5px;overflow:hidden}
+.pg .nm{font-weight:600}.pg .nm a{text-decoration:none;border-bottom:1px dotted var(--mut2)}
+.pg .meta{font-size:11px;color:var(--mut2);margin-top:1px}
+.pg .vv{font-size:16px;font-weight:800;text-align:left;white-space:nowrap}
+.pg .bar{grid-column:1/-1;height:6px;background:var(--bg);border-radius:5px;overflow:hidden}
 .pg .bar>span{display:block;height:100%;border-radius:5px}
-/* trend */
-.trend-tools{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px}
-.seg{display:inline-flex;background:var(--bg);border:1px solid var(--bd);border-radius:9px;padding:3px}
-.seg button{border:none;background:none;color:var(--mut);font-family:inherit;font-size:12px;font-weight:600;padding:5px 12px;border-radius:7px;cursor:pointer}
-.seg button.on{background:var(--card2);color:var(--tx)}
-.chart{position:relative;height:170px;margin-top:6px}
-.chart svg{width:100%;height:100%;overflow:visible}
-.gl{stroke:rgba(255,255,255,.06);stroke-width:1}
-.glt{fill:var(--mut2);font-size:10px}
-.xlab{fill:var(--mut2);font-size:10px}
-.demo .dl{display:grid;grid-template-columns:74px 1fr 44px;gap:8px;align-items:center;font-size:13px;color:var(--mut);padding:3px 0}
-.demo .db{height:9px;background:var(--bg);border-radius:5px;overflow:hidden}
-.demo .db>span{display:block;height:100%;background:linear-gradient(90deg,var(--fb),var(--reach));border-radius:5px}
+/* demo bars */
+.demo .dl{display:grid;grid-template-columns:70px 1fr 42px;gap:8px;align-items:center;font-size:12.5px;color:var(--mut);padding:3px 0}
+.demo .db{height:8px;background:var(--bg);border-radius:5px;overflow:hidden;display:flex}
+.demo .db>span{display:block;height:100%}
 .demo .dl .num{color:var(--tx);font-weight:600;text-align:left}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.mgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin-bottom:16px}
-.mc{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:12px 13px}
-.mc .l{font-size:11.5px;color:var(--mut);display:flex;align-items:center;gap:5px}.mc .n{font-size:19px;font-weight:800;margin-top:3px}
-.post{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--card2);border:1px solid var(--bd);border-radius:10px;padding:10px 12px;text-decoration:none;color:inherit;margin-bottom:7px}
-.post .pl{font-size:13px;font-weight:500}.post .pmeta{font-size:11.5px;color:var(--mut);margin-top:2px}.post .pv{font-size:16px;font-weight:800}
-.toolbar{display:flex;justify-content:flex-end;gap:8px;margin-bottom:10px}
+.glegend{display:flex;gap:12px;font-size:11px;color:var(--mut2);margin-bottom:7px}
+.glegend i{width:9px;height:9px;border-radius:3px;display:inline-block;margin-inline-end:4px;vertical-align:-1px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+/* benchmark bars */
+.bbar{display:grid;grid-template-columns:1fr;gap:9px}
+.bbrow{display:grid;grid-template-columns:200px 1fr auto;gap:10px;align-items:center;font-size:13px}
+.bbrow .bl{color:var(--mut);font-weight:500}
+.bbrow .bl b{color:var(--tx);font-weight:700}
+.bbrow .bw{height:22px;background:var(--bg);border-radius:6px;overflow:hidden;position:relative}
+.bbrow .bf{height:100%;border-radius:6px;transition:width var(--d-fast) var(--ease)}
+.bbrow .bv{font-weight:800;white-space:nowrap}
+.thresh{position:relative;border-top:1px dashed rgba(224,179,77,.5);margin:4px 0;font-size:11px;color:var(--warn);padding-top:3px}
+.story{list-style:none;display:flex;flex-direction:column;gap:11px}
+.story li{padding-inline-start:26px;position:relative;font-size:13.5px;line-height:1.55;color:#d6dae4}
+.story li:before{content:"";position:absolute;inset-inline-start:6px;top:8px;width:7px;height:7px;border-radius:3px;background:var(--deep)}
+.story li b{color:#fff}
+.proj{background:rgba(243,162,62,.07);border:1px solid rgba(243,162,62,.22);border-radius:12px;padding:13px 15px;margin-top:4px}
+.proj .pt{font-size:11px;font-weight:800;color:var(--deep);letter-spacing:.4px;margin-bottom:5px}
+.note{font-size:11.5px;color:var(--mut2);font-style:italic;margin-top:7px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.chip{background:var(--card2);border:1px solid var(--bd);border-radius:9px;padding:9px 12px;font-size:12.5px;flex:1 1 150px}
+.chip .cn{font-size:17px;font-weight:800;color:var(--reach)}.chip .cl{color:var(--mut);font-size:11.5px;margin-top:1px}
+/* explorer */
+.exctl{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.exsel{display:inline-flex;flex-direction:column;gap:3px}
+.exsel label{font-size:10.5px;color:var(--mut2);font-weight:600}
+.exsel select{background:var(--card2);border:1px solid var(--bd2);color:var(--tx);font-family:inherit;font-size:13.5px;font-weight:600;padding:8px 11px;border-radius:9px;cursor:pointer}
+.excards{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.excard{background:var(--card2);border:1px solid var(--bd);border-radius:14px;padding:15px}
+.excard h4{font-size:14px;font-weight:800;margin-bottom:2px}
+.excard .exsub{font-size:11.5px;color:var(--mut2);margin-bottom:11px}
+.exbig{font-size:30px;font-weight:900;letter-spacing:-1px}
+.exdrill{margin-top:12px;border-top:1px solid var(--bd);padding-top:11px}
+.exrow{display:flex;justify-content:space-between;font-size:13px;padding:5px 0;cursor:default}
+.exrow .ev{font-weight:700;color:var(--tx)}
+.exrow.clickable{cursor:pointer;border-radius:7px;padding:5px 8px;margin:0 -8px;transition:background var(--d-quick)}
+.exrow.clickable:hover{background:rgba(255,255,255,.04)}
+.exrow .caret{color:var(--mut2);font-size:11px}
+.exdd{display:none;font-size:12px;color:var(--mut);padding:6px 8px 2px;line-height:1.6}
+.exdd.open{display:block;animation:fade var(--d-quick) var(--ease)}
+/* toolbar */
+.toolbar{display:flex;justify-content:flex-end;gap:8px;margin-bottom:12px;flex-wrap:wrap}
 .btn{background:var(--card2);border:1px solid var(--bd);color:var(--tx);font-family:inherit;font-size:12.5px;font-weight:600;padding:7px 13px;border-radius:9px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
-.foot{margin-top:30px;padding-top:14px;border-top:1px solid var(--bd);font-size:11.5px;color:var(--mut2);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.foot{margin-top:28px;padding-top:14px;border-top:1px solid var(--bd);font-size:11px;color:var(--mut2);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
 .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(16px);background:#1d2433;border:1px solid var(--bd2);padding:10px 18px;border-radius:11px;font-size:13.5px;opacity:0;transition:all var(--d-fast) var(--ease);z-index:99}
 .toast.show{opacity:1;transform:translateX(-50%)}
-@media(max-width:760px){.kpis{grid-template-columns:1fr}.mgrid{grid-template-columns:repeat(2,1fr)}.two{grid-template-columns:1fr}table{font-size:13px}td,th{padding-left:6px;padding-right:6px}}
+@media(max-width:760px){
+  .strip{gap:7px}.kpi{min-width:calc(50% - 4px);padding:11px 13px}.kpi .v{font-size:21px}
+  .two{grid-template-columns:1fr}.excards{grid-template-columns:1fr}
+  .bbrow{grid-template-columns:1fr;gap:3px}.bbrow .bl{font-size:12px}
+  .fstep{grid-template-columns:70px 1fr;gap:7px}.fstep .fnote{grid-column:2;text-align:left}
+  table{font-size:12.5px}td,th{padding-inline:5px}
+}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="vsw"><a class="on" href="index.html">גרסה א · מנהל</a><a href="v2.html">גרסה ב · כרטיסים</a><a href="v3.html">גרסה ג · מגמות</a></div>
-  <header><div class="brand">wedo<span class="s">|</span><span class="r">RE/MAX</span></div><div class="hmeta"><span id="org"></span> · <span id="range"></span></div></header>
+  <div class="vsw">
+    <a class="on" href="index.html">דשבורד</a>
+    <a href="explorer.html">וריאנט · חקירה</a>
+    <a class="edit" id="editToggle">✎ מצב עריכה</a>
+  </div>
+  <header>
+    <div class="brand">wedo<span class="s">|</span><span class="r">RE/MAX</span></div>
+    <div class="hmeta"><span id="org"></span><br><span id="range"></span></div>
+  </header>
   <div class="tabwrap"><div class="tabs" id="tabs"></div></div>
   <div id="panels"></div>
-  <div class="foot"><span id="sources"></span><span>wedo | RE/MAX</span></div>
+  <div class="foot"><span id="sources"></span><span>wedo | RE/MAX · אורגני</span></div>
 </div>
 <div class="toast" id="toast"></div>
 <script src="data.js"></script>
 <script>
-const D=window.DASHBOARD_DATA,nf=n=>(n==null?'–':n.toLocaleString('en-US')),$=id=>document.getElementById(id),el=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e;};
-const COL={ig:'#ec5e9c',fb:'#4d8df5',yt:'#ff6a5a',sp:'#39d077',ap:'#a87bf0',reach:'#36d6c6',deep:'#f3a23e'};
-const o=D.overview,shows=D.shows,social=D.social;
-const L=s=>s.youtube_views+s.spotify_streams+s.apple_plays;
-$('org').textContent='אורגני · אפס ממומן';$('range').textContent=D.meta.range;$('sources').textContent=D.meta.sources.join(' · ');
+const D=window.DASHBOARD_DATA;
+const nf=n=>(n==null?'–':Math.round(n).toLocaleString('en-US'));
+const $=id=>document.getElementById(id),el=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e;};
+const COL={ig:'#ec5e9c',fb:'#4d8df5',yt:'#ff6a5a',sp:'#39d077',ap:'#a87bf0',reach:'#36d6c6',deep:'#f3a23e',male:'#4d8df5',female:'#ec5e9c',nb:'#a87bf0'};
+const o=D.overview,shows=D.shows,social=D.social,B=D.benchmark;
+const deepOf=s=>s.deep_total;
+$('org').textContent=D.meta.organic_note;$('range').textContent=D.meta.range;$('sources').textContent='מקורות: '+D.meta.sources.join(' · ');
 
+// ---- tabs ----
+const TABS=[{k:'ov',name:'סקירה'},{k:'bm',name:'מול השוק',star:1}]
+  .concat(shows.map((s,i)=>({k:'s'+i,name:s.name})))
+  .concat([{k:'ex',name:'חקירה'}]);
 const tabsEl=$('tabs'),panelsEl=$('panels');
-[{id:'all',name:'סקירת הכל'}].concat(shows.map(s=>({name:s.name}))).forEach((t,i)=>{
-  const b=el('button','tab',t.name);b.setAttribute('aria-selected',i===0?'true':'false');b.onclick=()=>sel(i);tabsEl.appendChild(b);
-  const p=el('div','panel'+(i===0?' on':''));p.id='p'+i;p.innerHTML=i===0?overviewHTML():showHTML(shows[i-1],i-1);panelsEl.appendChild(p);
+TABS.forEach((t,i)=>{
+  const b=el('button','tab'+(t.star?' star':''),t.name);
+  b.setAttribute('aria-selected',i===0?'true':'false');b.onclick=()=>sel(i);tabsEl.appendChild(b);
+  const p=el('div','panel'+(i===0?' on':''));p.id='pan'+i;panelsEl.appendChild(p);
 });
+function build(i){const t=TABS[i],p=$('pan'+i);if(p.dataset.built)return;
+  if(t.k==='ov')p.innerHTML=overviewHTML();
+  else if(t.k==='bm')p.innerHTML=benchmarkHTML();
+  else if(t.k==='ex')p.innerHTML=explorerHTML();
+  else p.innerHTML=showHTML(shows[+t.k.slice(1)],+t.k.slice(1));
+  p.dataset.built='1';afterBuild(t,i);}
 function sel(i){[...tabsEl.children].forEach((t,j)=>t.setAttribute('aria-selected',i===j?'true':'false'));
-  [...panelsEl.children].forEach((p,j)=>p.classList.toggle('on',i===j));window.scrollTo({top:0,behavior:'smooth'});
-  if(i===0)drawTrend('ch-all',aggSeries,aggKeys);else{const s=shows[i-1];drawTrend('ch-'+(i-1),(s.trend||[]).map(p=>p.v||0),(s.trend||[]).map(p=>p.d));}}
+  build(i);[...panelsEl.children].forEach((p,j)=>p.classList.toggle('on',i===j));window.scrollTo({top:0,behavior:'smooth'});}
+function afterBuild(t,i){
+  if(t.k==='ov'){renderLead();renderPages();drawSpark();renderApps('ov');}
+  if(t.k==='bm'){drawBench();}
+  if(t.k.startsWith('s')){const idx=+t.k.slice(1);drawCurves(idx);}
+  if(t.k==='ex'){initExplorer();}
+}
+const RB=r=>`<span class="refbadge">${r}</span>`; // ref badge
 
-/* ===== OVERVIEW ===== */
+/* =================== OVERVIEW =================== */
 function overviewHTML(){
-  const totL=shows.reduce((a,s)=>a+L(s),0);
+  const totDeep=o.deep_listens, pos=B.portfolio;
+  const above=B.benchmark?.synthesis;
   return `
-  <div class="kpis">
-    <div class="kpi"><div class="l"><span class="dot" style="background:${COL.reach}"></span>חשיפה בסושיאל</div><div class="v reach num">${nf(social.total_views)}</div><div class="s">צפיות רילס · ${social.page_count} עמודים</div></div>
-    <div class="kpi"><div class="l"><span class="dot" style="background:${COL.deep}"></span>האזנה לפרקים</div><div class="v deep num">${nf(totL)}</div><div class="s">YouTube + Spotify + Apple</div></div>
-    <div class="kpi"><div class="l">תוכניות</div><div class="v num">${shows.length}</div><div class="s">המבוגר · אוויר פסגות · הפיצוח · סוגרים</div></div>
+  <div class="strip">
+    <div class="kpi lead">${RB('A1')}<div class="l"><span class="dot"></span>האזנה לפרקים</div><div class="v deep num">${nf(totDeep)}</div><div class="s">פרקים מלאים · YouTube + Spotify + Apple</div></div>
+    <div class="kpi">${RB('A2')}<div class="l">חשיפה בסושיאל</div><div class="v reach num">${nf(social.total_views)}</div><div class="s">צפיות רילס · ${social.page_count} עמודים</div></div>
+    <div class="kpi">${RB('A3')}<div class="l">מיקום מול השוק</div><div class="v num">×2</div><div class="s">2 מ-4 מעל חציון הפודקאסטים בעולם</div></div>
   </div>
 
-  <div class="block deep">
+  <div class="block deep">${RB('B1')}
     <div class="bh"><span class="btag d">האזנה</span><h3>האזנה לפרקים · לפי תוכנית</h3></div>
-    <div class="sub">צפיות/האזנות לפרק מלא. כאן הקרדיט הוא של התוכנית עצמה.</div>
-    <div style="overflow-x:auto"><table id="lead"></table></div>
+    <div class="sub">פרק מלא שנצרך בפועל. כאן הקרדיט שייך לתוכנית עצמה. מסודר לפי סך ההאזנה בכל הפלטפורמות.</div>
+    <div class="scroll"><table id="lead"></table></div>
+    <div class="explain"><b>שימור YouTube</b> = איזה אחוז מהסרטון נצפה בממוצע · <b>צופים ייחודיים</b> = אנשים שונים, לא צפיות חוזרות.</div>
   </div>
 
-  <div class="block reach">
+  <div class="block">${RB('C1')}
+    <div class="bh"><h3>משפך ההמרה · ספוטיפיי</h3></div>
+    <div class="sub">המסע מחשיפה להאזנה — כמה אנשים ספוטיפיי הציג להם את התוכנית, וכמה מהם הפכו למאזינים בפועל.</div>
+    <div id="funnels"></div>
+  </div>
+
+  <div class="block">${RB('C2')}
+    <div class="bh"><h3>מאיפה מגיעה החשיפה · ספוטיפיי</h3></div>
+    <div class="sub">איך אנשים נתקלים בתוכנית בתוך ספוטיפיי. <b>הרבה יותר מהאזנות</b> — החשיפה רחבה, ההמרה היא הצעד הבא.</div>
+    <div id="impr"></div>
+  </div>
+
+  <div class="block reach">${RB('D1')}
     <div class="bh"><span class="btag r">חשיפה</span><h3>חשיפה בסושיאל · לפי עמוד</h3></div>
-    <div class="sub">החשיפה שייכת ל<b>עמוד שבו עלה הפוסט</b> — לא לתוכנית. רוב החשיפה הגדולה מגיעה מעמודי-המותג (מאני, רימקס), לא מעמודי המגישים.</div>
+    <div class="explain" style="margin-bottom:10px">החשיפה שייכת ל<b>עמוד שבו עלה הפוסט</b>, לא לתוכנית — רוב הנפח מגיע מעמודי-המותג (מאני, רימקס), לא מעמודי המגישים. לכן זה מדד נפרד מהאזנה, ואי-אפשר לסכם ביניהם.</div>
     <div id="pages"></div>
   </div>
 
-  <div class="block">
-    <div class="trend-tools"><div class="bh"><h3>מגמת חשיפה לאורך זמן</h3></div>
-      <div class="seg" id="trseg"><button class="on" data-d="30">30 יום</button><button data-d="14">14 יום</button><button data-d="7">7 יום</button></div></div>
-    <div class="sub">סך הזרמות יומיות, כל 4 התוכניות (Spotify) · המספרים על הציר</div>
-    <div class="chart"><svg id="ch-all" viewBox="0 0 640 170" preserveAspectRatio="none"></svg></div>
-  </div>
-
-  <div class="two">
-    <div class="block"><h3>מאיפה מאזינים · כל התוכניות</h3><div class="sub">Spotify · אחוז לפי מדינה</div><div class="demo" id="geo-all"></div></div>
-    <div class="block"><h3>גיל הקהל · כל התוכניות</h3><div class="sub">Spotify · מספר מאזינים לפי גיל</div><div class="demo" id="age-all"></div></div>
+  <div class="block">${RB('E1')}
+    <div class="bh"><h3>מגמת האזנות יומית · ספוטיפיי</h3></div>
+    <div class="sub">סך ההזרמות היומיות בכל 4 התוכניות, 30 הימים האחרונים.</div>
+    <div class="spark"><svg id="sp-ov" viewBox="0 0 640 46" preserveAspectRatio="none"></svg></div>
   </div>
 
   <div class="toolbar">
-    <button class="btn" onclick="copyT()"><svg class="ic" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>העתק</button>
+    <button class="btn" onclick="copyT()"><svg class="ic" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>העתק טבלה</button>
     <button class="btn" onclick="csvT()"><svg class="ic" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>CSV</button>
   </div>`;
 }
 function renderLead(){
-  const mx={yt:Math.max(...shows.map(s=>s.youtube_views)),sp:Math.max(...shows.map(s=>s.spotify_streams)),ap:Math.max(...shows.map(s=>s.apple_plays))};
-  const sorted=[...shows].sort((a,b)=>L(b)-L(a));
+  const mx={yt:Math.max(...shows.map(s=>s.platforms.youtube)),sp:Math.max(...shows.map(s=>s.platforms.spotify)),ap:Math.max(...shows.map(s=>s.platforms.apple)),d:Math.max(...shows.map(deepOf))};
   const c=(v,m,col)=>`<td class="cell"><span class="cellbar" style="background:${col};width:${m?Math.round(100*v/m):0}%"></span><span class="cellv num">${nf(v)}</span></td>`;
-  let h=`<thead><tr><th>תוכנית</th><th>YouTube</th><th>Spotify</th><th>Apple</th><th>סך האזנה</th><th>שימור</th></tr></thead><tbody>`;
-  sorted.forEach(s=>{h+=`<tr><td class="nm">${s.name}</td>`+c(s.youtube_views,mx.yt,COL.yt)+c(s.spotify_streams,mx.sp,COL.sp)+c(s.apple_plays,mx.ap,COL.ap)+`<td class="tot num">${nf(L(s))}</td><td class="num">${s.youtube_retention_pct??'–'}%</td></tr>`;});
+  let h=`<thead><tr><th>תוכנית</th><th>סך האזנה</th><th>YouTube</th><th>Spotify</th><th>Apple</th><th>צופים ייחודיים</th><th>שעות צפייה</th><th>שימור YT</th></tr></thead><tbody>`;
+  shows.forEach(s=>{h+=`<tr><td class="nm">${s.name}</td>`+
+    `<td class="tot num">${nf(deepOf(s))}</td>`+
+    c(s.platforms.youtube,mx.yt,COL.yt)+c(s.platforms.spotify,mx.sp,COL.sp)+c(s.platforms.apple,mx.ap,COL.ap)+
+    `<td class="num">${nf(s.yt.unique_viewers)}</td><td class="num">${s.yt.watch_hours!=null?Math.round(s.yt.watch_hours):'–'}</td><td class="num">${s.yt.avg_pct!=null?s.yt.avg_pct+'%':'–'}</td></tr>`;});
   $('lead').innerHTML=h+'</tbody>';
+  // funnels
+  $('funnels').innerHTML=shows.filter(s=>s.funnel).map(s=>funnelHTML(s)).join('');
+  // impressions sources
+  $('impr').innerHTML=shows.filter(s=>s.impressions.total).map(s=>imprHTML(s)).join('');
+}
+function funnelHTML(s){
+  const f=s.funnel,mx=f.reached||1;
+  const row=(lbl,v,col,note)=>`<div class="fstep"><span class="fl">${lbl}</span><div class="fbarwrap"><div class="fbar" style="width:${Math.max(8,Math.round(100*v/mx))}%;background:${col}">${nf(v)}</div></div><span class="fnote">${note||''}</span></div>`;
+  return `<div style="margin-bottom:15px"><div class="bh" style="margin-bottom:7px"><b style="font-size:13.5px">${s.name}</b></div>
+    ${row('נחשפו',f.reached,'#5b6b85','ספוטיפיי הציג להם')}
+    ${row('התעניינו',f.interested,'#5a9bd6',f.r2i_pct+'% נכנסו לבדוק')}
+    ${row('צרכו',f.consumed,COL.reach,f.i2c_pct+'% הפכו למאזינים')}</div>`;
+}
+function imprHTML(s){
+  const tot=s.impressions.total,src=s.impressions.sources;const mx=Math.max(...src.map(x=>x.count),1);
+  const TR={Search:'חיפוש',Home:'מסך הבית',Library:'הספרייה','Other Spotify Features':'אחר'};
+  return `<div style="margin-bottom:13px"><div style="display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:5px"><b>${s.name}</b><span class="num" style="color:var(--mut)">${nf(tot)} חשיפות</span></div>
+    <div class="demo">${src.map(x=>`<div class="dl"><span>${TR[x.name]||x.name}</span><div class="db"><span style="width:${Math.round(100*x.count/mx)}%;background:var(--sp)"></span></div><span class="num">${nf(x.count)}</span></div>`).join('')}</div></div>`;
 }
 function renderPages(){
   const mx=Math.max(...social.by_page.map(p=>p.views))||1;
   $('pages').innerHTML=social.by_page.map(p=>{
     const shows_in=[...new Set(p.items.map(i=>i.show).filter(Boolean))].join(', ');
     const col=p.platform==='Instagram'?COL.ig:COL.fb;
-    return `<div class="pg"><div><span class="nm">${p.page}</span><span class="tag-sm">${p.type}</span><div class="meta">${p.posts} פוסט${p.posts>1?'ים':''}${shows_in?' · '+shows_in:''}</div></div><div class="vv num">${nf(p.views)}</div><div class="bar"><span style="width:${Math.round(100*p.views/mx)}%;background:${col}"></span></div></div>`;}).join('');
+    const nm=p.url?`<a href="${p.url}" target="_blank">${p.page}</a>`:p.page;
+    return `<div class="pg"><div><span class="nm">${nm}</span><span class="tag-sm">${p.platform==='Instagram'?'IG':'FB'} · ${p.type}</span><div class="meta">${p.posts} פוסט${p.posts>1?'ים':''}${shows_in?' · '+shows_in:''}</div></div><div class="vv num">${nf(p.views)}</div><div class="bar"><span style="width:${Math.round(100*p.views/mx)}%;background:${col}"></span></div></div>`;}).join('');
 }
-/* trend with axes + numbers */
-const aggMap={};shows.forEach(s=>(s.trend||[]).forEach(p=>{aggMap[p.d]=(aggMap[p.d]||0)+(p.v||0)}));
-const aggKeys=Object.keys(aggMap).sort(),aggSeries=aggKeys.map(k=>aggMap[k]);
-function drawTrend(id,series,keys,days){
-  const svg=$(id);if(!svg)return;
-  if(days){series=series.slice(-days);keys=keys.slice(-days);}
-  const W=640,H=170,pl=44,pb=22,pt=10,n=series.length;
-  if(!n){svg.innerHTML='<text x="320" y="85" fill="#6b7488" font-size="13" text-anchor="middle">אין נתוני מגמה</text>';return;}
-  const max=Math.max(...series,1),niceMax=Math.ceil(max/5)*5||5;
-  const X=i=>pl+(n>1?i*(W-pl-8)/(n-1):0),Y=v=>pt+(1-v/niceMax)*(H-pt-pb);
-  let g='';for(let k=0;k<=2;k++){const v=niceMax*k/2,y=Y(v);g+=`<line class="gl" x1="${pl}" y1="${y.toFixed(1)}" x2="${W}" y2="${y.toFixed(1)}"/><text class="glt" x="${pl-6}" y="${(y+3).toFixed(1)}" text-anchor="end">${nf(Math.round(v))}</text>`;}
+function renderApps(scope){}
+/* spark + curves */
+function drawSparkInto(id,series,keys){
+  const svg=$(id);if(!svg)return;const W=640,H=svg.id.startsWith('sp')?46:140;
+  const n=series.length,max=Math.max(...series,1);
+  if(!n){svg.innerHTML='';return;}
+  const X=i=>4+(n>1?i*(W-8)/(n-1):0),Y=v=>4+(1-v/max)*(H-8);
   const pts=series.map((v,i)=>[X(i),Y(v)]);
   const ln=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');
-  const ar=`M${pl} ${H-pb} `+ln.replace('M','L')+` L${X(n-1)} ${H-pb} Z`;
-  const lp=pts[pts.length-1],mxi=series.indexOf(Math.max(...series)),mp=pts[mxi];
-  let xl='';[0,Math.floor((n-1)/2),n-1].forEach(i=>{if(keys[i])xl+=`<text class="xlab" x="${X(i)}" y="${H-6}" text-anchor="middle">${keys[i].slice(5)}</text>`;});
-  svg.innerHTML=g+`<path d="${ar}" fill="${COL.reach}" opacity=".12"/><path d="${ln}" fill="none" stroke="${COL.reach}" stroke-width="2.4"/>`+
-    `<circle cx="${mp[0]}" cy="${mp[1]}" r="3.5" fill="${COL.reach}"/><text x="${mp[0]}" y="${(mp[1]-8).toFixed(1)}" fill="#fff" font-size="11" font-weight="700" text-anchor="middle">${nf(series[mxi])}</text>`+
-    `<circle cx="${lp[0]}" cy="${lp[1]}" r="3" fill="${COL.reach}"/>`+xl;
+  const ar=`M${X(0)} ${H-4} `+ln.slice(1)+` L${X(n-1)} ${H-4} Z`;
+  const mxi=series.indexOf(max),mp=pts[mxi];
+  svg.innerHTML=`<path d="${ar}" fill="${COL.reach}" opacity=".1"/><path d="${ln}" fill="none" stroke="${COL.reach}" stroke-width="2"/>`+
+    `<circle cx="${mp[0]}" cy="${mp[1]}" r="2.6" fill="${COL.reach}"/>`;
 }
-function renderDemoAll(){
-  const geo={},age={};shows.forEach(s=>{(s.spotify_geo||[]).forEach(g=>{geo[g.displayName]=(geo[g.displayName]||0)+(g.value||0)});
-    (s.spotify_age||[]).forEach(a=>{const n=(a.genderBreakdown?.counts||[]).reduce((x,c)=>x+(c.count||0),0);age[a.ageBracket]=(age[a.ageBracket]||0)+n});});
-  const gE=Object.entries(geo).sort((a,b)=>b[1]-a[1]).slice(0,5),gS=gE.reduce((a,e)=>a+e[1],0)||1,gM=gE.length?gE[0][1]:1;
-  $('geo-all').innerHTML=gE.map(([k,v])=>`<div class="dl"><span>${k}</span><div class="db"><span style="width:${Math.round(100*v/gM)}%"></span></div><span class="num">${Math.round(100*v/gS)}%</span></div>`).join('')||'<div class="sub">אין נתונים</div>';
-  const ord=['18-22','23-27','28-34','35-44','45-59','60-150'],aE=Object.entries(age).filter(e=>e[1]>0).sort((a,b)=>ord.indexOf(a[0])-ord.indexOf(b[0])),aM=Math.max(1,...aE.map(e=>e[1]));
-  $('age-all').innerHTML=aE.map(([k,v])=>`<div class="dl"><span>${k}</span><div class="db"><span style="width:${Math.round(100*v/aM)}%"></span></div><span class="num">${v}</span></div>`).join('')||'<div class="sub">אין נתונים</div>';
-}
+const aggMap={};shows.forEach(s=>(s.trend||[]).forEach(p=>{aggMap[p.d]=(aggMap[p.d]||0)+(p.v||0)}));
+const aggKeys=Object.keys(aggMap).sort(),aggSeries=aggKeys.map(k=>aggMap[k]);
+function drawSpark(){drawSparkInto('sp-ov',aggSeries,aggKeys);}
 
-/* ===== PER-SHOW ===== */
-function showHTML(s,idx){
-  const geo=(s.spotify_geo||[]).slice(0,4).map(g=>`<div class="dl"><span>${g.displayName}</span><div class="db"><span style="width:${Math.round(g.value*100)}%"></span></div><span class="num">${Math.round(g.value*100)}%</span></div>`).join('')||'<div class="sub">אין נתונים</div>';
-  const ages=(s.spotify_age||[]).map(a=>({br:a.ageBracket,n:(a.genderBreakdown?.counts||[]).reduce((x,c)=>x+(c.count||0),0)})).filter(a=>a.n>0),mA=Math.max(1,...ages.map(a=>a.n));
-  const ageH=ages.map(a=>`<div class="dl"><span>${a.br}</span><div class="db"><span style="width:${Math.round(100*a.n/mA)}%"></span></div><span class="num">${a.n}</span></div>`).join('')||'<div class="sub">מדגם קטן</div>';
-  const eps=(s.episodes||[]).map((e,i)=>`<tr><td>${i+1}. ${e.title.replace(/^פרק \\d+ - /,'').slice(0,44)}</td><td class="num" style="text-align:left;font-weight:700">${nf(e.plays)}</td></tr>`).join('')||'<tr><td colspan="2" class="sub">אין נתונים</td></tr>';
-  const social_posts=(s.social_posts||[]).slice(0,5).map(p=>{
-    const inner=`<div><div class="pl">${p.label}</div><div class="pmeta">עלה ב: ${p.account} · ${p.platform} · ❤ ${nf(p.likes)} · ↗ ${nf(p.shares)}</div></div><div class="pv num" style="color:${p.platform==='Instagram'?COL.ig:COL.fb}">${nf(p.views)}</div>`;
-    return p.url?`<a class="post" href="${p.url}" target="_blank">${inner}</a>`:`<div class="post">${inner}</div>`;}).join('')||'<div class="sub">אין רילס שזוהו</div>';
+/* =================== BENCHMARK (מול השוק) =================== */
+function benchmarkHTML(){
+  const sy=B.synthesis;
+  const ranks=B.portfolio.our_ranks;
   return `
-  <div class="block deep"><div class="bh"><span class="btag d">האזנה</span><h3>${s.name} · האזנה לפרקים</h3></div>
-    <div class="mgrid">
-      <div class="mc"><div class="l"><span class="dot" style="background:${COL.yt}"></span>YouTube</div><div class="n num">${nf(s.youtube_views)}</div></div>
-      <div class="mc"><div class="l"><span class="dot" style="background:${COL.sp}"></span>Spotify</div><div class="n num">${nf(s.spotify_streams)}</div></div>
-      <div class="mc"><div class="l"><span class="dot" style="background:${COL.ap}"></span>Apple</div><div class="n num">${nf(s.apple_plays)}</div></div>
-      <div class="mc"><div class="l">סך האזנה</div><div class="n num">${nf(L(s))}</div></div>
-      <div class="mc"><div class="l">שימור YouTube</div><div class="n num">${s.youtube_retention_pct??'–'}%</div></div>
+  <div class="block star">${RB('BM1')}
+    <div class="bh"><span class="btag d">מול השוק</span><h3>איפה אנחנו עומדים — חודש ראשון</h3></div>
+    <div class="explain" style="font-size:13px;color:#d6dae4;line-height:1.6">${sy.headline_he}</div>
+  </div>
+
+  <div class="block">${RB('BM2')}
+    <div class="bh"><h3>חודש ראשון מול חציון הפודקאסטים בעולם</h3></div>
+    <div class="sub">פודקאסט חציוני בעולם עושה ~28 הורדות בשבוע הראשון / ~145 בחודש (Buzzsprout 2026). מי שמעל — בחצי העליון.</div>
+    <div class="bbar" id="bench-anchor"></div>
+    <div class="explain" style="margin-top:9px">${sy.percentile_position.framing_he}</div>
+  </div>
+
+  <div class="block">${RB('BM3')}
+    <div class="bh"><h3>"ככה התחילו תוכניות שצמחו" · פורטפוליו WeDo</h3></div>
+    <div class="sub">השוואה לחודש הראשון של פודקאסטים ותיקים בפורטפוליו שלנו (אנונימי) שהיום מונים מאות-אלפי האזנות.</div>
+    <div class="bbar" id="bench-mature"></div>
+    <div class="explain" style="margin-top:9px">${sy.benchmark_bars_explainer_he}</div>
+  </div>
+
+  <div class="block">${RB('BM4')}
+    <div class="bh"><h3>מה הנתונים אומרים</h3></div>
+    <ul class="story">${sy.growth_story_he.map(x=>`<li>${boldFirst(x)}</li>`).join('')}</ul>
+  </div>
+
+  <div class="block">${RB('BM5')}
+    <div class="bh"><h3>מיקום בפורטפוליו · 86 הפודקאסטים של WeDo</h3></div>
+    <div class="chips">${ranks.map(r=>`<div class="chip"><div class="cn num">#${r.rank}</div><div class="cl">${r.name} · ${nf(r.streams)} האזנות</div></div>`).join('')}</div>
+    <div class="explain" style="margin-top:9px">מתוך 86 פודקאסטים פעילים. החציון בפורטפוליו הוא ${nf(B.portfolio.median)} האזנות — שנצברו על פני שנים. ארבעת השואים בני פחות מחודש.</div>
+  </div>
+
+  <div class="block">${RB('BM6')}
+    <div class="proj"><div class="pt">▸ תחזית (לא הבטחה)</div>
+      <div style="font-size:13.5px;line-height:1.6;color:#e8ebf1">${sy.projection.statement_he}</div>
+      <div class="note">בסיס: ${sy.projection.basis}</div>
     </div>
-    <div class="chart" style="height:150px"><svg id="ch-${idx}" viewBox="0 0 640 150" preserveAspectRatio="none"></svg></div>
-    <div class="sub" style="margin-top:4px">מגמת הזרמות יומית · 30 יום (Spotify)</div>
-  </div>
-  <div class="two">
-    <div class="block"><h3>ביצועים לפי פרק</h3><div class="sub">Spotify · מספר הזרמות</div><table><tbody>${eps}</tbody></table></div>
-    <div class="block reach"><div class="bh"><span class="btag r">חשיפה</span><h3>רילס שעלו על התוכנית</h3></div><div class="sub">בעמודים שונים — החשיפה היא של העמוד שבו עלה הפוסט</div>${social_posts}</div>
-  </div>
-  <div class="two">
-    <div class="block"><h3>מאיפה מאזינים</h3><div class="sub">Spotify · מדגם קטן</div><div class="demo">${geo}</div></div>
-    <div class="block"><h3>גיל הקהל</h3><div class="sub">Spotify · מאזינים לפי גיל</div><div class="demo">${ageH}</div></div>
   </div>`;
 }
-function tRows(){let r=[['תוכנית','YouTube','Spotify','Apple','סך האזנה','שימור%']];shows.forEach(s=>r.push([s.name,s.youtube_views,s.spotify_streams,s.apple_plays,L(s),s.youtube_retention_pct]));
-  r.push([],['עמוד סושיאל','פלטפורמה','סוג','פוסטים','חשיפה']);social.by_page.forEach(p=>r.push([p.page,p.platform,p.type,p.posts,p.views]));return r;}
-function copyT(){navigator.clipboard.writeText(tRows().map(r=>r.join('\t')).join('\n')).then(()=>toast('הועתק'));}
-function csvT(){const c='﻿'+tRows().map(r=>r.join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([c],{type:'text/csv'}));a.download='remax.csv';a.click();}
-function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800);}
+function boldFirst(t){const i=t.indexOf('.');return i>0&&i<90?`<b>${t.slice(0,i+1)}</b>${t.slice(i+1)}`:t;}
+function drawBench(){
+  const sy=B.synthesis;
+  // anchor: each RE/MAX show vs 145 threshold
+  const rm=B.growth.remax;const TH=145;const mx=Math.max(TH,...rm.map(r=>r.month1));
+  $('bench-anchor').innerHTML=rm.map(r=>{
+    const above=r.month1>=28; const col=r.month1>=TH?COL.deep:(above?COL.reach:'#5b6b85');
+    return bbRow(`<b>${r.name}</b> · ${r.days} ימים`,r.month1,mx,col,r.month1>=TH?'מעל רף 30-יום':(above?'מעל החציון':'בטווח הפתיחה'));
+  }).join('')+`<div class="thresh">— קו 145 = רף "חצי עליון בעולם" ל-30 יום —</div>`;
+  // mature: month1 of mature shows (anonymized) vs RE/MAX leader
+  const mat=B.growth.mature.filter(m=>m.month1!=null).slice(0,4);
+  const lead=B.growth.remax[0];
+  const rows=[{l:`<b>המבוגר האחראי</b> (RE/MAX, היום)`,v:lead.month1,note:`${lead.days} ימים`,col:COL.deep}]
+    .concat(mat.map(m=>({l:`פודקאסט ותיק ${m.label} · היום ${nf(m.all_time)}`,v:m.month1,note:'חודש 1 שלו',col:'#6f7da0'})));
+  const mx2=Math.max(...rows.map(r=>r.v));
+  $('bench-mature').innerHTML=rows.map(r=>bbRow(r.l,r.v,mx2,r.col,r.note)).join('');
+}
+function bbRow(lbl,v,mx,col,note){return `<div class="bbrow"><span class="bl">${lbl}</span><div class="bw"><div class="bf" style="width:${Math.max(3,Math.round(100*v/mx))}%;background:${col}"></div></div><span class="bv num">${nf(v)}${note?` <span style="color:var(--mut2);font-weight:500;font-size:11px">· ${note}</span>`:''}</span></div>`;}
 
-renderLead();renderPages();renderDemoAll();drawTrend('ch-all',aggSeries,aggKeys);
-$('trseg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;[...e.currentTarget.children].forEach(x=>x.classList.toggle('on',x===b));drawTrend('ch-all',aggSeries,aggKeys,+b.dataset.d);});
+/* =================== PER-SHOW =================== */
+function showHTML(s,idx){
+  const f=s.funnel;
+  const ages=demoAges(s);
+  const social_posts=(s.social_posts||[]).slice(0,5).map(p=>{
+    const inner=`<div><div style="font-size:13px;font-weight:500">${p.label}</div><div style="font-size:11px;color:var(--mut2);margin-top:2px">עלה ב: ${p.account} · ${p.platform} · ❤ ${nf(p.likes)} · ↗ ${nf(p.shares)}</div></div><div class="num" style="font-size:16px;font-weight:800;color:${p.platform==='Instagram'?COL.ig:COL.fb}">${nf(p.views)}</div>`;
+    return p.url?`<a class="pg" style="grid-template-columns:1fr auto;text-decoration:none" href="${p.url}" target="_blank">${inner}</a>`:`<div class="pg" style="grid-template-columns:1fr auto">${inner}</div>`;}).join('')||'<div class="sub">אין רילס שזוהו לתוכנית</div>';
+  return `
+  <div class="strip">
+    <div class="kpi lead">${RB('S'+idx+'a')}<div class="l">סך האזנה</div><div class="v deep num">${nf(deepOf(s))}</div><div class="s">YT ${nf(s.platforms.youtube)} · SP ${nf(s.platforms.spotify)} · AP ${nf(s.platforms.apple)}</div></div>
+    <div class="kpi">${RB('S'+idx+'b')}<div class="l">צופים ייחודיים</div><div class="v num">${nf(s.yt.unique_viewers)}</div><div class="s">YouTube · אנשים שונים</div></div>
+    <div class="kpi">${RB('S'+idx+'c')}<div class="l">זמן צפייה ממוצע</div><div class="v num">${s.yt.avg_dur||'–'}</div><div class="s">YouTube · ${s.yt.avg_pct!=null?s.yt.avg_pct+'% מהסרטון':''}</div></div>
+  </div>
+
+  ${f?`<div class="block">${RB('S'+idx+'d')}
+    <div class="bh"><h3>משפך ההמרה · ${s.name}</h3></div>
+    <div class="sub">מהחשיפה בספוטיפיי להאזנה בפועל.</div>
+    ${funnelHTML(s)}
+  </div>`:''}
+
+  ${s.curves&&s.curves.length?`<div class="block deep">${RB('S'+idx+'e')}
+    <div class="bh"><span class="btag d">עומק</span><h3>עד כמה מקשיבים לפרק · עקומת שימור</h3></div>
+    <div class="sub">מתוך מי שהתחיל את הפרק — כמה החזיקו עד כל נקודה. ה-100% = הגיעו לסוף.</div>
+    <div class="curve"><svg id="cv-${idx}" viewBox="0 0 640 140" preserveAspectRatio="none"></svg></div>
+    <div id="cvleg-${idx}" class="glegend"></div>
+    <div class="explain"><b>הקשבה אמיתית</b> = איזה אחוז האזין בתשומת לב מלאה ולא ברקע · <b>זמן חציוני</b> = כמה זמן החזיק המאזין החציוני.</div>
+  </div>`:''}
+
+  <div class="two">
+    <div class="block">${RB('S'+idx+'f')}
+      <div class="bh"><h3>ביצועים לפי פרק</h3></div>
+      <div class="sub">האזנות ספוטיפיי + שימור</div>
+      <table><tbody>${(s.curves||[]).map((e,i)=>`<tr><td>${i+1}. ${e.title.replace(/^פרק \d+ - /,'').slice(0,30)}</td><td class="num" style="text-align:left;font-weight:700">${nf(e.count)}</td><td class="num" style="text-align:left;color:var(--mut)">${e.median_completion_sec?Math.round(e.median_completion_sec/60)+'ד׳':''}</td></tr>`).join('')||'<tr><td class="sub">אין נתונים</td></tr>'}</tbody></table>
+    </div>
+    <div class="block reach">${RB('S'+idx+'g')}
+      <div class="bh"><span class="btag r">חשיפה</span><h3>רילס שעלו על התוכנית</h3></div>
+      <div class="explain" style="margin-bottom:9px">בעמודים שונים — החשיפה היא של העמוד שבו עלה הפוסט, לא של התוכנית.</div>
+      ${social_posts}
+    </div>
+  </div>
+
+  <div class="block">${RB('S'+idx+'h')}
+    <div class="bh"><h3>גיל ומגדר הקהל · ספוטיפיי</h3></div>
+    ${s.demo_reliable?`<div class="sub">לפי ${nf(s.spotify_streams)} האזנות.</div>
+      <div class="glegend"><span><i style="background:${COL.male}"></i>גברים</span><span><i style="background:${COL.female}"></i>נשים</span><span><i style="background:${COL.nb}"></i>אחר</span></div>
+      <div class="demo">${ages}</div>`
+    :`<div class="sub">מדגם קטן מדי לפילוח אמין (${nf(s.spotify_streams)} האזנות) — נציג כשייצבר.</div>`}
+  </div>`;
+}
+function demoAges(s){
+  const ord=['18-22','23-27','28-34','35-44','45-59','60-150'];
+  const rows=(s.age||[]).map(a=>{const c=a.genderBreakdown?.counts||[];const g=k=>(c.find(x=>x.gender===k)||{}).count||0;
+    return {br:a.displayName||a.ageBracket,m:g('MALE'),f:g('FEMALE'),nb:g('NON_BINARY')+g('NOT_SPECIFIED'),n:(a.genderBreakdown?.total)||0};})
+    .filter(a=>a.n>0&&a.br!=='Unknown').sort((x,y)=>ord.indexOf(x.br)-ord.indexOf(y.br));
+  const mx=Math.max(1,...rows.map(a=>a.n));
+  return rows.map(a=>`<div class="dl"><span>${a.br}</span><div class="db">
+    <span style="width:${Math.round(100*a.m/mx)}%;background:${COL.male}"></span><span style="width:${Math.round(100*a.f/mx)}%;background:${COL.female}"></span><span style="width:${Math.round(100*a.nb/mx)}%;background:${COL.nb}"></span>
+    </div><span class="num">${a.n}</span></div>`).join('')||'<div class="sub">אין נתונים</div>';
+}
+function drawCurves(idx){
+  const s=shows[idx];if(!s.curves||!s.curves.length)return;
+  const svg=$('cv-'+idx);if(!svg)return;
+  const W=640,H=140,pl=30,pb=20,pt=8;
+  const xs=[0,25,50,75,95,100];
+  const colors=['#f3a23e','#36d6c6','#4d8df5','#a87bf0'];
+  let g='';for(let k=0;k<=2;k++){const v=100*k/2,y=pt+(1-v/100)*(H-pt-pb);g+=`<line class="gl" x1="${pl}" y1="${y.toFixed(1)}" x2="${W}" y2="${y.toFixed(1)}"/><text class="glt" x="${pl-5}" y="${(y+3).toFixed(1)}" text-anchor="end">${v}%</text>`;}
+  let paths='',leg='';
+  const eps=s.curves.filter(e=>e.count>=3).slice(0,4);
+  eps.forEach((e,ci)=>{
+    const col=colors[ci%4];
+    const pts=xs.map(x=>{const yv=x===0?100:(e.retention['p'+x]??e.retention[x]??0);
+      const X=pl+(x/100)*(W-pl-6),Y=pt+(1-yv/100)*(H-pt-pb);return [X,Y];});
+    paths+=`<path d="${pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ')}" fill="none" stroke="${col}" stroke-width="2.2" opacity=".9"/>`;
+    leg+=`<span><i style="background:${col}"></i>${e.title.replace(/^פרק (\d+).*/,'פרק $1')} · ${e.median_completion_sec?Math.round(e.median_completion_sec/60)+'ד׳ חציון':''} · ${e.foreground_pct!=null?Math.round(e.foreground_pct*100)+'% הקשבה אמיתית':''}</span>`;
+  });
+  let xl='';xs.forEach(x=>{const X=pl+(x/100)*(W-pl-6);xl+=`<text class="xlab" x="${X}" y="${H-5}" text-anchor="middle">${x}%</text>`;});
+  svg.innerHTML=g+paths+xl;
+  $('cvleg-'+idx).innerHTML=leg;
+}
+
+/* =================== EXPLORER =================== */
+const METRICS=[
+  {k:'deep',name:'סך האזנה (פרקים)',get:s=>deepOf(s),fmt:nf,drill:s=>[['YouTube',s.platforms.youtube],['Spotify',s.platforms.spotify],['Apple',s.platforms.apple]]},
+  {k:'reach',name:'חשיפה בסושיאל',get:s=>(s.instagram_views+s.facebook_views),fmt:nf,drill:s=>[['Instagram',s.instagram_views],['Facebook',s.facebook_views]]},
+  {k:'funnel',name:'משפך המרה',get:s=>s.funnel?s.funnel.consumed:0,fmt:nf,drill:s=>s.funnel?[['נחשפו',s.funnel.reached],['התעניינו',s.funnel.interested],['צרכו',s.funnel.consumed]]:[]},
+  {k:'unique',name:'צופים ייחודיים (YT)',get:s=>s.yt.unique_viewers||0,fmt:nf,drill:s=>[['שעות צפייה',Math.round(s.yt.watch_hours||0)],['שימור %',s.yt.avg_pct||0]]},
+  {k:'impr',name:'חשיפות בספוטיפיי',get:s=>s.impressions.total||0,fmt:nf,drill:s=>s.impressions.sources.map(x=>[x.name,x.count])},
+];
+function explorerHTML(){
+  return `
+  <div class="block">${RB('EX1')}
+    <div class="bh"><h3>חקירה · בחר מדד והשווה</h3></div>
+    <div class="sub">בחר מדד ושתי תוכניות להשוואה. לחיצה על שורה בפירוק פותחת הסבר.</div>
+    <div class="exctl">
+      <div class="exsel"><label>מדד</label><select id="exMetric">${METRICS.map((m,i)=>`<option value="${i}">${m.name}</option>`).join('')}</select></div>
+      <div class="exsel"><label>תוכנית א'</label><select id="exA">${shows.map((s,i)=>`<option value="${i}">${s.name}</option>`).join('')}</select></div>
+      <div class="exsel"><label>תוכנית ב'</label><select id="exB">${shows.map((s,i)=>`<option value="${i}" ${i===1?'selected':''}>${s.name}</option>`).join('')}</select></div>
+    </div>
+    <div class="excards" id="exCards"></div>
+  </div>`;
+}
+const DRILL_EXPLAIN={'נחשפו':'ספוטיפיי הציג להם את התוכנית (בחיפוש/מסך הבית).','התעניינו':'נכנסו לבדוק את עמוד התוכנית.','צרכו':'באמת התחילו להאזין לפרק.','Search':'נתקלו בתוכנית דרך חיפוש.','Home':'הופיע להם במסך הבית של ספוטיפיי.','Library':'שמרו/עוקבים — הגיע מהספרייה שלהם.','שימור %':'אחוז ממוצע מהסרטון שנצפה.','שעות צפייה':'סך שעות הצפייה המצטברות.'};
+function exCard(mi,si){
+  const m=METRICS[mi],s=shows[si],dr=m.drill(s);
+  return `<div class="excard"><h4>${s.name}</h4><div class="exsub">${m.name}</div>
+    <div class="exbig num" style="color:var(--deep)">${m.fmt(m.get(s))}</div>
+    <div class="exdrill">${dr.map((d,i)=>{
+      const ex=DRILL_EXPLAIN[d[0]];
+      return `<div class="exrow ${ex?'clickable':''}" ${ex?`onclick="this.nextElementSibling.classList.toggle('open')"`:''}><span>${d[0]} ${ex?'<span class="caret">▾</span>':''}</span><span class="ev num">${m.fmt(d[1])}</span></div>${ex?`<div class="exdd">${ex}</div>`:''}`;
+    }).join('')||'<div class="sub">אין פירוק</div>'}</div>
+  </div>`;
+}
+function renderEx(){const mi=+$('exMetric').value,a=+$('exA').value,b=+$('exB').value;$('exCards').innerHTML=exCard(mi,a)+exCard(mi,b);}
+function initExplorer(){['exMetric','exA','exB'].forEach(id=>$(id).addEventListener('change',renderEx));renderEx();}
+
+/* =================== export + edit =================== */
+function tRows(){let r=[['תוכנית','סך האזנה','YouTube','Spotify','Apple','צופים ייחודיים','שעות צפייה','שימור YT%']];
+  shows.forEach(s=>r.push([s.name,deepOf(s),s.platforms.youtube,s.platforms.spotify,s.platforms.apple,s.yt.unique_viewers,s.yt.watch_hours,s.yt.avg_pct]));
+  r.push([],['עמוד סושיאל','פלטפורמה','סוג','פוסטים','חשיפה']);social.by_page.forEach(p=>r.push([p.page,p.platform,p.type,p.posts,p.views]));return r;}
+function copyT(){navigator.clipboard.writeText(tRows().map(r=>r.join('\t')).join('\n')).then(()=>toast('הטבלה הועתקה'));}
+function csvT(){const c='﻿'+tRows().map(r=>r.join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([c],{type:'text/csv'}));a.download='remax-wedo.csv';a.click();}
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800);}
+$('editToggle').onclick=function(){document.body.classList.toggle('editmode');this.classList.toggle('on');};
+
+build(0);
 </script>
 </body>
 </html>
