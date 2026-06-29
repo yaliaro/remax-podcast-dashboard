@@ -325,6 +325,7 @@ function buildOverview(){
     '<div class="statcard r">'+RB('A2')+'<div class="ico">'+svgIco(IC.eye)+'</div><div class="t">חשיפה בסושיאל'+tip('reach')+'</div><div class="v reach num">'+kf(totReach)+'</div><div class="x">צפיות רילס · מדד נפרד, רחב</div></div>'+
     '<div class="statcard">'+RB('A3')+'<div class="ico">'+svgIco(IC.filter)+'</div><div class="t">פרקים שפורסמו'+tip('episodes')+'</div><div class="v num"><span class="epstat"><span>'+nf(totPub)+'</span><span class="ep">/ '+nf(totPlan)+'</span></span></div><div class="x">כל תוכנית מתוכננת ל-'+EP_PLANNED+' פרקים · תחילת הסדרה</div></div>'+
   '</div>'+
+  growthBlock('ov','agg')+
   '<div class="block deep">'+RB('A4')+'<div class="bh"><span class="btag d">האזנה</span><h3>טבלת מובילים · האזנה לפרקים</h3></div><div class="sub">פרק מלא שנצרך בפועל — הקרדיט שייך לתוכנית. מסודר לפי סך ההאזנה.</div>'+leaderboardTable()+'</div>'+
   '<div class="block">'+RB('A5')+'<div class="bh"><h3>דירוג לפי כל מדד</h3></div><div class="sub">כל מדד, כל התוכניות, מי מוביל (כתום). לחיצה על שם מדד פותחת הסבר.</div>'+rankMatrix()+'</div>'+
   '<div class="two3">'+
@@ -356,6 +357,7 @@ function buildShow(s,idx){
     '<div class="statcard">'+RB('S'+idx+'c')+'<div class="ico">'+svgIco(IC.filter)+'</div><div class="t">פרקים שפורסמו'+tip('episodes')+'</div><div class="v num"><span class="epstat"><span>'+pubEps(s)+'</span><span class="ep">/ '+EP_PLANNED+'</span></span></div><div class="x">מתוכננים '+EP_PLANNED+'</div></div>'+
     '<div class="statcard">'+RB('S'+idx+'d')+'<div class="ico" style="color:var(--yt)">'+svgIco(IC.eye)+'</div><div class="t">שימור · יוטיוב'+tip('ytret')+'</div><div class="v num">'+(yt.avg_pct!=null?yt.avg_pct+'%':'–')+'</div><div class="x">'+(yt.avg_dur?yt.avg_dur+' · ':'')+(yt.watch_hours!=null?Math.round(yt.watch_hours)+' שעות':'')+'</div></div>'+
   '</div>'+
+  growthBlock('s'+idx,'show')+
   '<div class="two3">'+
     '<div class="block deep">'+RB('S'+idx+'e')+'<div class="bh"><span class="btag d">האזנה</span><h3>איפה מאזינים</h3></div><div class="sub">פילוח ההאזנה והצפייה בין הפלטפורמות.</div>'+platformSplit(p.youtube,p.spotify,p.apple)+'</div>'+
     '<div class="block">'+RB('S'+idx+'f')+'<div class="bh"><span class="btag" style="background:rgba(57,208,119,.14);color:var(--sp)">Spotify</span><h3>מחשיפה להאזנה</h3></div><div class="sub">המסע בספוטיפיי (קיים רק שם).</div>'+
@@ -529,62 +531,51 @@ window.__exportCSV=function(){var rows=[['תוכנית','פרקים','סך הא�
   var c='﻿'+rows.map(function(r){return r.join(',');}).join('\n');var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([c],{type:'text/csv'}));a.download='remax-wedo.csv';a.click();toast('הטבלאות יוצאו · CSV');};
 function toast(msg){var t=$('toast');if(!t)return;t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},1800);}
 
-/* ============ GROWTH (progress bars — weighted, no platform split) ============ */
-window.__gMode='week';window.__gCum=true;
-function buildGrowth(){
-  function btn(k,v,lbl){return '<button class="gbtn" data-g="'+k+'" data-v="'+v+'" onclick="window.__gset(\''+k+'\',\''+v+'\')">'+lbl+'</button>';}
-  return '<div class="block deep">'+RB('G1')+'<div class="bh"><span class="btag d">צמיחה</span><h3>התקדמות · האזנות לפרקים</h3></div>'+
-    '<div class="sub">סך ההאזנות (יוטיוב + ספוטיפיי + אפל יחד — משוקלל). בחר חתך ותצוגה.</div>'+
-    '<div class="gbtns">'+btn('mode','show','לפי תוכנית')+btn('mode','ep','לפי פרק')+btn('mode','week','לפי שבוע')+'</div>'+
-    '<div class="gbtns">'+btn('cum','1','מצטבר')+btn('cum','0','בודד')+'</div>'+
-    '<div id="gchart" class="gchart"></div><div class="insnote" id="gnote"></div></div>';
+/* ============ GROWTH (weekly trajectory — embedded per tab, weighted, uniform bars) ============ */
+window.__GCUM={};
+function growthBlock(id,kind){
+  if(window.__GCUM[id]==null)window.__GCUM[id]=true;
+  function b(v,l){return '<button class="gbtn" data-gc="'+id+'" data-v="'+v+'" onclick="window.__gtoggle(\''+id+'\','+v+')">'+l+'</button>';}
+  return '<div class="block deep">'+RB('GR'+id)+'<div class="bh"><span class="btag d">צמיחה</span><h3>צמיחה שבועית · האזנות</h3></div>'+
+    '<div class="sub">סך האזנות לפרקים (יוטיוב+ספוטיפיי+אפל) לפי שבוע · יוטיוב מקורב מהדפוס היומי.</div>'+
+    '<div class="gbtns">'+b('1','מצטבר')+b('0','בודד')+'</div>'+
+    '<div id="gc-'+id+'" class="gchart" data-kind="'+kind+'"></div></div>';
 }
-window.__gset=function(k,v){if(k==='mode')window.__gMode=v;else window.__gCum=(v==='1');window.__renderGrowth();};
-window.__renderGrowth=function(){
-  var mode=window.__gMode,cum=window.__gCum;
-  [].forEach.call(document.querySelectorAll('.gbtn'),function(b){var k=b.getAttribute('data-g'),v=b.getAttribute('data-v');
-    var on=(k==='mode'&&v===mode)||(k==='cum'&&((v==='1')===cum));b.className='gbtn'+(on?' on':'');});
-  var items=[],note='';
-  if(mode==='show'){
-    items=shows.slice().sort(function(a,b){return (b.deep_total||0)-(a.deep_total||0);}).map(function(s){return {l:s.name,v:s.deep_total||0};});
-    note='סך האזנות לכל תוכנית (יוטיוב+ספוטיפיי+אפל). בחתך זה אין הבדל מצטבר/בודד.';
-  }else if(mode==='ep'){
-    shows.forEach(function(s){(s.curves||[]).forEach(function(e,i){items.push({l:s.name.split(' ')[0]+' '+(i+1),v:(e.count||0)+(e.yt_views||0)});});});
-    if(cum){var r=0;items=items.map(function(it){r+=it.v;return {l:it.l,v:r};});}
-    note=cum?'סך מצטבר ככל שמתווספים פרקים (יוטיוב+ספוטיפיי).':'האזנות לכל פרק בנפרד (יוטיוב+ספוטיפיי).';
-  }else{
-    var len=0,arrs=[];shows.forEach(function(s){var dl=(s.trend||[]).map(function(x){return x&&x.v!=null?x.v:x;}).filter(function(x){return typeof x==='number';});arrs.push(dl);len=Math.max(len,dl.length);});
-    var comb=[];for(var i=0;i<len;i++){var sm=0;arrs.forEach(function(a){sm+=a[i]||0;});comb.push(sm);}
-    var wk=[];for(var j=0;j+7<=comb.length;j+=7){var w=comb.slice(j,j+7).reduce(function(x,y){return x+y;},0);if(w>0)wk.push(w);}
-    items=wk.map(function(w,idx){return {l:'שבוע '+(idx+1),v:w};});
-    if(cum){var r2=0;items=items.map(function(it){r2+=it.v;return {l:it.l,v:r2};});}
-    note='לפי שבוע = ספוטיפיי בלבד (הפלטפורמה היחידה עם נתון יומי). '+(cum?'מצטבר.':'לכל שבוע בנפרד.')+' יוטיוב-שבועי ייכנס כשיגיע ייצוא "Chart data".';
-  }
-  var ng=$('gnote');if(ng)ng.textContent=note;
-  var box=$('gchart');if(!box)return;
-  if(!items.length){box.innerHTML='<div class="sub">אין נתונים</div>';return;}
-  var max=Math.max.apply(null,items.map(function(it){return it.v;}).concat([1]));
-  var n=items.length,wide=n>6,W=wide?n*72:600,H=250,pb=56,pt=26,pl=10,bw=(W-pl*2)/n,rot=n>5,s='';
-  items.forEach(function(it,i){var h=(it.v/max)*(H-pt-pb),x=pl+i*bw+bw*0.17,bwi=bw*0.66,y=pt+(H-pt-pb-h),cx=x+bwi/2;
-    s+='<rect x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+bwi.toFixed(1)+'" height="'+Math.max(2,h).toFixed(1)+'" rx="4" fill="'+COL.deep+'"/>';
-    s+='<text x="'+cx.toFixed(1)+'" y="'+(y-7).toFixed(1)+'" fill="#f1f3f8" font-size="13" font-weight="800" text-anchor="middle">'+nf(it.v)+'</text>';
-    s+=rot?'<text x="'+cx.toFixed(1)+'" y="'+(H-pb+16)+'" fill="#9aa2b2" font-size="10.5" text-anchor="end" transform="rotate(-38 '+cx.toFixed(1)+' '+(H-pb+16)+')">'+esc(it.l)+'</text>'
-          :'<text x="'+cx.toFixed(1)+'" y="'+(H-pb+19)+'" fill="#9aa2b2" font-size="11.5" text-anchor="middle">'+esc(it.l)+'</text>';});
-  box.innerHTML='<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMinYMid meet" style="height:250px;width:'+(wide?W+'px':'100%')+';overflow:visible">'+s+'</svg>';
+window.__gtoggle=function(id,v){window.__GCUM[id]=!!v;var el=$('gc-'+id);window.__renderGC(id,el?el.getAttribute('data-kind'):'agg');};
+function weeklyWeighted(list){
+  var len=0,arrs=[];list.forEach(function(s){var dl=((s&&s.trend)||[]).map(function(x){return x&&x.v!=null?x.v:x;}).filter(function(x){return typeof x==='number';});arrs.push(dl);len=Math.max(len,dl.length);});
+  var daily=[];for(var i=0;i<len;i++){var sum=0;list.forEach(function(s,si){var sp=(s&&s.platforms&&s.platforms.spotify)||0;var sc=sp?((s.deep_total||0)/sp):0;sum+=(arrs[si][i]||0)*sc;});daily.push(sum);}
+  var wk=[];for(var j=0;j+7<=daily.length;j+=7){var w=daily.slice(j,j+7).reduce(function(x,y){return x+y;},0);if(w>0)wk.push(Math.round(w));}
+  return wk;
+}
+window.__renderGC=function(id,kind){
+  var cum=window.__GCUM[id]!==false;
+  [].forEach.call(document.querySelectorAll('[data-gc="'+id+'"]'),function(b){var on=((b.getAttribute('data-v')==='1')===cum);b.className='gbtn'+(on?' on':'');});
+  var list=(kind==='show')?[shows[+id.slice(1)]]:shows;
+  var wk=weeklyWeighted(list).map(function(w,i){return {l:'שבוע '+(i+1),v:w};});
+  if(cum){var r=0;wk=wk.map(function(it){r+=it.v;return {l:it.l,v:r};});}
+  var box=$('gc-'+id);if(!box)return;
+  if(!wk.length){box.innerHTML='<div class="sub">אין עדיין מספיק נתונים שבועיים</div>';return;}
+  var max=Math.max.apply(null,wk.map(function(it){return it.v;}).concat([1]));
+  var n=wk.length,BW=48,GAP=34,pl=22,pt=28,pb=42,H=224,W=pl*2+n*BW+(n-1)*GAP,s='';
+  wk.forEach(function(it,i){var x=pl+i*(BW+GAP),h=(it.v/max)*(H-pt-pb),y=pt+(H-pt-pb-h),cx=x+BW/2;
+    s+='<rect x="'+x+'" y="'+y.toFixed(1)+'" width="'+BW+'" height="'+Math.max(3,h).toFixed(1)+'" rx="6" fill="'+COL.deep+'"/>';
+    s+='<text x="'+cx+'" y="'+(y-8).toFixed(1)+'" fill="#f1f3f8" font-size="14" font-weight="800" text-anchor="middle">'+nf(it.v)+'</text>';
+    s+='<text x="'+cx+'" y="'+(H-pb+20)+'" fill="#9aa2b2" font-size="12" text-anchor="middle">'+esc(it.l)+'</text>';});
+  box.innerHTML='<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" style="height:224px;width:'+W+'px;max-width:100%;display:block;margin:4px auto 0;overflow:visible">'+s+'</svg>';
 };
 
-var TABS=[{k:'status',name:'סטטוס'},{k:'ov',name:'סקירה'},{k:'growth',name:'צמיחה'}].concat(shows.map(function(s,i){return {k:'s'+i,name:s.name};})).concat([{k:'insights',name:'תובנות'}]);
+var TABS=[{k:'status',name:'סטטוס'},{k:'ov',name:'סקירה'}].concat(shows.map(function(s,i){return {k:'s'+i,name:s.name};})).concat([{k:'insights',name:'תובנות'}]);
 var tabsEl=$('tabs'),panelsEl=$('panels');
 TABS.forEach(function(t,i){var b=document.createElement('button');b.className='tab'+(t.star?' star':'');b.textContent=t.name;b.setAttribute('aria-selected',i===0?'true':'false');b.onclick=function(){sel(i);};tabsEl.appendChild(b);var p=document.createElement('div');p.className='panel'+(i===0?' on':'');p.id='pan'+i;panelsEl.appendChild(p);});
 function buildTab(i){var t=TABS[i],p=$('pan'+i);if(p.dataset.built)return;
   try{
     if(t.k==='status')p.innerHTML=buildStatus();
-    else if(t.k==='ov')p.innerHTML=buildOverview();
+    else if(t.k==='ov'){p.innerHTML=buildOverview();window.__renderGC('ov','agg');}
     else if(t.k==='bm')p.innerHTML=buildBenchmark();
     else if(t.k==='cmp')p.innerHTML=buildCompare();
-    else if(t.k==='growth'){p.innerHTML=buildGrowth();window.__renderGrowth();}
     else if(t.k==='insights')p.innerHTML=buildInsights();
-    else {var idx=+t.k.slice(1);p.innerHTML=buildShow(shows[idx],idx);drawShowCurve(idx);}
+    else {var idx=+t.k.slice(1);p.innerHTML=buildShow(shows[idx],idx);drawShowCurve(idx);window.__renderGC('s'+idx,'show');}
   }catch(e){if(window.console)console.error('tab '+t.k,e);p.innerHTML='<div class="block"><div class="bh"><h3>שגיאה</h3></div><div class="sub">'+esc(e&&e.message||e)+'</div></div>';}
   p.dataset.built='1';}
 function sel(i){[].forEach.call(tabsEl.children,function(t,j){t.setAttribute('aria-selected',i===j?'true':'false');});buildTab(i);[].forEach.call(panelsEl.children,function(p,j){p.classList.toggle('on',i===j);});window.scrollTo({top:0,behavior:'smooth'});}
