@@ -148,16 +148,17 @@ td.eps b{font-weight:800;color:var(--tx)}td.eps .epd{color:var(--mut2);font-size
 .eptop .epv{color:var(--tx);font-weight:700;white-space:nowrap}
 .epbar{height:5px;background:var(--bg);border-radius:4px;margin-top:3px;overflow:hidden}.epbar>span{display:block;height:100%;background:var(--deep);border-radius:4px}
 /* growth */
-.gbtns{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0 2px}
-.gbtn{background:var(--card2);border:1px solid var(--bd);color:var(--mut);font-family:inherit;font-size:12.5px;font-weight:600;padding:6px 13px;border-radius:9px;cursor:pointer}
-.gbtn.on{background:rgba(243,162,62,.16);color:var(--deep);border-color:rgba(243,162,62,.45)}
-.gchart{margin-top:8px}
-.gplot{display:flex;align-items:flex-end;justify-content:space-around;gap:10px;height:188px;margin-top:14px;padding:0 8px;direction:ltr;border-bottom:1.5px solid rgba(255,255,255,.18);background:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px);background-size:100% 33.33%}
-.gbar{flex:1 1 0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;min-width:0;max-width:110px}
-.gcol{display:block;width:100%;max-width:54px;background:var(--deep);border-radius:6px 6px 0 0;min-height:3px}
-.gv{font-size:13px;font-weight:800;color:var(--tx);margin-bottom:5px}
-.gaxis{display:flex;justify-content:space-around;gap:10px;direction:ltr;padding:7px 8px 0}
-.gaxis>div{flex:1 1 0;max-width:110px;text-align:center;font-size:12px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gbtns{display:inline-flex;gap:2px;margin:10px 8px 0 0;background:var(--bg);border:1px solid var(--bd);border-radius:11px;padding:3px;flex-wrap:wrap;vertical-align:middle}
+.gbtn{background:transparent;border:none;color:var(--mut);font-family:inherit;font-size:12.5px;font-weight:600;padding:6px 15px;border-radius:8px;cursor:pointer;transition:all var(--d-quick)}
+.gbtn:hover{color:var(--tx)}
+.gbtn.on{background:var(--deep);color:#1a1206}
+.gchart{margin-top:10px;overflow-x:auto}
+.gplot{display:flex;align-items:flex-end;justify-content:flex-start;gap:18px;height:190px;margin-top:6px;padding:0 10px 0 8px;direction:ltr;border-bottom:2px solid rgba(255,255,255,.22);border-left:1.5px solid rgba(255,255,255,.12);background:linear-gradient(rgba(255,255,255,.055) 1px,transparent 1px);background-size:100% 33.33%}
+.gbar{flex:0 0 auto;width:66px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}
+.gcol{display:block;width:48px;background:var(--deep);border-radius:6px 6px 0 0;min-height:3px}
+.gv{font-size:15px;font-weight:800;color:var(--tx);margin-bottom:7px}
+.gaxis{display:flex;justify-content:flex-start;gap:18px;direction:ltr;padding:9px 10px 0 8px}
+.gaxis>div{flex:0 0 auto;width:66px;text-align:center;font-size:13px;font-weight:600;color:#cfd5e0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .toolbar{display:flex;justify-content:flex-end;gap:8px;margin-bottom:12px;flex-wrap:wrap}
 .btn{background:var(--card2);border:1px solid var(--bd);color:var(--tx);font-family:inherit;font-size:12.5px;font-weight:600;padding:7px 13px;border-radius:9px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}.btn:hover{border-color:var(--bd2)}
 .foot{margin-top:28px;padding-top:14px;border-top:1px solid var(--bd);font-size:11px;color:var(--mut2);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
@@ -585,8 +586,9 @@ window.__renderGC=function(id,kind){
       note='פרק '+(cum?'מצטבר — ':'')+'סכום אותו מספר-פרק בכל התוכניות.';
     }
   }else if(mode==='show'){
-    items=shows.slice().sort(function(a,b){return (b.deep_total||0)-(a.deep_total||0);}).map(function(s){return {l:s.name.split(' ')[0],v:s.deep_total||0};});
-    note=cum?'מצטבר — בנייה לסך התיק.':'האזנות לכל תוכנית בנפרד.';
+    var PAL=[COL.deep,COL.reach,COL.sp,COL.ig,COL.yt];
+    items=shows.slice().sort(function(a,b){return (b.deep_total||0)-(a.deep_total||0);}).map(function(s,i){return {l:s.name.split(' ')[0],v:s.deep_total||0,c:PAL[i%PAL.length]};});
+    note=cum?'מצטבר — בנייה לסך התיק.':'השוואה בין התוכניות — כל תוכנית בצבע.';
   }else{
     var list=(kind==='show')?[shows[+id.slice(1)]]:shows;
     var target=list.reduce(function(a,s){return a+((s&&s.deep_total)||0);},0);
@@ -598,7 +600,7 @@ window.__renderGC=function(id,kind){
   var box=$('gc-'+id);if(!box)return;
   if(!items.length){box.innerHTML='<div class="sub">אין עדיין מספיק נתונים</div>';return;}
   var maxV=Math.max.apply(null,items.map(function(it){return it.v;}).concat([1]));
-  box.innerHTML='<div class="gplot">'+items.map(function(it){var h=Math.max(3,Math.round(it.v/maxV*100));return '<div class="gbar"><span class="gv num">'+nf(it.v)+'</span><span class="gcol" style="height:'+h+'%"></span></div>';}).join('')+'</div><div class="gaxis">'+items.map(function(it){return '<div>'+esc(it.l)+'</div>';}).join('')+'</div>';
+  box.innerHTML='<div class="gplot">'+items.map(function(it){var h=Math.max(3,Math.round(it.v/maxV*100));return '<div class="gbar"><span class="gv num">'+nf(it.v)+'</span><span class="gcol" style="height:'+h+'%;background:'+(it.c||COL.deep)+'"></span></div>';}).join('')+'</div><div class="gaxis">'+items.map(function(it){return '<div>'+esc(it.l)+'</div>';}).join('')+'</div>';
 };
 
 var TABS=[{k:'status',name:'סטטוס'},{k:'ov',name:'סקירה'}].concat(shows.map(function(s,i){return {k:'s'+i,name:s.name};})).concat([{k:'insights',name:'תובנות'}]);
