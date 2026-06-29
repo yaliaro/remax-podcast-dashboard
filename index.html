@@ -55,6 +55,8 @@ header{display:flex;justify-content:space-between;align-items:center;flex-wrap:w
 .refbadge{display:none;position:absolute;top:-8px;inset-inline-start:12px;background:var(--deep);color:#1a1206;font-size:11px;font-weight:800;padding:1px 8px;border-radius:7px;letter-spacing:.3px;z-index:5}
 body.editmode .refbadge{display:inline-block}
 body.editmode .block,body.editmode .statcard,body.editmode .status{outline:1px dashed rgba(243,162,62,.35)}
+body.editmode [data-ekey]{outline:1px dashed rgba(54,214,198,.55);outline-offset:2px;border-radius:4px;cursor:text}
+body.editmode [data-ekey]:focus{outline:2px solid var(--reach);background:rgba(54,214,198,.08)}
 /* stat cards */
 .statgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-bottom:16px}
 .statgrid.four{grid-template-columns:repeat(4,1fr)}
@@ -595,7 +597,7 @@ function buildTab(i){var t=TABS[i],p=$('pan'+i);if(p.dataset.built)return;
     else if(t.k==='insights')p.innerHTML=buildInsights();
     else {var idx=+t.k.slice(1);p.innerHTML=buildShow(shows[idx],idx);drawShowCurve(idx);window.__renderGC('s'+idx,'show');}
   }catch(e){if(window.console)console.error('tab '+t.k,e);p.innerHTML='<div class="block"><div class="bh"><h3>שגיאה</h3></div><div class="sub">'+esc(e&&e.message||e)+'</div></div>';}
-  p.dataset.built='1';}
+  tagEditable(p,t.k);p.dataset.built='1';}
 function sel(i){[].forEach.call(tabsEl.children,function(t,j){t.setAttribute('aria-selected',i===j?'true':'false');});buildTab(i);[].forEach.call(panelsEl.children,function(p,j){p.classList.toggle('on',i===j);});window.scrollTo({top:0,behavior:'smooth'});}
 
 /* floating tooltip (position:fixed, never clipped) */
@@ -617,7 +619,18 @@ document.addEventListener('click',function(e){
   var t=e.target.closest&&e.target.closest('.tip');
   if(t){e.stopPropagation();if(tfa===t)hideTip();else showTip(t);}else hideTip();
 });
-(function(){var t=$('editToggle');if(t)t.onclick=function(){document.body.classList.toggle('editmode');this.classList.toggle('on');};})();
+var EDIT_SELS=['.bh h3','.sub','.inssub','.inssw','.explain','.statcard .t','.statcard .x','.chip .cl','.insnote'];
+function tagEditable(p,tabK){
+  EDIT_SELS.forEach(function(sel){[].forEach.call(p.querySelectorAll(sel),function(el,i){
+    var key=tabK+'|'+sel+'|'+i;el.setAttribute('data-ekey',key);
+    try{var sv=localStorage.getItem('ed:'+key);if(sv!=null)el.innerHTML=sv;}catch(e){}
+    el.contentEditable=document.body.classList.contains('editmode')?'true':'false';
+  });});
+}
+document.addEventListener('blur',function(e){var el=e.target;if(el&&el.getAttribute&&el.getAttribute('data-ekey')){try{localStorage.setItem('ed:'+el.getAttribute('data-ekey'),el.innerHTML);}catch(e2){}}},true);
+(function(){var t=$('editToggle');if(t)t.onclick=function(){var on=document.body.classList.toggle('editmode');this.classList.toggle('on');
+  [].forEach.call(document.querySelectorAll('[data-ekey]'),function(el){el.contentEditable=on?'true':'false';});
+  toast(on?'מצב עריכה — לחץ על כותרת/טקסט כדי לשנות. נשמר בדפדפן שלך.':'מצב עריכה כבוי');};})();
 buildTab(0);
 })();
 </script>
