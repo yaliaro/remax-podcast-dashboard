@@ -152,12 +152,12 @@ td.eps b{font-weight:800;color:var(--tx)}td.eps .epd{color:var(--mut2);font-size
 .gbtn{background:var(--card2);border:1px solid var(--bd);color:var(--mut);font-family:inherit;font-size:12.5px;font-weight:600;padding:6px 13px;border-radius:9px;cursor:pointer}
 .gbtn.on{background:rgba(243,162,62,.16);color:var(--deep);border-color:rgba(243,162,62,.45)}
 .gchart{margin-top:8px}
-.gbars{display:flex;align-items:flex-end;justify-content:space-around;gap:8px;height:200px;margin-top:12px;padding:0 4px}
-.gbar{flex:1 1 0;display:flex;flex-direction:column;align-items:center;height:100%;min-width:0;max-width:120px}
-.gbar .gcolwrap{flex:1;width:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;min-height:0}
-.gbar .gcol{width:100%;max-width:56px;background:var(--deep);border-radius:7px 7px 0 0}
-.gbar .gv{font-size:14px;font-weight:800;color:var(--tx);margin-bottom:6px}
-.gbar .gl{font-size:12px;color:var(--mut);margin-top:8px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.gplot{display:flex;align-items:flex-end;justify-content:space-around;gap:10px;height:188px;margin-top:14px;padding:0 8px;direction:ltr;border-bottom:1.5px solid rgba(255,255,255,.18);background:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px);background-size:100% 33.33%}
+.gbar{flex:1 1 0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;min-width:0;max-width:110px}
+.gcol{display:block;width:100%;max-width:54px;background:var(--deep);border-radius:6px 6px 0 0;min-height:3px}
+.gv{font-size:13px;font-weight:800;color:var(--tx);margin-bottom:5px}
+.gaxis{display:flex;justify-content:space-around;gap:10px;direction:ltr;padding:7px 8px 0}
+.gaxis>div{flex:1 1 0;max-width:110px;text-align:center;font-size:12px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .toolbar{display:flex;justify-content:flex-end;gap:8px;margin-bottom:12px;flex-wrap:wrap}
 .btn{background:var(--card2);border:1px solid var(--bd);color:var(--tx);font-family:inherit;font-size:12.5px;font-weight:600;padding:7px 13px;border-radius:9px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}.btn:hover{border-color:var(--bd2)}
 .foot{margin-top:28px;padding-top:14px;border-top:1px solid var(--bd);font-size:11px;color:var(--mut2);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
@@ -246,7 +246,7 @@ function svgIco(p){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentC
 var IC={headphones:'<path d="M3 14v-2a9 9 0 0 1 18 0v2"/><rect x="2.5" y="14" width="4.5" height="7" rx="2"/><rect x="17" y="14" width="4.5" height="7" rx="2"/>',eye:'<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>',filter:'<path d="M4 5h16l-6 8v5l-4 2v-7Z"/>',users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'};
 var SRC_TR={Search:'חיפוש',Home:'מסך הבית',Library:'הספרייה','Other Spotify Features':'אחר'};
 
-function statusStrip(tag){return '<div class="status">'+RB(tag)+'<div class="it"><span class="dot"></span><b>'+nf(o.shows_count||shows.length)+'</b> תוכניות</div><div class="sep"></div><div class="it">חודש ראשון לאוויר</div><div class="sep"></div><div class="it"><b>100%</b> אורגני</div><div class="sep"></div><div class="it"><b>'+nf(totPub)+'</b>/'+nf(totPlan)+' פרקים'+tip('episodes')+'</div></div>';}
+function statusStrip(tag){return '<div class="status">'+RB(tag)+'<div class="it"><span class="dot"></span><b>'+nf(o.shows_count||shows.length)+'</b> תוכניות</div><div class="sep"></div><div class="it">חודש ראשון לאוויר</div><div class="sep"></div><div class="it"><b>'+nf(totPub)+'</b>/'+nf(totPlan)+' פרקים'+tip('episodes')+'</div></div>';}
 
 function leaderboardTable(){
   var mxD=Math.max.apply(null,lead.map(function(s){return s.deep_total||0;}).concat([1]));
@@ -546,7 +546,7 @@ function growthBlock(id,kind){
   if(window.__GMODE[id]==null)window.__GMODE[id]='week';
   function mb(v,l){return '<button class="gbtn" data-gm="'+id+'" data-v="'+v+'" onclick="window.__gmode(\''+id+'\',\''+v+'\')">'+l+'</button>';}
   function cb(v,l){return '<button class="gbtn" data-gc="'+id+'" data-v="'+v+'" onclick="window.__gtoggle(\''+id+'\','+v+')">'+l+'</button>';}
-  var modes=(kind==='show')?(mb('week','לפי שבוע')+mb('ep','לפי פרק')):(mb('week','לפי שבוע')+mb('show','לפי תוכנית'));
+  var modes=(kind==='show')?(mb('week','לפי שבוע')+mb('ep','לפי פרק')):(mb('week','לפי שבוע')+mb('show','לפי תוכנית')+mb('ep','לפי פרק'));
   return '<div class="block deep">'+RB('GR'+id)+'<div class="bh"><span class="btag d">צמיחה</span><h3>צמיחה · האזנות לפרקים</h3></div>'+
     '<div class="sub">סך האזנות (יוטיוב+ספוטיפיי+אפל יחד). בחר חתך ותצוגה.</div>'+
     '<div class="gbtns">'+modes+'</div><div class="gbtns">'+cb('1','מצטבר')+cb('0','בודד')+'</div>'+
@@ -573,26 +573,32 @@ window.__renderGC=function(id,kind){
   var mode=window.__GMODE[id]||'week',cum=window.__GCUM[id]!==false;
   [].forEach.call(document.querySelectorAll('[data-gm="'+id+'"]'),function(b){b.className='gbtn'+(b.getAttribute('data-v')===mode?' on':'');});
   [].forEach.call(document.querySelectorAll('[data-gc="'+id+'"]'),function(b){b.className='gbtn'+(((b.getAttribute('data-v')==='1')===cum)?' on':'');});
-  var items=[],note='',cumOK=true;
+  var items=[],note='';
   if(mode==='ep'){
-    var sh=shows[+id.slice(1)];var raw=((sh&&sh.curves)||[]).map(function(e){return (e.count||0)+(e.yt_views||0);});
-    items=scaleToTotal(raw,(sh&&sh.deep_total)||0).map(function(v,i){return {l:'פרק '+(i+1),v:v};});
-    note='האזנות לכל פרק (משוקלל לסך התוכנית).';
+    if(kind==='show'){
+      var sh=shows[+id.slice(1)];var raw=((sh&&sh.curves)||[]).map(function(e){return (e.count||0)+(e.yt_views||0);});
+      items=scaleToTotal(raw,(sh&&sh.deep_total)||0).map(function(v,i){return {l:'פרק '+(i+1),v:v};});
+      note='האזנות לכל פרק'+(cum?' (מצטבר)':'')+' · משוקלל לסך התוכנית.';
+    }else{
+      var maxEp=0,perShow=shows.map(function(s){var r=((s&&s.curves)||[]).map(function(e){return (e.count||0)+(e.yt_views||0);});var sc=scaleToTotal(r,(s&&s.deep_total)||0);if(sc.length>maxEp)maxEp=sc.length;return sc;});
+      for(var i=0;i<maxEp;i++){var sm=0;perShow.forEach(function(sc){if(sc[i]!=null)sm+=sc[i];});items.push({l:'פרק '+(i+1),v:sm});}
+      note='פרק '+(cum?'מצטבר — ':'')+'סכום אותו מספר-פרק בכל התוכניות.';
+    }
   }else if(mode==='show'){
     items=shows.slice().sort(function(a,b){return (b.deep_total||0)-(a.deep_total||0);}).map(function(s){return {l:s.name.split(' ')[0],v:s.deep_total||0};});
-    cumOK=false;note='סך האזנות לכל תוכנית (השוואה).';
+    note=cum?'מצטבר — בנייה לסך התיק.':'האזנות לכל תוכנית בנפרד.';
   }else{
     var list=(kind==='show')?[shows[+id.slice(1)]]:shows;
     var target=list.reduce(function(a,s){return a+((s&&s.deep_total)||0);},0);
     items=scaleToTotal(weeklyRawSpotify(list),target).map(function(v,i){return {l:'שבוע '+(i+1),v:v};});
-    note='האזנות לפי שבוע (משוקלל; מבוסס דפוס ספוטיפיי היומי).';
+    note='האזנות לפי שבוע'+(cum?' (מצטבר)':'')+' · משוקלל; מבוסס דפוס ספוטיפיי היומי.';
   }
-  if(cum&&cumOK){var r=0;items=items.map(function(it){r+=it.v;return {l:it.l,v:r};});}
+  if(cum){var r=0;items=items.map(function(it){r+=it.v;return {l:it.l,v:r};});}
   var ng=$('gn-'+id);if(ng)ng.textContent=note;
   var box=$('gc-'+id);if(!box)return;
   if(!items.length){box.innerHTML='<div class="sub">אין עדיין מספיק נתונים</div>';return;}
   var maxV=Math.max.apply(null,items.map(function(it){return it.v;}).concat([1]));
-  box.innerHTML='<div class="gbars">'+items.map(function(it){var h=Math.max(4,Math.round(it.v/maxV*100));return '<div class="gbar"><div class="gcolwrap"><div class="gv num">'+nf(it.v)+'</div><div class="gcol" style="height:'+h+'%"></div></div><div class="gl">'+esc(it.l)+'</div></div>';}).join('')+'</div>';
+  box.innerHTML='<div class="gplot">'+items.map(function(it){var h=Math.max(3,Math.round(it.v/maxV*100));return '<div class="gbar"><span class="gv num">'+nf(it.v)+'</span><span class="gcol" style="height:'+h+'%"></span></div>';}).join('')+'</div><div class="gaxis">'+items.map(function(it){return '<div>'+esc(it.l)+'</div>';}).join('')+'</div>';
 };
 
 var TABS=[{k:'status',name:'סטטוס'},{k:'ov',name:'סקירה'}].concat(shows.map(function(s,i){return {k:'s'+i,name:s.name};})).concat([{k:'insights',name:'תובנות'}]);
@@ -629,7 +635,7 @@ document.addEventListener('click',function(e){
   var t=e.target.closest&&e.target.closest('.tip');
   if(t){e.stopPropagation();if(tfa===t)hideTip();else showTip(t);}else hideTip();
 });
-var EDIT_SELS=['.bh h3','.sub','.inssub','.inssw','.explain','.statcard .t','.statcard .v','.statcard .x','.chip .cl','.insnote','.hmeta span'];
+var EDIT_SELS=['.bh h3','.sub','.inssub','.inssw','.explain','.statcard .t','.statcard .v','.statcard .x','.chip .cl','.insnote','.hmeta span','.status .it'];
 function tagEditable(p,tabK){
   EDIT_SELS.forEach(function(sel){[].forEach.call(p.querySelectorAll(sel),function(el,i){
     var key=tabK+'|'+sel+'|'+i;el.setAttribute('data-ekey',key);
