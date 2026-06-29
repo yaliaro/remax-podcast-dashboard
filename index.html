@@ -151,7 +151,13 @@ td.eps b{font-weight:800;color:var(--tx)}td.eps .epd{color:var(--mut2);font-size
 .gbtns{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0 2px}
 .gbtn{background:var(--card2);border:1px solid var(--bd);color:var(--mut);font-family:inherit;font-size:12.5px;font-weight:600;padding:6px 13px;border-radius:9px;cursor:pointer}
 .gbtn.on{background:rgba(243,162,62,.16);color:var(--deep);border-color:rgba(243,162,62,.45)}
-.gchart{margin-top:8px;overflow-x:auto}
+.gchart{margin-top:8px}
+.gbars{display:flex;align-items:flex-end;justify-content:space-around;gap:8px;height:200px;margin-top:12px;padding:0 4px}
+.gbar{flex:1 1 0;display:flex;flex-direction:column;align-items:center;height:100%;min-width:0;max-width:120px}
+.gbar .gcolwrap{flex:1;width:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;min-height:0}
+.gbar .gcol{width:100%;max-width:56px;background:var(--deep);border-radius:7px 7px 0 0}
+.gbar .gv{font-size:14px;font-weight:800;color:var(--tx);margin-bottom:6px}
+.gbar .gl{font-size:12px;color:var(--mut);margin-top:8px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 .toolbar{display:flex;justify-content:flex-end;gap:8px;margin-bottom:12px;flex-wrap:wrap}
 .btn{background:var(--card2);border:1px solid var(--bd);color:var(--tx);font-family:inherit;font-size:12.5px;font-weight:600;padding:7px 13px;border-radius:9px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}.btn:hover{border-color:var(--bd2)}
 .foot{margin-top:28px;padding-top:14px;border-top:1px solid var(--bd);font-size:11px;color:var(--mut2);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
@@ -168,8 +174,8 @@ td.eps b{font-weight:800;color:var(--tx)}td.eps .epd{color:var(--mut2);font-size
 </head>
 <body>
 <div class="wrap">
-  <div class="vsw"><a class="edit" id="editToggle">✎ מצב עריכה</a></div>
-  <header><div class="brand"><img src="logo-wedo.png" class="lg wd" alt="wedo" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'wedo'}))"><span class="s">×</span><img src="logo-remax.png" class="lg" alt="RE/MAX" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'RE/MAX',className:'r'}))"></div><div class="hmeta"><span id="org"></span><br><span id="range"></span></div></header>
+  <div class="vsw"><a class="edit" id="exportEdits">⬇ ייצוא שינויים</a><a class="edit" id="editToggle">✎ מצב עריכה</a></div>
+  <header><div class="brand"><img src="logo-wedo.png" class="lg wd" alt="wedo" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'wedo'}))"><span class="s">×</span><img src="logo-remax.png" class="lg" alt="RE/MAX" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'RE/MAX',className:'r'}))"></div><div class="hmeta"><span id="range"></span></div></header>
   <div class="tabwrap"><div class="tabs" id="tabs"></div></div>
   <div id="panels"></div>
   <div class="foot"><span id="sources"></span><span>wedo | RE/MAX · אורגני</span></div>
@@ -548,41 +554,45 @@ function growthBlock(id,kind){
 }
 window.__gmode=function(id,v){window.__GMODE[id]=v;var el=$('gc-'+id);window.__renderGC(id,el?el.getAttribute('data-kind'):'agg');};
 window.__gtoggle=function(id,v){window.__GCUM[id]=!!v;var el=$('gc-'+id);window.__renderGC(id,el?el.getAttribute('data-kind'):'agg');};
-function weeklyWeighted(list){
+function scaleToTotal(raws,target){
+  var sum=raws.reduce(function(a,b){return a+b;},0);if(!sum||!target)return raws.map(function(){return 0;});
+  var out=raws.map(function(r){return Math.round(r/sum*target);});
+  var diff=target-out.reduce(function(a,b){return a+b;},0);if(out.length)out[out.length-1]+=diff;
+  return out;
+}
+function weeklyRawSpotify(list){
   var len=0,arrs=[];list.forEach(function(s){var dl=((s&&s.trend)||[]).map(function(x){return x&&x.v!=null?x.v:x;}).filter(function(x){return typeof x==='number';});arrs.push(dl);len=Math.max(len,dl.length);});
-  var daily=[];for(var i=0;i<len;i++){var sum=0;list.forEach(function(s,si){var sp=(s&&s.platforms&&s.platforms.spotify)||0;var sc=sp?((s.deep_total||0)/sp):0;sum+=(arrs[si][i]||0)*sc;});daily.push(sum);}
-  var wk=[];for(var j=0;j+7<=daily.length;j+=7){var w=daily.slice(j,j+7).reduce(function(x,y){return x+y;},0);if(w>0)wk.push(Math.round(w));}
-  return wk;
+  var daily=[];for(var i=0;i<len;i++){var sum=0;list.forEach(function(s,si){sum+=arrs[si][i]||0;});daily.push(sum);}
+  var raw=[];for(var j=0;j<len;j+=7){raw.push(daily.slice(j,j+7).reduce(function(x,y){return x+y;},0));}
+  if(len%7!==0&&raw.length>1){raw[raw.length-2]+=raw[raw.length-1];raw.pop();}
+  while(raw.length&&raw[0]===0)raw.shift();
+  while(raw.length&&raw[raw.length-1]===0)raw.pop();
+  return raw;
 }
 window.__renderGC=function(id,kind){
   var mode=window.__GMODE[id]||'week',cum=window.__GCUM[id]!==false;
   [].forEach.call(document.querySelectorAll('[data-gm="'+id+'"]'),function(b){b.className='gbtn'+(b.getAttribute('data-v')===mode?' on':'');});
   [].forEach.call(document.querySelectorAll('[data-gc="'+id+'"]'),function(b){b.className='gbtn'+(((b.getAttribute('data-v')==='1')===cum)?' on':'');});
-  var items=[],note='',cumOK=true,future=true;
+  var items=[],note='',cumOK=true;
   if(mode==='ep'){
-    var sh=shows[+id.slice(1)];items=((sh&&sh.curves)||[]).map(function(e,i){return {l:'פרק '+(i+1),v:(e.count||0)+(e.yt_views||0)};});
-    note='האזנות לכל פרק (ספוטיפיי + יוטיוב).';
+    var sh=shows[+id.slice(1)];var raw=((sh&&sh.curves)||[]).map(function(e){return (e.count||0)+(e.yt_views||0);});
+    items=scaleToTotal(raw,(sh&&sh.deep_total)||0).map(function(v,i){return {l:'פרק '+(i+1),v:v};});
+    note='האזנות לכל פרק (משוקלל לסך התוכנית).';
   }else if(mode==='show'){
     items=shows.slice().sort(function(a,b){return (b.deep_total||0)-(a.deep_total||0);}).map(function(s){return {l:s.name.split(' ')[0],v:s.deep_total||0};});
-    cumOK=false;future=false;note='סך האזנות לכל תוכנית (השוואה). "מצטבר" לא רלוונטי כאן.';
+    cumOK=false;note='סך האזנות לכל תוכנית (השוואה).';
   }else{
     var list=(kind==='show')?[shows[+id.slice(1)]]:shows;
-    items=weeklyWeighted(list).map(function(w,i){return {l:'שבוע '+(i+1),v:w};});
-    note='האזנות לפי שבוע (משוקלל; יוטיוב מקורב מהדפוס היומי).';
+    var target=list.reduce(function(a,s){return a+((s&&s.deep_total)||0);},0);
+    items=scaleToTotal(weeklyRawSpotify(list),target).map(function(v,i){return {l:'שבוע '+(i+1),v:v};});
+    note='האזנות לפי שבוע (משוקלל; מבוסס דפוס ספוטיפיי היומי).';
   }
   if(cum&&cumOK){var r=0;items=items.map(function(it){r+=it.v;return {l:it.l,v:r};});}
   var ng=$('gn-'+id);if(ng)ng.textContent=note;
   var box=$('gc-'+id);if(!box)return;
   if(!items.length){box.innerHTML='<div class="sub">אין עדיין מספיק נתונים</div>';return;}
-  var max=Math.max.apply(null,items.map(function(it){return it.v;}).concat([1]));
-  var n=items.length,BW=48,GAP=34,pl=22,pt=28,pb=42,H=224,Wbars=pl*2+n*BW+(n-1)*GAP;
-  var room=future?Math.round((BW+GAP)*1.6):16,W=Wbars+room,s='';
-  s+='<line x1="'+pl+'" y1="'+(H-pb)+'" x2="'+(W-6)+'" y2="'+(H-pb)+'" stroke="rgba(255,255,255,.09)" stroke-width="1.5"/>';
-  items.forEach(function(it,i){var x=pl+i*(BW+GAP),h=(it.v/max)*(H-pt-pb),y=pt+(H-pt-pb-h),cx=x+BW/2;
-    s+='<rect x="'+x+'" y="'+y.toFixed(1)+'" width="'+BW+'" height="'+Math.max(3,h).toFixed(1)+'" rx="6" fill="'+COL.deep+'"/>';
-    s+='<text x="'+cx+'" y="'+(y-8).toFixed(1)+'" fill="#f1f3f8" font-size="14" font-weight="800" text-anchor="middle">'+nf(it.v)+'</text>';
-    s+='<text x="'+cx+'" y="'+(H-pb+20)+'" fill="#9aa2b2" font-size="12" text-anchor="middle">'+esc(it.l)+'</text>';});
-  box.innerHTML='<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMinYMid meet" style="height:224px;width:'+W+'px;max-width:100%;display:block;margin:4px 0 0;overflow:visible">'+s+'</svg>';
+  var maxV=Math.max.apply(null,items.map(function(it){return it.v;}).concat([1]));
+  box.innerHTML='<div class="gbars">'+items.map(function(it){var h=Math.max(4,Math.round(it.v/maxV*100));return '<div class="gbar"><div class="gcolwrap"><div class="gv num">'+nf(it.v)+'</div><div class="gcol" style="height:'+h+'%"></div></div><div class="gl">'+esc(it.l)+'</div></div>';}).join('')+'</div>';
 };
 
 var TABS=[{k:'status',name:'סטטוס'},{k:'ov',name:'סקירה'}].concat(shows.map(function(s,i){return {k:'s'+i,name:s.name};})).concat([{k:'insights',name:'תובנות'}]);
@@ -619,7 +629,7 @@ document.addEventListener('click',function(e){
   var t=e.target.closest&&e.target.closest('.tip');
   if(t){e.stopPropagation();if(tfa===t)hideTip();else showTip(t);}else hideTip();
 });
-var EDIT_SELS=['.bh h3','.sub','.inssub','.inssw','.explain','.statcard .t','.statcard .x','.chip .cl','.insnote'];
+var EDIT_SELS=['.bh h3','.sub','.inssub','.inssw','.explain','.statcard .t','.statcard .v','.statcard .x','.chip .cl','.insnote','.hmeta span'];
 function tagEditable(p,tabK){
   EDIT_SELS.forEach(function(sel){[].forEach.call(p.querySelectorAll(sel),function(el,i){
     var key=tabK+'|'+sel+'|'+i;el.setAttribute('data-ekey',key);
@@ -631,6 +641,11 @@ document.addEventListener('blur',function(e){var el=e.target;if(el&&el.getAttrib
 (function(){var t=$('editToggle');if(t)t.onclick=function(){var on=document.body.classList.toggle('editmode');this.classList.toggle('on');
   [].forEach.call(document.querySelectorAll('[data-ekey]'),function(el){el.contentEditable=on?'true':'false';});
   toast(on?'מצב עריכה — לחץ על כותרת/טקסט כדי לשנות. נשמר בדפדפן שלך.':'מצב עריכה כבוי');};})();
+(function(){var hdr=document.querySelector&&document.querySelector('header');if(hdr)tagEditable(hdr,'hdr');})();
+(function(){var x=$('exportEdits');if(!x)return;x.onclick=function(){var o={};try{for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&k.indexOf('ed:')===0)o[k.slice(3)]=localStorage.getItem(k);}}catch(e){}
+  var keys=Object.keys(o);if(!keys.length){toast('אין שינויי-עריכה שמורים');return;}
+  var txt=keys.map(function(k){return k+'  →  '+o[k];}).join('\n');
+  try{navigator.clipboard.writeText(txt);toast(keys.length+' שינויים הועתקו ללוח — הדבק לי כאן ואקבע אותם בקוד');}catch(e){window.prompt('העתק ושלח לי:',txt);}};})();
 buildTab(0);
 })();
 </script>
