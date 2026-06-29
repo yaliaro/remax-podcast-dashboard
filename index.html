@@ -361,9 +361,9 @@ function buildShow(s,idx){
   '</div>'+
   (big.length?'<div class="block deep">'+RB('S'+idx+'g')+'<div class="bh"><span class="btag d">עומק</span><h3>עד כמה מקשיבים לפרק'+tip('curve')+'</h3></div><div class="sub">ספוטיפיי · מתוך מי שהתחיל את הפרק — כמה החזיקו עד כל נקודה.</div><div class="curvebox" id="cv-'+idx+'"></div><div id="cvleg-'+idx+'" class="glegend" style="margin-top:6px"></div></div>':'')+
   '<div class="two3">'+
-    '<div class="block">'+RB('S'+idx+'h')+'<div class="bh"><h3>ביצועים לפי פרק · ספוטיפיי</h3></div><div class="sub">זמן חציוני'+tip('median')+' · ממוקד'+tip('foreground')+' · קהל</div>'+
-    '<div class="scroll"><table><thead><tr><th>פרק</th><th>האזנות</th><th>זמן חציוני</th><th>ממוקד</th><th>קהל</th></tr></thead><tbody>'+
-    ((s.curves||[]).map(function(e,i){return '<tr><td>'+(i+1)+'. '+esc(e.title.replace(/^פרק \d+ - /,'').slice(0,20))+'</td><td class="num" style="font-weight:700">'+nf(e.count)+'</td><td class="num">'+(e.median_completion_sec?Math.round(e.median_completion_sec/60)+'ד׳':'–')+'</td><td class="num">'+(e.foreground_pct!=null?Math.round(e.foreground_pct*100)+'%':'–')+'</td><td class="num">'+nf(e.total_audience)+'</td></tr>';}).join('')||'<tr><td class="sub">אין נתונים</td></tr>')+'</tbody></table></div></div>'+
+    '<div class="block">'+RB('S'+idx+'h')+'<div class="bh"><h3>ביצועים לפי פרק</h3></div><div class="sub">האזנות ספוטיפיי + צפיות יוטיוב · אורך הפרק · זמן חציוני'+tip('median')+' · שימור יוטיוב'+tip('ytret')+'</div>'+
+    '<div class="scroll"><table><thead><tr><th>פרק</th><th>ספוטיפיי</th><th>יוטיוב</th><th>אורך</th><th>חציון SP</th><th>שימור YT</th></tr></thead><tbody>'+
+    ((s.curves||[]).map(function(e,i){return '<tr><td>'+(i+1)+'. '+esc(e.title.replace(/^פרק \d+ - /,'').slice(0,18))+'</td><td class="num" style="font-weight:700">'+nf(e.count)+'</td><td class="num" style="color:var(--yt)">'+(e.yt_views!=null?nf(e.yt_views):'–')+'</td><td class="num">'+(e.duration_sec?Math.round(e.duration_sec/60)+'ד׳':'–')+'</td><td class="num">'+(e.median_completion_sec?Math.round(e.median_completion_sec/60)+'ד׳':'–')+'</td><td class="num">'+(e.yt_pct!=null?e.yt_pct+'%':'–')+'</td></tr>';}).join('')||'<tr><td class="sub">אין נתונים</td></tr>')+'</tbody></table></div></div>'+
     '<div class="block">'+RB('S'+idx+'i')+'<div class="bh"><h3>גיל ומגדר · ספוטיפיי</h3></div>'+(s.demo_reliable?'<div class="sub">לפי '+nf(s.spotify_streams)+' האזנות.</div>'+ageBars(ages):'<div class="sub">מדגם קטן מדי לפילוח אמין ('+nf(s.spotify_streams)+' האזנות).</div>')+'</div>'+
   '</div>'+
   '<div class="two">'+
