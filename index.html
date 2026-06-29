@@ -159,6 +159,12 @@ td.eps b{font-weight:800;color:var(--tx)}td.eps .epd{color:var(--mut2);font-size
 .gv{font-size:15px;font-weight:800;color:var(--tx);margin-bottom:7px}
 .gaxis{display:flex;justify-content:flex-start;gap:18px;direction:ltr;padding:9px 10px 0 8px}
 .gaxis>div{flex:0 0 auto;width:66px;text-align:center;font-size:13px;font-weight:600;color:#cfd5e0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gplot.grouped,.gaxis.grouped{gap:16px}
+.ggroup{flex:0 0 auto;display:flex;align-items:flex-end;gap:3px;height:100%}
+.gmini{display:block;width:13px;border-radius:3px 3px 0 0;min-height:2px}
+.glegend2{display:flex;gap:14px;flex-wrap:wrap;margin:2px 0 8px;font-size:12px;color:var(--mut)}
+.glegend2 span{display:inline-flex;align-items:center}
+.glegend2 i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-inline-start:5px}
 .toolbar{display:flex;justify-content:flex-end;gap:8px;margin-bottom:12px;flex-wrap:wrap}
 .btn{background:var(--card2);border:1px solid var(--bd);color:var(--tx);font-family:inherit;font-size:12.5px;font-weight:600;padding:7px 13px;border-radius:9px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}.btn:hover{border-color:var(--bd2)}
 .foot{margin-top:28px;padding-top:14px;border-top:1px solid var(--bd);font-size:11px;color:var(--mut2);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
@@ -541,20 +547,42 @@ window.__exportCSV=function(){var rows=[['תוכנית','פרקים','סך הא�
 function toast(msg){var t=$('toast');if(!t)return;t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},1800);}
 
 /* ============ GROWTH (embedded per tab — weighted, uniform bars, contextual cuts, left-aligned "early") ============ */
-window.__GCUM={};window.__GMODE={};
+window.__GCUM={};window.__GMODE={};window.__GSERIES={};
 function growthBlock(id,kind){
   if(window.__GCUM[id]==null)window.__GCUM[id]=true;
   if(window.__GMODE[id]==null)window.__GMODE[id]='week';
+  if(window.__GSERIES[id]==null)window.__GSERIES[id]='agg';
   function mb(v,l){return '<button class="gbtn" data-gm="'+id+'" data-v="'+v+'" onclick="window.__gmode(\''+id+'\',\''+v+'\')">'+l+'</button>';}
   function cb(v,l){return '<button class="gbtn" data-gc="'+id+'" data-v="'+v+'" onclick="window.__gtoggle(\''+id+'\','+v+')">'+l+'</button>';}
+  function sb(v,l){return '<button class="gbtn" data-gs="'+id+'" data-v="'+v+'" onclick="window.__gseries(\''+id+'\',\''+v+'\')">'+l+'</button>';}
   var modes=(kind==='show')?(mb('week','לפי שבוע')+mb('ep','לפי פרק')):(mb('week','לפי שבוע')+mb('show','לפי תוכנית')+mb('ep','לפי פרק'));
+  var seriesRow=(kind==='show')?'':('<div class="gbtns">'+sb('agg','מאוחד')+sb('prog','פר-תוכנית')+'</div>');
   return '<div class="block deep">'+RB('GR'+id)+'<div class="bh"><span class="btag d">צמיחה</span><h3>צמיחה · האזנות לפרקים</h3></div>'+
     '<div class="sub">סך האזנות (יוטיוב+ספוטיפיי+אפל יחד). בחר חתך ותצוגה.</div>'+
-    '<div class="gbtns">'+modes+'</div><div class="gbtns">'+cb('1','מצטבר')+cb('0','בודד')+'</div>'+
+    '<div class="gbtns">'+modes+'</div>'+seriesRow+'<div class="gbtns">'+cb('1','מצטבר')+cb('0','בודד')+'</div>'+
     '<div id="gc-'+id+'" class="gchart" data-kind="'+kind+'"></div><div class="insnote" id="gn-'+id+'"></div></div>';
 }
 window.__gmode=function(id,v){window.__GMODE[id]=v;var el=$('gc-'+id);window.__renderGC(id,el?el.getAttribute('data-kind'):'agg');};
 window.__gtoggle=function(id,v){window.__GCUM[id]=!!v;var el=$('gc-'+id);window.__renderGC(id,el?el.getAttribute('data-kind'):'agg');};
+window.__gseries=function(id,v){window.__GSERIES[id]=v;var el=$('gc-'+id);window.__renderGC(id,el?el.getAttribute('data-kind'):'agg');};
+window.__renderGrouped=function(id,mode,cum){
+  var PAL=[COL.deep,COL.reach,COL.sp,COL.ig,COL.yt];
+  var ser=shows.map(function(s,i){var vals;
+    if(mode==='ep'){vals=scaleToTotal(((s.curves)||[]).map(function(e){return (e.count||0)+(e.yt_views||0);}),s.deep_total||0);}
+    else{var dl=((s.trend)||[]).map(function(x){return x&&x.v!=null?x.v:x;}).filter(function(x){return typeof x==='number';});var raw=[];for(var j=0;j<dl.length;j+=7)raw.push(dl.slice(j,j+7).reduce(function(a,b){return a+b;},0));if(dl.length%7!==0&&raw.length>1){raw[raw.length-2]+=raw[raw.length-1];raw.pop();}vals=scaleToTotal(raw,s.deep_total||0);}
+    return {name:s.name.split(' ')[0],c:PAL[i%PAL.length],vals:vals};});
+  var nX=Math.max.apply(null,ser.map(function(se){return se.vals.length;}).concat([0]));
+  var keep=[];for(var w=0;w<nX;w++){var sm=0;ser.forEach(function(se){sm+=se.vals[w]||0;});if(sm>0)keep.push(w);}
+  if(cum){ser.forEach(function(se){var r=0;se.vals=se.vals.map(function(v){r+=(v||0);return r;});});}
+  var maxV=1;keep.forEach(function(w){ser.forEach(function(se){if(w<se.vals.length&&se.vals[w]>maxV)maxV=se.vals[w];});});
+  var groups='',labs='';
+  keep.forEach(function(w,ix){var bars=ser.filter(function(se){return w<se.vals.length;});var gw=bars.length*13+(bars.length-1)*3;
+    groups+='<div class="ggroup" style="width:'+gw+'px">'+bars.map(function(se){var v=se.vals[w]||0;var h=Math.max(0,Math.round(v/maxV*100));return '<span class="gmini" style="height:'+h+'%;background:'+se.c+'" title="'+esc(se.name)+': '+nf(v)+'"></span>';}).join('')+'</div>';
+    labs+='<div style="width:'+gw+'px">'+(mode==='ep'?'פרק ':'שבוע ')+(ix+1)+'</div>';});
+  var legend='<div class="glegend2">'+ser.map(function(se){return '<span><i style="background:'+se.c+'"></i>'+esc(se.name)+'</span>';}).join('')+'</div>';
+  var box=$('gc-'+id);if(box)box.innerHTML=legend+'<div class="gplot grouped">'+groups+'</div><div class="gaxis grouped">'+labs+'</div>';
+  var ng=$('gn-'+id);if(ng)ng.textContent='השוואה בין התוכניות בכל '+(mode==='ep'?'פרק':'שבוע')+(cum?' (מצטבר)':'')+'.';
+};
 function scaleToTotal(raws,target){
   var sum=raws.reduce(function(a,b){return a+b;},0);if(!sum||!target)return raws.map(function(){return 0;});
   var out=raws.map(function(r){return Math.round(r/sum*target);});
@@ -574,6 +602,9 @@ window.__renderGC=function(id,kind){
   var mode=window.__GMODE[id]||'week',cum=window.__GCUM[id]!==false;
   [].forEach.call(document.querySelectorAll('[data-gm="'+id+'"]'),function(b){b.className='gbtn'+(b.getAttribute('data-v')===mode?' on':'');});
   [].forEach.call(document.querySelectorAll('[data-gc="'+id+'"]'),function(b){b.className='gbtn'+(((b.getAttribute('data-v')==='1')===cum)?' on':'');});
+  var series=window.__GSERIES[id]||'agg';
+  [].forEach.call(document.querySelectorAll('[data-gs="'+id+'"]'),function(b){b.className='gbtn'+(b.getAttribute('data-v')===series?' on':'');});
+  if(kind==='agg'&&series==='prog'&&(mode==='week'||mode==='ep')){window.__renderGrouped(id,mode,cum);return;}
   var items=[],note='';
   if(mode==='ep'){
     if(kind==='show'){
