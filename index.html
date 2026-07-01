@@ -201,7 +201,7 @@ td.eps b{font-weight:800;color:var(--tx)}td.eps .epd{color:var(--mut2);font-size
 <body>
 <div class="wrap">
   <div class="vsw"><a class="edit" id="exportEdits">⬇ ייצוא שינויים</a><a class="edit" id="editToggle">✎ מצב עריכה</a></div>
-  <header><div class="brand"><img src="logo-wedo.png" class="lg wd" alt="wedo" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'wedo'}))"><span class="s">×</span><img src="logo-remax.png" class="lg" alt="RE/MAX" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'RE/MAX',className:'r'}))"></div><div class="hmeta"><span id="range"></span></div></header>
+  <header><div class="brand"><img src="logo-wedo.png" class="lg wd" alt="wedo" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'wedo'}))"><span class="s">×</span><img src="logo-remax.png" class="lg" alt="RE/MAX" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'RE/MAX',className:'r'}))"></div><div class="hmeta"><span id="range"></span><span id="fresh" style="display:block;opacity:.42;font-size:.66em;margin-top:2px;line-height:1.35;font-weight:400"></span></div></header>
   <div class="tabwrap"><div class="tabs" id="tabs"></div></div>
   <div id="panels"></div>
   <div class="foot"><span id="sources"></span><span>wedo | RE/MAX · אורגני</span></div>
@@ -223,6 +223,7 @@ if(!D){$('panels').innerHTML='<div class="block"><div class="bh"><h3>שגיאה 
 var m=D.meta||{};
 if($('org'))$('org').textContent=m.organic_note||'';
 if($('range'))$('range').textContent=m.range||'';
+if($('fresh'))$('fresh').textContent=m.freshness||'';
 if($('sources'))$('sources').textContent='מקורות: '+((m.sources||[]).join(' · '));
 
 var TIPS={
