@@ -629,12 +629,12 @@ function toast(msg){var t=$('toast');if(!t)return;t.textContent=msg;t.classList.
 window.__GCUM={};window.__GMODE={};window.__GSERIES={};
 function growthBlock(id,kind){
   if(window.__GCUM[id]==null)window.__GCUM[id]=true;
-  if(window.__GMODE[id]==null)window.__GMODE[id]='week';
+  if(window.__GMODE[id]==null)window.__GMODE[id]=(kind==='show')?'ep':'show';
   if(window.__GSERIES[id]==null)window.__GSERIES[id]='agg';
   function mb(v,l){return '<button class="gbtn" data-gm="'+id+'" data-v="'+v+'" onclick="window.__gmode(\''+id+'\',\''+v+'\')">'+l+'</button>';}
   function cb(v,l){return '<button class="gbtn" data-gc="'+id+'" data-v="'+v+'" onclick="window.__gtoggle(\''+id+'\','+v+')">'+l+'</button>';}
   function sb(v,l){return '<button class="gbtn" data-gs="'+id+'" data-v="'+v+'" onclick="window.__gseries(\''+id+'\',\''+v+'\')">'+l+'</button>';}
-  var modes=(kind==='show')?(mb('week','לפי שבוע')+mb('ep','לפי פרק')):(mb('week','לפי שבוע')+mb('show','לפי תוכנית')+mb('ep','לפי פרק'));
+  var modes=(kind==='show')?(mb('ep','לפי פרק')):(mb('show','לפי תוכנית')+mb('ep','לפי פרק'));
   var seriesRow=(kind==='show')?'':('<div class="gbtns">'+sb('agg','מאוחד')+sb('prog','פר-תוכנית')+'</div>');
   return '<div class="block deep">'+RB('GR'+id)+'<div class="bh"><span class="btag d">צמיחה</span><h3>צמיחה · האזנות לפרקים</h3></div>'+
     '<div class="sub">סך האזנות (יוטיוב+ספוטיפיי+אפל יחד). בחר חתך ותצוגה.</div>'+
