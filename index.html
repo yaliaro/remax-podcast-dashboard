@@ -713,7 +713,7 @@ window.__renderGC=function(id,kind){
   box.innerHTML='<div class="gplot">'+items.map(function(it){var h=Math.max(3,Math.round(it.v/maxV*100));return '<div class="gbar"><span class="gv num">'+nf(it.v)+'</span><span class="gcol" style="height:'+h+'%;background:'+(it.c||COL.deep)+'"></span></div>';}).join('')+'</div><div class="gaxis">'+items.map(function(it){return '<div>'+esc(it.l)+'</div>';}).join('')+'</div>';
 };
 
-var TABS=[{k:'ov',name:'סקירה'},{k:'status',name:'סטטוס'}].concat(shows.map(function(s,i){return {k:'s'+i,name:s.name};})).concat([{k:'insights',name:'תובנות'}]);
+var TABS=[{k:'ov',name:'סקירה'},{k:'status',name:'סטטוס'}].concat(shows.map(function(s,i){return {k:'s'+i,name:s.name};}));
 var tabsEl=$('tabs'),panelsEl=$('panels');
 TABS.forEach(function(t,i){var b=document.createElement('button');b.className='tab'+(t.star?' star':'');b.textContent=t.name;b.setAttribute('aria-selected',i===0?'true':'false');b.onclick=function(){sel(i);};tabsEl.appendChild(b);var p=document.createElement('div');p.className='panel'+(i===0?' on':'');p.id='pan'+i;panelsEl.appendChild(p);});
 function buildTab(i){var t=TABS[i],p=$('pan'+i);if(p.dataset.built)return;
