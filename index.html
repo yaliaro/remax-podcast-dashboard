@@ -390,10 +390,16 @@ function buildShow(s,idx){
   var ages=ageRowsFor([s]);var srcMp={};((s.impressions&&s.impressions.sources)||[]).forEach(function(c){srcMp[c.name]=c.count;});
   var ret30=(yc.retention_intro_pct_at_0_30||[]).filter(function(r){return r.title&&s.name&&r.title.indexOf(s.name)>=0;})[0];
   var topv=(yc.top_videos_28d_views||[]).filter(function(v){return v.show===s.name;})[0];
+  /* "אנשים שונים" = YouTube unique viewers + Spotify audience. YouTube only reports
+     unique viewers for a window of up to ~90 days, so a since-launch Studio export
+     comes back with that column empty. When it does, showing the Spotify audience
+     alone under this title reads as an absurdity next to the listen count (22 people,
+     1,275 listens) — so show a dash and say what is missing instead. */
+  var reachKnown=(yt.unique_viewers||0)>0;
   var reach=(yt.unique_viewers||0)+(s.audience_size||0);
   var out='<div class="statgrid four">'+
     '<div class="statcard lead">'+RB('S'+idx+'a')+'<div class="ico">'+svgIco(IC.headphones)+'</div><div class="t">סך האזנה'+tip('deep')+'</div><div class="v deep num">'+nf(s.deep_total)+'</div><div class="x">יוטיוב + ספוטיפיי + אפל יחד</div></div>'+
-    '<div class="statcard">'+RB('S'+idx+'b')+'<div class="ico">'+svgIco(IC.users)+'</div><div class="t">אנשים שונים'+tip('people')+'</div><div class="v num">'+nf(reach)+'</div><div class="x">צופי יוטיוב + קהל ספוטיפיי</div></div>'+
+    '<div class="statcard">'+RB('S'+idx+'b')+'<div class="ico">'+svgIco(IC.users)+'</div><div class="t">אנשים שונים'+tip('people')+'</div><div class="v num">'+(reachKnown?nf(reach):'–')+'</div><div class="x">'+(reachKnown?'צופי יוטיוב + קהל ספוטיפיי':'דורש ייצוא Studio של עד 90 יום')+'</div></div>'+
     '<div class="statcard">'+RB('S'+idx+'c')+'<div class="ico">'+svgIco(IC.filter)+'</div><div class="t">פרקים שפורסמו'+tip('episodes')+'</div><div class="v num"><span class="epstat"><span>'+pubEps(s)+'</span><span class="ep">/ '+EP_PLANNED+'</span></span></div><div class="x">מתוכננים '+EP_PLANNED+'</div></div>'+
     '<div class="statcard">'+RB('S'+idx+'d')+'<div class="ico" style="color:var(--yt)">'+svgIco(IC.eye)+'</div><div class="t">שימור · יוטיוב'+tip('ytret')+'</div><div class="v num">'+(yt.avg_pct!=null?yt.avg_pct+'%':'–')+'</div><div class="x">'+(yt.avg_dur?yt.avg_dur+' · ':'')+(yt.watch_hours!=null?Math.round(yt.watch_hours)+' שעות':'')+'</div></div>'+
   '</div>'+
