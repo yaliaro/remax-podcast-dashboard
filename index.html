@@ -351,7 +351,7 @@ function socialPages(){var pages=social.by_page||[];var mx=Math.max.apply(null,p
   return pages.map(function(p){var col=p.platform==='Instagram'?COL.ig:COL.fb;var nm=p.url?'<a href="'+esc(p.url)+'" target="_blank" rel="noopener">'+esc(p.page)+'</a>':esc(p.page);
     return '<div class="pg"><div><span class="nm">'+nm+'</span><span class="tag-sm">'+(p.platform==='Instagram'?'IG':'FB')+' · '+esc(p.type)+'</span><div class="meta">'+nf(p.posts)+' פוסט'+(p.posts>1?'ים':'')+'</div></div><div class="vv num">'+nf(p.views)+'</div><div class="bar"><span style="width:'+pct(p.views,mx)+'%;background:'+col+'"></span></div></div>';}).join('');}
 function topPosts(list,n){list=(list||social.posts||[]).slice().sort(function(a,b){return (b.views||0)-(a.views||0);}).slice(0,n||6);
-  return list.map(function(pp){var inner='<div><div class="pl">'+esc(pp.label||'ריל')+(pp.url?'<span class="lk">↗ פתח</span>':'')+'</div><div class="pmeta">'+esc(pp.account)+' · '+pp.platform+' · ❤ '+nf(pp.likes)+'</div></div><div class="pv num" style="color:'+(pp.platform==='Instagram'?COL.ig:COL.fb)+'">'+nf(pp.views)+'</div>';
+  return list.map(function(pp){var inner='<div><div class="pl">'+esc(pp.label||'ריל')+(pp.url?'<span class="lk">↗ פתח</span>':'')+'</div><div class="pmeta">'+esc(pp.account)+' · '+(pp.split||pp.platform)+' · ❤ '+nf(pp.likes)+'</div></div><div class="pv num" style="color:'+(pp.platform==='Instagram'?COL.ig:COL.fb)+'">'+nf(pp.views)+'</div>';
     return pp.url?'<a class="post" href="'+esc(pp.url)+'" target="_blank" rel="noopener">'+inner+'</a>':'<div class="post">'+inner+'</div>';}).join('')||'<div class="sub">אין פוסטים</div>';}
 
 /* ============ OVERVIEW (rich, one page) ============ */
