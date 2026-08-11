@@ -638,7 +638,7 @@ function growthBlock(id,kind){
   var seriesRow=(kind==='show')?'':('<div class="gbtns">'+sb('agg','מאוחד')+sb('prog','פר-תוכנית')+'</div>');
   return '<div class="block deep">'+RB('GR'+id)+'<div class="bh"><span class="btag d">צמיחה</span><h3>צמיחה · האזנות לפרקים</h3></div>'+
     '<div class="sub">סך האזנות (יוטיוב+ספוטיפיי+אפל יחד). בחר חתך ותצוגה.</div>'+
-    '<div class="gbtns">'+modes+'</div>'+seriesRow+'<div class="gbtns">'+cb('1','מצטבר')+cb('0','בודד')+'</div>'+
+    '<div class="gbtns">'+modes+'</div>'+seriesRow+'<div class="gbtns" id="gcum-'+id+'">'+cb('1','מצטבר')+cb('0','בודד')+'</div>'+
     '<div id="gc-'+id+'" class="gchart" data-kind="'+kind+'"></div><div class="insnote" id="gn-'+id+'"></div></div>';
 }
 window.__gmode=function(id,v){window.__GMODE[id]=v;var el=$('gc-'+id);window.__renderGC(id,el?el.getAttribute('data-kind'):'agg');};
@@ -679,6 +679,11 @@ function weeklyRawSpotify(list){
 }
 window.__renderGC=function(id,kind){
   var mode=window.__GMODE[id]||'week',cum=window.__GCUM[id]!==false;
+  /* "מצטבר" only means something on a time axis (weeks / episodes). On the by-program
+     cut it stacked each show onto the previous one, so the last bar showed the whole
+     portfolio's total under one program's name — 6,854 next to that show's own 1,275. */
+  if(mode==='show')cum=false;
+  var cw=$('gcum-'+id);if(cw)cw.style.display=(mode==='show')?'none':'';
   [].forEach.call(document.querySelectorAll('[data-gm="'+id+'"]'),function(b){b.className='gbtn'+(b.getAttribute('data-v')===mode?' on':'');});
   [].forEach.call(document.querySelectorAll('[data-gc="'+id+'"]'),function(b){b.className='gbtn'+(((b.getAttribute('data-v')==='1')===cum)?' on':'');});
   var series=window.__GSERIES[id]||'agg';
@@ -698,7 +703,7 @@ window.__renderGC=function(id,kind){
   }else if(mode==='show'){
     var PAL=[COL.deep,COL.reach,COL.sp,COL.ig,COL.yt];
     items=shows.slice().sort(function(a,b){return (b.deep_total||0)-(a.deep_total||0);}).map(function(s,i){return {l:s.name.split(' ')[0],v:s.deep_total||0,c:PAL[i%PAL.length]};});
-    note=cum?'מצטבר — בנייה לסך התיק.':'השוואה בין התוכניות — כל תוכנית בצבע.';
+    note='השוואה בין התוכניות — כל תוכנית בצבע. סך האזנות לכל תוכנית, כמו בטאב שלה.';
   }else{
     var list=(kind==='show')?[shows[+id.slice(1)]]:shows;
     var target=list.reduce(function(a,s){return a+((s&&s.deep_total)||0);},0);
