@@ -536,7 +536,7 @@ function buildStatus(){
     }).join('')+'</tbody></table></div>';
   var asset=assets.map(function(a){return '<div class="pg"><div><span class="nm">'+esc(a.channel)+'</span><div class="meta">'+esc(a.metric)+'</div></div><div class="vv num">'+esc(a.value)+'</div></div>';}).join('');
   return '<div class="block deep">'+RB('ST1')+'<div class="bh"><span class="btag d">סטטוס</span><h3>בית התוכן · תכנון מול ביצוע</h3></div>'+
-      '<div class="sub">'+(sm.total_programs||7)+' תוכניות, '+(sm.episodes_year||168)+' פרקים בשנה · 4 הושקו, 1 בהפקה, 2 טרם הותנעו.</div>'+chips+prog+
+      '<div class="sub">'+(sm.total_programs||7)+' תוכניות, '+(sm.episodes_year||168)+' פרקים בשנה · '+esc(sm.line||'')+'</div>'+chips+prog+
       '<div class="explain"><b>צולמו</b> = פרקים שהוקלטו באולפן (חלקם עוד לא פורסמו) · היעד 26 פרקים לתוכנית (12 לתוכנית של ברנרד) · '+(sm.episodes_year||168)+' פרקים סה״כ בשנה.</div></div>';
 }
 
