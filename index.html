@@ -366,7 +366,7 @@ function buildOverview(){
   '</div>'+
   growthBlock('ov','agg')+
   '<div class="block deep">'+RB('A4')+'<div class="bh"><span class="btag d">האזנה</span><h3>טבלת מובילים · האזנה לפרקים</h3></div><div class="sub">פרק מלא שנצרך בפועל — הקרדיט שייך לתוכנית. מסודר לפי סך ההאזנה.</div>'+leaderboardTable()+'</div>'+
-  '<div class="block deep">'+RB('A4b')+'<div class="bh"><span class="btag d">עומק</span><h3>עומק האזנה · כמה מהפרק מקשיבים'+tip('depth')+'</h3></div><div class="sub">ההר + האחוז = עומק השימור בספוטיפיי. מתחת = שימור יוטיוב (מדד נפרד, נמוך יותר מטבעו). הפיצוח: קהל ספוטיפיי קטן, מוצג לפי יוטיוב.</div>'+depthCompare()+'</div>'+
+  '<div class="block deep">'+RB('A4b')+'<div class="bh"><span class="btag d">עומק</span><h3>עומק האזנה · כמה מהפרק מקשיבים'+tip('depth')+'</h3></div><div class="sub">ההר + האחוז = עומק השימור בספוטיפיי. מתחת = שימור יוטיוב (מדד נפרד, נמוך יותר מטבעו). אצל גיל קהל הספוטיפיי קטן, ולכן מוצג לפי יוטיוב.</div>'+depthCompare()+'</div>'+
   '<div class="block">'+RB('A5')+'<div class="bh"><h3>דירוג לפי כל מדד</h3></div><div class="sub">כל מדד, כל התוכניות, מי מוביל (כתום). לחיצה על שם מדד פותחת הסבר.</div>'+rankMatrix()+'</div>'+
   '<div class="two3">'+
     '<div class="block">'+RB('A6')+'<div class="bh"><span class="btag r">המרה</span><h3>מחשיפה להאזנה · מצרפי</h3></div><div class="sub">סך ארבע התוכניות בספוטיפיי.</div>'+richFunnel()+'<div class="explain"><b>נחשפו</b>=הוצג להם · <b>התעניינו</b>=נכנסו לבדוק · <b>צרכו</b>=התחילו להאזין.</div></div>'+
@@ -534,9 +534,9 @@ function buildStatus(){
     '<div class="chip"><div class="cn num">'+esc(sm.shot||'')+'</div><div class="cl">פרקים צולמו</div></div>'+
   '</div>';
   var ST_COL={'הושקה':'var(--good)','בהפקה':'var(--warn)','טרם הותנעה':'var(--mut2)'};
-  var prog='<div class="scroll"><table><thead><tr><th>תוכנית</th><th>מנחה</th><th>מנהלת</th><th>צולמו</th><th>יעד</th><th>השקה</th><th>סטטוס</th></tr></thead><tbody>'+
+  var prog='<div class="scroll"><table><thead><tr><th>תוכנית</th><th>מנהלת</th><th>צולמו</th><th>יעד</th><th>השקה</th><th>סטטוס</th></tr></thead><tbody>'+
     progs.map(function(p){var col=ST_COL[p.status]||'var(--mut)',mx=p.target||26;
-      return '<tr><td class="nm">'+esc(p.name)+'</td><td>'+esc(p.host)+'</td><td>'+esc(p.manager)+'</td>'+
+      return '<tr><td class="nm">'+esc(p.name)+'</td><td>'+esc(p.manager)+'</td>'+
         '<td class="cell"><span class="cellbar" style="background:'+col+';width:'+pct(p.shot,mx)+'%"></span><span class="cellv num">'+p.shot+'</span></td>'+
         '<td class="num">'+p.target+'</td><td class="num">'+esc(p.launch)+'</td><td><span style="color:'+col+';font-weight:700">'+esc(p.status)+'</span></td></tr>';
     }).join('')+'</tbody></table></div>';
